@@ -1,5 +1,7 @@
 package com.cts.automation.model;
 
+import java.util.Date;
+
 import lombok.*;
 
 @AllArgsConstructor
@@ -8,16 +10,12 @@ import lombok.*;
 @Getter
 @Setter
 public class User {
-
-	private String month;
 	
-	private String year;
+	private String costcenter;
 	
-	private String startdate;
+	private Date startdate;
 	
-	private String enddate;
-	
-	private int totalamount;
+	private Date enddate;
 	
 	private String vendorprojectteammember1;
 	
@@ -27,5 +25,7 @@ public class User {
 	
 	private String cvsprojectteammember1;
 	
-	private int deliverables;
+//	private String deliverables;
+
+	
 }
