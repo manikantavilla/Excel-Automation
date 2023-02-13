@@ -1,6 +1,9 @@
 package com.cts.automation.model;
 
 import java.util.Date;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import lombok.*;
 
@@ -11,21 +14,18 @@ import lombok.*;
 @Setter
 public class User {
 	
-	private String costcenter;
+	private String sheetName;
 	
-	private Date startdate;
+	private String costCenter;
 	
-	private Date enddate;
+	private Date startDate;
 	
-	private String vendorprojectteammember1;
+	private Date endDate;
 	
-	private String vendorprojectteammember2;
+	@JsonProperty("vendorTeam")
+	private List<String> vendorTeam;
 	
-	private String vendorprojectteammember3;
-	
-	private String cvsprojectteammember1;
-	
-//	private String deliverables;
-
+	@JsonProperty("cvsTeam")
+	private List<String> cvsTeam;
 	
 }
