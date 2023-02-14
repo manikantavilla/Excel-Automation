@@ -13,52 +13,11 @@
             font-family: Arial, Helvetica, sans-serif;
         }
 
-        .wrapper {
-            width: 400px;
-            margin: 40px auto;
-            padding: 10px;
-            border-radius: 5px;
-            background: white;
-            box-shadow: 0px 10px 40px 0px rgba(47, 47, 47, .1);
-        }
-
-        #survey {
-            padding: 10px;
-            margin: 10px auto;
-            display: block;
-            border-radius: 5px;
-            border: 1px solid lightgrey;
-            background: none;
-            width: 274px;
-            color: rgb(237, 233, 233);
-        }
-
-        #survey:focus {
-            outline: none;
-        }
-
-        .controls {
-            width: 294px;
-            margin: 15px auto;
-        }
-
-        #remove_fields {
-            float: right;
-        }
-
-        .controls a i.fa-minus {
-            margin-right: 5px;
-        }
-
         a {
-            color: black;
+            color: rgb(247, 242, 242);
             text-decoration: none;
-        }
+            font-size: 18px;
 
-        h1 {
-            text-align: center;
-            font-size: 48px;
-            color: #232c3d;
         }
 
         body {
@@ -67,8 +26,6 @@
             color: #f9fcf5;
             font-family: Arial, Helvetica, sans-serif;
         }
-
-
 
         #main {
             width: 800px;
@@ -139,6 +96,15 @@
             -moz-transition: 1s;
             transition: 1s;
         }
+
+        select {
+            width: 150px;
+            height: 30px;
+        }
+
+        a {
+            color: white;
+        }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script>
@@ -158,12 +124,43 @@
             td2.appendChild(newField);
             tr.appendChild(td2);
             var td3 = document.createElement('td');
+            var select = document.createElement('select');
+            select.setAttribute('name', 'options');
+            select.setAttribute('class', 'vendorselect');
+
+            var option0 = document.createElement('option');
+            option0.setAttribute('value', 'Select Option');
+            option0.innerHTML = 'Select Option';
+            select.appendChild(option0);
+
+            var option1 = document.createElement('option');
+            option1.setAttribute('value', 'Client Relationship Manager');
+            option1.innerHTML = 'Client Relationship Manager';
+            select.appendChild(option1);
+
+            var option2 = document.createElement('option');
+            option2.setAttribute('value', 'Engagement Manager');
+            option2.innerHTML = 'Engagement Manager';
+            select.appendChild(option2);
+
+            var option3 = document.createElement('option');
+            option3.setAttribute('value', 'Sr. Engineering Manager');
+            option3.innerHTML = 'Sr. Engineering Manager';
+            select.appendChild(option3);
+
+            var option4 = document.createElement('option');
+            option4.setAttribute('value', 'Sr Dir, IT Program Mgmt');
+            option4.innerHTML = 'Sr Dir, IT Program Mgmt';
+            select.appendChild(option4);
+
+            td3.appendChild(select);
             tr.appendChild(td3);
             var td4 = document.createElement('td');
             tr.appendChild(td4);
+            var td5 = document.createElement('td');
+            tr.appendChild(td5);
             vendorTeam[vendorTeam.length - 1].insertAdjacentElement('afterend', tr);
         }
-
 
         function removevendorFields() {
             var vendorTeam = document.getElementsByClassName('vendorTeam');
@@ -188,9 +185,41 @@
             td2.appendChild(newField);
             tr.appendChild(td2);
             var td3 = document.createElement('td');
+            var select = document.createElement('select');
+            select.setAttribute('name', 'options');
+            select.setAttribute('class', 'cvsselect');
+
+            var option0 = document.createElement('option');
+            option0.setAttribute('value', 'Select Option');
+            option0.innerHTML = 'Select Option';
+            select.appendChild(option0);
+
+            var option1 = document.createElement('option');
+            option1.setAttribute('value', 'Client Relationship Manager');
+            option1.innerHTML = 'Client Relationship Manager';
+            select.appendChild(option1);
+
+            var option2 = document.createElement('option');
+            option2.setAttribute('value', 'Engagement Manager');
+            option2.innerHTML = 'Engagement Manager';
+            select.appendChild(option2);
+
+            var option3 = document.createElement('option');
+            option3.setAttribute('value', 'Sr. Engineering Manager');
+            option3.innerHTML = 'Sr. Engineering Manager';
+            select.appendChild(option3);
+
+            var option4 = document.createElement('option');
+            option4.setAttribute('value', 'Sr Dir, IT Program Mgmt');
+            option4.innerHTML = 'Sr Dir, IT Program Mgmt';
+            select.appendChild(option4);
+
+            td3.appendChild(select);
             tr.appendChild(td3);
             var td4 = document.createElement('td');
             tr.appendChild(td4);
+            var td5 = document.createElement('td');
+            tr.appendChild(td5);
             cvsTeam[cvsTeam.length - 1].insertAdjacentElement('afterend', tr);
 
 
@@ -215,63 +244,66 @@
         }
 
         function submitForm() {
-        const sheetName = document.getElementById("sheetName").value;
-        const costCenter = document.getElementById("costCenter").value;
-        const startDate = document.getElementById("startDate").value;
-        const endDate = document.getElementById("endDate").value;
+            const sheetName = document.getElementById("sheetName").value;
+            const costCenter = document.getElementById("costCenter").value;
+            const startDate = document.getElementById("startDate").value;
+            const endDate = document.getElementById("endDate").value;
 
-        const vendorTeam = [];
-        const vendorTeamInputs = document.getElementsByClassName("vendorname");
-        for (let i = 0; i < vendorTeamInputs.length; i++) {
-          vendorTeam.push(vendorTeamInputs[i].value);
+            const vendorTeam = [];
+            const vendorTeamInputs = document.getElementsByClassName("vendorname");
+            const vendorselectInputs = document.getElementsByClassName("vendorselect");
+                for (let i = 0; i < vendorTeamInputs.length; i++) {
+                    vendorTeam.push(vendorTeamInputs[i].value+"-" +vendorselectInputs[i].value);
+                }
+                console.log(vendorTeam)
+            const cvsTeam = [];
+            const cvsTeamInputs = document.getElementsByClassName("cvsname");
+            const cvsselectInputs = document.getElementsByClassName("cvsselect");
+            for (let i = 0; i < cvsTeamInputs.length; i++) {
+                cvsTeam.push(cvsTeamInputs[i].value+"-"+cvsselectInputs[i].value);
+            }
+
+            console.log(cvsTeam)
+            const filters = {
+                sheetName,
+                costCenter,
+                startDate,
+                endDate,
+                vendorTeam,
+                cvsTeam,
+            };
+
+            const formData = new FormData();
+            formData.append("forecast_file", document.getElementById("upload_file").files[0]);
+            formData.append("filters", JSON.stringify(filters));
+
+            // const xhr = new XMLHttpRequest();
+            // xhr.open("POST", "http://localhost:8080/api/v1.0/createWordFile", true);
+            // xhr.send(formData);
+
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8080/api/v1.0/createWordFile", true);
+            xhr.responseType = "blob";
+
+            xhr.onload = function (event) {
+                if (xhr.status === 200) {
+                    const blob = xhr.response;
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(blob);
+                    link.download = "SOW_Document.docx";
+                    link.click();
+                }
+                //   if(xhr.status === 400){
+                //     window.alert("Date dose not match with date in excel!!!");
+                //   }
+            };
+
+            xhr.send(formData);
+
+
         }
 
-        const cvsTeam = [];
-        const cvsTeamInputs = document.getElementsByClassName("cvsname");
-        for (let i = 0; i < cvsTeamInputs.length; i++) {
-          cvsTeam.push(cvsTeamInputs[i].value);
-        }
 
-        const filters = {
-          sheetName,
-          costCenter,
-          startDate,
-          endDate,
-          vendorTeam,
-          cvsTeam,
-        };
-
-        const formData = new FormData();
-        formData.append("forecast_file", document.getElementById("upload_file").files[0]);
-        formData.append("filters", JSON.stringify(filters));
-
-        // const xhr = new XMLHttpRequest();
-        // xhr.open("POST", "http://localhost:8080/api/v1.0/createWordFile", true);
-        // xhr.send(formData);
-      
-        const xhr = new XMLHttpRequest();
-xhr.open("POST", "http://localhost:8080/api/v1.0/createWordFile", true);
-xhr.responseType = "blob";
-
-xhr.onload = function(event) {
-  if (xhr.status === 200) {
-    const blob = xhr.response;
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "SOW_Document.docx";
-    link.click();
-  }
-//   if(xhr.status === 400){
-//     window.alert("Date dose not match with date in excel!!!");
-//   }
-};
-
-xhr.send(formData);
-
-    
-    }
-
-        
 
     </script>
 
@@ -291,7 +323,7 @@ xhr.send(formData);
                         <td align="right"><label for="sheetName">Sheet Name :</label></td>
                         <td><input type="text" name="sheetName" id="sheetName" class="tb" required /></td>
                     </tr>
-                    
+
                     <tr>
                         <td align="right"><label for="costcenter">Cost center :</label></td>
                         <td><input type="text" name="costcenter" id="costCenter" class="tb" required /></td>
@@ -308,9 +340,19 @@ xhr.send(formData);
                     </tr>
 
                     <tr class="vendorTeam">
-                        <td align="right"><label for="vendorname">Vendor name :</label></td>
+                        <td align="right"><label for="vendorname">Vendor Project Team :</label></td>
                         <td><input type="text" name="vendorname" id="vendor" class="vendorname" placeholder="Name"
                                 required /> </td>
+                        <td>
+                            <select class="vendorselect">
+                                <option value="Select Option">Select Option</option>
+                                <option value="Client Relationship Manager">Client Relationship Manager</option>
+                                <option value="Engagement Manager">Engagement Manager</option>
+                                <option value="Sr. Engineering Manager"> Sr. Engineering Manager</option>
+                                <option value="Sr Dir, IT Program Mgmt"> Sr Dir, IT Program Mgmt</option>
+                            </select>
+
+                        </td>
 
                         <td><a href="#" id="add_more_vendor_fields" onclick="addMorevendorFields()"><i
                                     class="fas fa-plus"></i>+Add</a></td>
@@ -321,10 +363,19 @@ xhr.send(formData);
                     </tr>
 
                     <tr class="cvsTeam">
-                        <td align="right"><label for="cvsname">Cvs Project name :</label></td>
+                        <td align="right"><label for="cvsname">CVS Project Team :</label></td>
                         <td><input type="text" name="cvsname" id="cvs" class="cvsname" placeholder="Name" required />
                         </td>
+                        <td>
+                            <select class="cvsselect">
+                                <option value="Select Option">Select Option</option>
+                                <option value="Client Relationship Manager">Client Relationship Manager</option>
+                                <option value="Engagement Manager">Engagement Manager</option>
+                                <option value="Sr. Engineering Manager"> Sr. Engineering Manager</option>
+                                <option value="Sr Dir, IT Program Mgmt"> Sr Dir, IT Program Mgmt</option>
+                            </select>
 
+                        </td>
                         <td><a href="#" id="add_more_cvs_fields" onclick="addMorecvsFields()"><i
                                     class="fas fa-plus"></i>+Add</a></td>
                         <td><a href="#" id="remove_cvs_fields" onclick="removecvsFields()"><i
@@ -334,7 +385,8 @@ xhr.send(formData);
                     </tr>
                     <tr>
                         <td align="right">Select file to upload :</td>
-                        <td><input id="upload_file" accept=".xls,.xlsx,.csv," name="forecastFile" type="file" required />
+                        <td><input id="upload_file" accept=".xls,.xlsx,.csv," name="forecastFile" type="file"
+                                required />
                         </td>
                     </tr>
 
@@ -342,7 +394,7 @@ xhr.send(formData);
                     <tr>
                         <td></td>
                         <td>
-                            <button type="button" onclick="submitForm()">Submit</button>
+                            <button type="button" onclick="submitForm()">Download SOW</button>
                         </td>
                     </tr>
 

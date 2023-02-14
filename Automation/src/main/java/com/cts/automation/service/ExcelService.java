@@ -89,18 +89,26 @@ public class ExcelService {
 			Cell cell = row.getCell(columnIndex);
 			if (cell != null) {
 				Cell cell1 = row.getCell(columnIndex + 1);
+				Cell cell2 = row.getCell(columnIndex + 2);
 				
+				if(cell1.getDateCellValue() != null) {
+				Date uDate =  user.getStartDate();
+				Date eDate =  cell1.getDateCellValue();
+				Date endDate = user.getEndDate();
+				Date ExcelEndDate = cell2.getDateCellValue();
+            	SimpleDateFormat outputFormat = new SimpleDateFormat("MM-yyyy");
+            	String outputInputDateString = outputFormat.format(uDate);
+            	String outputExcelDateString = outputFormat.format(eDate);
+            	String outputUserEndDateString = outputFormat.format(endDate);
+            	String outputExcelEndDateString = outputFormat.format(ExcelEndDate);
+            
 				
-//				Date dString =  user.getStartDate();
-//            	SimpleDateFormat outputFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
-//            	String outputStartDateString = outputFormat.format(dString);
-				
-				
-//				if (cell1.getDateCellValue().toString() == outputStartDateString) {
+				if (outputExcelDateString.equals(outputInputDateString) && outputUserEndDateString.equals(outputExcelEndDateString)) {
 					if (cell.getStringCellValue().equalsIgnoreCase(user.getCostCenter())) {
 						rows.add(row);
 					}
-//				}
+				}
+				}
 			} else {
 				break;
 			}
@@ -181,15 +189,13 @@ public class ExcelService {
 	    XWPFDocument doc = new XWPFDocument(inputStream);
 	    List<Map<String, Object>> rowsData = new ArrayList<Map<String, Object>>();
 	    rowsData = ReadBasedOnCondition(file,user);	
-//	    if(rowsData.size() > 0) {
+	    if(rowsData.size() > 0) {
 	    List<XWPFParagraph> paragraphs = doc.getParagraphs();
 	    for (XWPFParagraph paragraph : paragraphs) {
 	        List<XWPFRun> runs = paragraph.getRuns();
-	    	log.info(paragraph.getParagraphText());
 	        for (XWPFRun run : runs) {
 	            String text = run.getText(0);
 	            for(Map<String, Object> row : rowsData) {
-	            	log.info(text);
 	                if(text != null && text.contains("Contract")) {
 	                	text = text.replace("Contract", (String) row.get("Contract#"));
 	                    run.setText(text, 0);
@@ -400,9 +406,9 @@ public class ExcelService {
 	    byteArrayOutputStream.close();
 	    return response;
 	}
-//	    else {
-//	    	return new ResponseEntity("Enter proper date", HttpStatus.BAD_REQUEST);
-//
-//		}      
-//	}
+	    else {
+	    	return new ResponseEntity("Enter proper date", HttpStatus.BAD_REQUEST);
+
+		}      
+	}
 }
