@@ -33,7 +33,7 @@ public class ExcelController {
 	
 	@GetMapping("/")
 	public ModelAndView homePage() {
-		return new ModelAndView("forecast", "", null);
+		return new ModelAndView("sample_forecast", "", null);
 	}
 	
 	

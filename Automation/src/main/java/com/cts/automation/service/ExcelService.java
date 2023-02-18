@@ -89,21 +89,21 @@ public class ExcelService {
 			Cell cell = row.getCell(columnIndex);
 			if (cell != null) {
 				Cell cell1 = row.getCell(columnIndex + 1);
-				Cell cell2 = row.getCell(columnIndex + 2);
+//				Cell cell2 = row.getCell(columnIndex + 2);
 				
 				if(cell1.getDateCellValue() != null) {
 				Date uDate =  user.getStartDate();
 				Date eDate =  cell1.getDateCellValue();
-				Date endDate = user.getEndDate();
-				Date ExcelEndDate = cell2.getDateCellValue();
-            	SimpleDateFormat outputFormat = new SimpleDateFormat("MM-yyyy");
+//				Date endDate = user.getEndDate();
+//				Date ExcelEndDate = cell2.getDateCellValue();
+            	SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy");
             	String outputInputDateString = outputFormat.format(uDate);
             	String outputExcelDateString = outputFormat.format(eDate);
-            	String outputUserEndDateString = outputFormat.format(endDate);
-            	String outputExcelEndDateString = outputFormat.format(ExcelEndDate);
+//            	String outputUserEndDateString = outputFormat.format(endDate);
+//            	String outputExcelEndDateString = outputFormat.format(ExcelEndDate);
             
 				
-				if (outputExcelDateString.equals(outputInputDateString) && outputUserEndDateString.equals(outputExcelEndDateString)) {
+				if (outputExcelDateString.equals(outputInputDateString)) {
 					if (cell.getStringCellValue().equalsIgnoreCase(user.getCostCenter())) {
 						rows.add(row);
 					}
@@ -185,7 +185,7 @@ public class ExcelService {
 	
 
 	public ResponseEntity<byte[]> insertDataIntoWord(MultipartFile file,User user) throws Exception {
-	    FileInputStream inputStream = new FileInputStream(new File("C:\\Users\\2066253\\eclipse-workspace\\COG2023-0XX_CCCC86_SOW_Business for Active Health_2023_20230203 - Copy.docx"));
+	    FileInputStream inputStream = new FileInputStream(new File("C:\\Users\\2066253\\repository\\Excel-Automation\\COG2023-0XX_CCCC86_SOW_Business for Active Health_2023 (4).docx"));
 	    XWPFDocument doc = new XWPFDocument(inputStream);
 	    List<Map<String, Object>> rowsData = new ArrayList<Map<String, Object>>();
 	    rowsData = ReadBasedOnCondition(file,user);	
@@ -237,7 +237,7 @@ public class ExcelService {
 	                    text = text.replace("sow_end_date",outputEndDateString);
 	                    run.setText(text, 0);
 	                }
-	                if(text != null && text.contains("budget_amount")) {
+	                if(text != null && text.contains("budget_amount") && row.get("Totals") != null) {
 	                	text = text.replace("budget_amount", "$"+String.format("%.2f", (double) row.get("Totals")));
 	                    run.setText(text, 0);
 	                }
@@ -254,6 +254,7 @@ public class ExcelService {
 	    list2 = user.getCvsTeam();
 
 	    int rows = Math.max(list1.size(), list2.size());
+	    
 	    
 	    
 	    XWPFTable nTable = doc.createTable();
@@ -297,9 +298,6 @@ public class ExcelService {
 	    	doc.setTable(found, nTable);
 	    }
 
-
-	    
-	    
 	    
 	    
 	  //Create a new table
