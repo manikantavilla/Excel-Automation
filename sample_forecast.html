@@ -293,9 +293,9 @@
                     link.download = "SOW_Document.docx";
                     link.click();
                 }
-                //   if(xhr.status === 400){
-                //     window.alert("Date dose not match with date in excel!!!");
-                //   }
+                  if(xhr.status === 400){
+                    window.alert("Enter Proper Date!!!");
+                  }
             };
 
             xhr.send(formData);
