@@ -220,20 +220,20 @@ public class ExcelService {
 			// Create a new table
 			List<String> months = Arrays.asList("January", "February", "March", "April", "May", "June", "July",
 					"August", "September", "October", "November", "December");
-			XWPFTable newTable = doc.createTable();
-			XWPFTableRow row1 = newTable.createRow();
-			XWPFTableCell cell0 = row1.createCell();
-			XWPFTableCell cell01 = row1.createCell();
-			XWPFParagraph para0 = cell0.getParagraphs().get(0);
-			XWPFRun run0 = para0.createRun();
-			run0.setBold(true);
-			run0.setText("Deliverable");
-
-			XWPFParagraph para01 = cell01.getParagraphs().get(0);
-			XWPFRun run01 = para01.createRun();
-			run01.setBold(true);
-			run01.setText("Date to be Complete");
-
+//			XWPFTable newTable = doc.createTable();
+//			XWPFTableRow row1 = newTable.createRow();
+//			XWPFTableCell cell0 = row1.createCell();
+//			XWPFTableCell cell01 = row1.createCell();
+//			XWPFParagraph para0 = cell0.getParagraphs().get(0);
+//			XWPFRun run0 = para0.createRun();
+//			run0.setBold(true);
+//			run0.setText("Deliverable");
+//
+//			XWPFParagraph para01 = cell01.getParagraphs().get(0);
+//			XWPFRun run01 = para01.createRun();
+//			run01.setBold(true);
+//			run01.setText("Date to be Complete");
+//
 			int tableIndex = -1;
 			for (int i = 0; i < tables.size(); i++) {
 				XWPFTable table = tables.get(i);
@@ -243,64 +243,64 @@ public class ExcelService {
 					break;
 				}
 			}
-			// Remove the old table
-			if (tableIndex != -1) {
-				doc.removeBodyElement(tableIndex - 1);
-
-				Date StartDate = user.getStartDate();
-				SimpleDateFormat StartDateFormat = new SimpleDateFormat("MMMM");
-				String startDate = StartDateFormat.format(StartDate);
-
-				String endDate = "";
-				if (user.getEndDate() != null) {
-					Date EndDate = user.getEndDate();
-					SimpleDateFormat EndDateFormat = new SimpleDateFormat("MMMM");
-					endDate = EndDateFormat.format(EndDate);
-				}
-
-				int monthStartIndex = 0;
-				monthStartIndex = months.indexOf(startDate);
-				int monthEndIndex = 0;
-				if (endDate.length() > 0) {
-					monthEndIndex = months.indexOf(endDate);
-					for (int i = monthStartIndex + 1; i <= monthEndIndex + 1; i++) {
-						XWPFTableRow row = newTable.createRow();
-						XWPFTableCell cell1 = row.createCell();
-						LocalDate date = LocalDate.of(LocalDate.now().getYear(), i, 1);
-						cell1.setText("Services for the Month of " + months.get(i - 1) + " "
-								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
-						XWPFTableCell cell2 = row.createCell();
-						cell2.setText(date.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() + "-"
-								+ months.get(i - 1).substring(0, 3) + "-"
-								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
-					}
-				} else {
-					if (monthStartIndex == 0) {
-						XWPFTableRow row = newTable.createRow();
-						XWPFTableCell cell1 = row.createCell();
-						LocalDate date = LocalDate.of(LocalDate.now().getYear(), monthStartIndex + 1, 1);
-						cell1.setText("Services for the Month of " + months.get(0) + " "
-								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
-						XWPFTableCell cell2 = row.createCell();
-						cell2.setText(date.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() + "-"
-								+ months.get(0).substring(0, 3) + "-"
-								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
-					} else {
-						XWPFTableRow row = newTable.createRow();
-						XWPFTableCell cell1 = row.createCell();
-						LocalDate date = LocalDate.of(LocalDate.now().getYear(), monthStartIndex, 1);
-						cell1.setText("Services for the Month of " + months.get(monthStartIndex) + " "
-								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
-						XWPFTableCell cell2 = row.createCell();
-						cell2.setText(date.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() + "-"
-								+ months.get(monthStartIndex - 1).substring(0, 3) + "-"
-								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
-					}
-				}
-
-				// Insert the new table at the same position as the old table
-				doc.setTable(tableIndex, newTable);
-			}
+//			// Remove the old table
+//			if (tableIndex != -1) {
+//				doc.removeBodyElement(tableIndex - 1);
+//
+//				Date StartDate = user.getStartDate();
+//				SimpleDateFormat StartDateFormat = new SimpleDateFormat("MMMM");
+//				String startDate = StartDateFormat.format(StartDate);
+//
+//				String endDate = "";
+//				if (user.getEndDate() != null) {
+//					Date EndDate = user.getEndDate();
+//					SimpleDateFormat EndDateFormat = new SimpleDateFormat("MMMM");
+//					endDate = EndDateFormat.format(EndDate);
+//				}
+//
+//				int monthStartIndex = 0;
+//				monthStartIndex = months.indexOf(startDate);
+//				int monthEndIndex = 0;
+//				if (endDate.length() > 0) {
+//					monthEndIndex = months.indexOf(endDate);
+//					for (int i = monthStartIndex + 1; i <= monthEndIndex + 1; i++) {
+//						XWPFTableRow row = newTable.createRow();
+//						XWPFTableCell cell1 = row.createCell();
+//						LocalDate date = LocalDate.of(LocalDate.now().getYear(), i, 1);
+//						cell1.setText("Services for the Month of " + months.get(i - 1) + " "
+//								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
+//						XWPFTableCell cell2 = row.createCell();
+//						cell2.setText(date.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() + "-"
+//								+ months.get(i - 1).substring(0, 3) + "-"
+//								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
+//					}
+//				} else {
+//					if (monthStartIndex == 0) {
+//						XWPFTableRow row = newTable.createRow();
+//						XWPFTableCell cell1 = row.createCell();
+//						LocalDate date = LocalDate.of(LocalDate.now().getYear(), monthStartIndex + 1, 1);
+//						cell1.setText("Services for the Month of " + months.get(0) + " "
+//								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
+//						XWPFTableCell cell2 = row.createCell();
+//						cell2.setText(date.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() + "-"
+//								+ months.get(0).substring(0, 3) + "-"
+//								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
+//					} else {
+//						XWPFTableRow row = newTable.createRow();
+//						XWPFTableCell cell1 = row.createCell();
+//						LocalDate date = LocalDate.of(LocalDate.now().getYear(), monthStartIndex, 1);
+//						cell1.setText("Services for the Month of " + months.get(monthStartIndex) + " "
+//								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
+//						XWPFTableCell cell2 = row.createCell();
+//						cell2.setText(date.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() + "-"
+//								+ months.get(monthStartIndex - 1).substring(0, 3) + "-"
+//								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
+//					}
+//				}
+//
+//				// Insert the new table at the same position as the old table
+//				doc.setTable(tableIndex, newTable);
+//			}
 
 			// Months and Roll Table Creation
 			Date StartDate = user.getStartDate();
@@ -344,14 +344,87 @@ public class ExcelService {
 						SimpleDateFormat outputFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
 						Date date = inputFormat.parse(dateString + " " + yearString);
 						String outputDateString = outputFormat.format(date);
-						log.info(outputDateString);
 						RoleTotal[i][j].add(RoleIterator.get(outputDateString));
-						log.info(String.valueOf(RoleTotal[i][j]));
 					}
 				}
 			}
 			double budgetAmount = 0.0;
 
+
+			// Deliverables Table Creation
+			XWPFTable DeliverableTable = doc.createTable(RoleMonths.size() + 1, 2);
+			XWPFTableRow deliverablesTableheaderRow = DeliverableTable.getRow(0);
+			XWPFParagraph Para = deliverablesTableheaderRow.getCell(0).getParagraphs().get(0);
+			XWPFRun deliverablesheaderTableRun = Para.createRun();
+			deliverablesheaderTableRun.setBold(true);
+			deliverablesheaderTableRun.setText("Deliverables");
+			XWPFParagraph Para1 = deliverablesTableheaderRow.getCell(1).getParagraphs().get(0);
+			XWPFRun deliverablesTableheaderRun1 = Para1.createRun();
+			deliverablesTableheaderRun1.setBold(true);
+			deliverablesTableheaderRun1.setText("Date to complete");
+			if (tableIndex != -1) {
+				doc.removeBodyElement(tableIndex - 1);
+
+				Date SDate = user.getStartDate();
+				SimpleDateFormat SDateFormat = new SimpleDateFormat("MMMM");
+				String sDate = StartDateFormat.format(SDate);
+
+				String eDate = "";
+				if (user.getEndDate() != null) {
+					Date EndDate = user.getEndDate();
+					SimpleDateFormat EndDateFormat = new SimpleDateFormat("MMMM");
+					eDate = EndDateFormat.format(EndDate);
+				}
+
+				int mStartIndex = 0;
+				mStartIndex = months.indexOf(sDate);
+				int mEndIndex = 0;
+				if (eDate.length() > 0) {
+					mEndIndex = months.indexOf(eDate);
+					for (int i = mStartIndex + 1; i <= mEndIndex + 1; i++) {
+						// XWPFTableRow row = newTable.createRow();
+						// XWPFTableCell cell1 = row.createCell();
+						XWPFTableRow row = DeliverableTable.getRow(i);
+
+						LocalDate date = LocalDate.of(LocalDate.now().getYear(), i, 1);
+						XWPFTableCell cell1 = row.getCell(0);
+						cell1.setText("Services for the Month of " + months.get(i - 1) + " "
+								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
+						XWPFTableCell cell2 = row.getCell(1);
+						cell2.setText(date.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() + "-"
+								+ months.get(i - 1).substring(0, 3) + "-"
+								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
+					}
+				} else {
+					if (mStartIndex == 0) {
+						XWPFTableRow row = DeliverableTable.getRow(1);
+						XWPFTableCell cell1 = row.getCell(0);
+						LocalDate date = LocalDate.of(LocalDate.now().getYear(), mStartIndex + 1, 1);
+						cell1.setText("Services for the Month of " + months.get(0) + " "
+								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
+						XWPFTableCell cell2 = row.getCell(1);
+						cell2.setText(date.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() + "-"
+								+ months.get(0).substring(0, 3) + "-"
+								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
+					} else {
+						XWPFTableRow row = DeliverableTable.getRow(1);
+						XWPFTableCell cell1 = row.getCell(0);
+						LocalDate date = LocalDate.of(LocalDate.now().getYear(), mStartIndex, 1);
+						cell1.setText("Services for the Month of " + months.get(mStartIndex) + " "
+								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
+						XWPFTableCell cell2 = row.getCell(1);
+						cell2.setText(date.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() + "-"
+								+ months.get(mStartIndex - 1).substring(0, 3) + "-"
+								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
+					}
+				}
+
+				// Insert the new table at the same position as the old table
+				doc.setTable(tableIndex, DeliverableTable);
+			}
+			
+			
+			
 			XWPFTable table = doc.createTable(RoleMonths.size() + 1, 5);
 
 			// Set the width of each column to be equal
@@ -387,13 +460,12 @@ public class ExcelService {
 					run2.addBreak(BreakType.TEXT_WRAPPING);
 
 					XWPFParagraph p3 = table.getRow(i + 1).getCell(4).addParagraph();
-					if(RoleTotal[i][j].get(j) == null) {
+					if (RoleTotal[i][j].get(j) == null) {
 						p3.createRun().setText("--");
 						XWPFRun run3 = p3.createRun();
 						run3.addBreak(BreakType.TEXT_WRAPPING);
-					}
-					else {
-						p3.createRun().setText("$ " + String.format("%.2f",RoleTotal[i][j].get(j)));
+					} else {
+						p3.createRun().setText("$ " + String.format("%.2f", RoleTotal[i][j].get(j)));
 						Object value = RoleTotal[i][j].get(j);
 						if (value instanceof Number) {
 							budgetAmount += ((Number) value).doubleValue();
@@ -418,6 +490,9 @@ public class ExcelService {
 				doc.removeBodyElement(targetFound - 1);
 				doc.setTable(targetFound, table);
 			}
+			
+			
+			
 
 			int tableCount = tables.size();
 			XWPFTable lastTable = tables.get(tableCount - 1);
