@@ -86,11 +86,10 @@ public class ExcelService {
 					SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy");
 					String outputInputDateString = outputFormat.format(uDate);
 					String outputExcelDateString = outputFormat.format(eDate);
-					String outputUserEndDateString = outputFormat.format(endDate);
-					String outputExcelEndDateString = outputFormat.format(ExcelEndDate);
+//					String outputUserEndDateString = outputFormat.format(endDate);
+//					String outputExcelEndDateString = outputFormat.format(ExcelEndDate);
 
-					if (outputExcelDateString.equals(outputInputDateString)
-							&& outputUserEndDateString.equals(outputExcelEndDateString)) {
+					if (outputExcelDateString.equals(outputInputDateString)) {
 						if (cell.getStringCellValue().equalsIgnoreCase(user.getCostCenter())) {
 							rows.add(row);
 						}
@@ -233,7 +232,8 @@ public class ExcelService {
 //			XWPFRun run01 = para01.createRun();
 //			run01.setBold(true);
 //			run01.setText("Date to be Complete");
-//
+			
+			
 			int tableIndex = -1;
 			for (int i = 0; i < tables.size(); i++) {
 				XWPFTable table = tables.get(i);
@@ -302,7 +302,8 @@ public class ExcelService {
 //				doc.setTable(tableIndex, newTable);
 //			}
 
-			// Months and Roll Table Creation
+			
+
 			Date StartDate = user.getStartDate();
 			SimpleDateFormat StartDateFormat = new SimpleDateFormat("MMMM");
 			String startDate = StartDateFormat.format(StartDate);
@@ -331,7 +332,7 @@ public class ExcelService {
 				RoleRate.add((Number) RoleIterator.get("Grandfathered /CVS Rate"));
 //	    	RoleTotal.add((Number) RoleIterator.get("Sat Jul 01 00:00:00 IST 2023"));
 			}
-			Date year = user.getEndDate();
+			Date year = user.getStartDate();
 			SimpleDateFormat opFormat = new SimpleDateFormat("yyyy");
 			String yearString = opFormat.format(year);
 
@@ -367,7 +368,7 @@ public class ExcelService {
 
 				Date SDate = user.getStartDate();
 				SimpleDateFormat SDateFormat = new SimpleDateFormat("MMMM");
-				String sDate = StartDateFormat.format(SDate);
+				String sDate = SDateFormat.format(SDate);
 
 				String eDate = "";
 				if (user.getEndDate() != null) {
@@ -381,10 +382,10 @@ public class ExcelService {
 				int mEndIndex = 0;
 				if (eDate.length() > 0) {
 					mEndIndex = months.indexOf(eDate);
-					for (int i = mStartIndex + 1; i <= mEndIndex + 1; i++) {
+					for (int i = mStartIndex + 1,j=0 ; i <= mEndIndex + 1; i++,j++) {
 						// XWPFTableRow row = newTable.createRow();
 						// XWPFTableCell cell1 = row.createCell();
-						XWPFTableRow row = DeliverableTable.getRow(i);
+						XWPFTableRow row = DeliverableTable.getRow(j+1);
 
 						LocalDate date = LocalDate.of(LocalDate.now().getYear(), i, 1);
 						XWPFTableCell cell1 = row.getCell(0);
@@ -422,9 +423,8 @@ public class ExcelService {
 				// Insert the new table at the same position as the old table
 				doc.setTable(tableIndex, DeliverableTable);
 			}
-			
-			
-			
+
+			// Months and Roll Table Creation
 			XWPFTable table = doc.createTable(RoleMonths.size() + 1, 5);
 
 			// Set the width of each column to be equal
@@ -491,6 +491,26 @@ public class ExcelService {
 				doc.setTable(targetFound, table);
 			}
 			
+//			XWPFTable TempTable = doc.createTable(RoleMonths.size() + 1, 5);
+//			XWPFTableRow tempHeaderRow = table.getRow(0);
+//			tempHeaderRow.getCell(0).setText("Months");
+//			tempHeaderRow.getCell(1).setText("Roles");
+//			tempHeaderRow.getCell(2).setText("Location");
+//			tempHeaderRow.getCell(3).setText("Rate");
+//			tempHeaderRow.getCell(4).setText("Total");
+//			for (int i = 0; i < RoleMonths.size(); i++) {
+////				TempTable.getRow(i + 1).getCell(0).setText(RoleMonths.get(i));
+//				for (int j = 0; j < AllRoles.size(); j++) {
+//					TempTable.getRow(j + 1).getCell(0).setText("Hi");
+//					TempTable.getRow(j + 1).getCell(1).setText(AllRoles.get(j));
+//					TempTable.getRow(j + 1).getCell(2).setText(RoleLocations.get(j));
+//					TempTable.getRow(j + 1).getCell(3).setText("$ " + String.valueOf(RoleRate.get(j)));
+//					TempTable.getRow(j + 1).getCell(4).setText("$ " + String.format("%.2f", RoleTotal[i][j].get(j)));
+//					
+//				}
+//			}
+			
+			
 			
 			
 
@@ -515,13 +535,14 @@ public class ExcelService {
 
 						if (text != null && text.contains("sow_effective_date")) {
 
-							String dateString = (String) row.get("Start Date");
-							log.info(dateString);
-							System.out.println(row.get("Start Date"));
+//							String dateString = (String) row.get("Start Date");
+							Date dateString = user.getStartDate();
+//							log.info(dateString);
+//							System.out.println(row.get("Start Date"));
 							SimpleDateFormat inputFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
 							SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM dd, yyyy");
-							Date date = inputFormat.parse(dateString);
-							String outputStartDateString = outputFormat.format(date);
+//							Date date = inputFormat.parse(dateString);
+							String outputStartDateString = outputFormat.format(dateString);
 
 							text = text.replace("sow_effective_date", outputStartDateString);
 							run.setText(text, 0);
@@ -540,11 +561,12 @@ public class ExcelService {
 
 						if (text != null && text.contains("sow_end_date")) {
 
-							String dateString = (String) row.get("End Date");
+//							String dateString = (String) row.get("End Date");
+							Date dateString = user.getEndDate();
 							SimpleDateFormat inputFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
 							SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM dd, yyyy");
-							Date date = inputFormat.parse(dateString);
-							String outputEndDateString = outputFormat.format(date);
+//							dateString = inputFormat.parse(dateString);
+							String outputEndDateString = outputFormat.format(dateString);
 
 							text = text.replace("sow_end_date", outputEndDateString);
 							run.setText(text, 0);
@@ -557,21 +579,22 @@ public class ExcelService {
 					}
 				}
 			}
-
-//	    XWPFTable tbl = tables.get(3);
-//	    for (XWPFTableRow row : tbl.getRows()) {
-//	    for (XWPFTableCell cell : row.getTableCells()) {
-//            for (XWPFParagraph p : cell.getParagraphs()) {
-//                for (XWPFRun r : p.getRuns()) {
-//                    String text = r.getText(0);
-//                    if (text.contains("Budget_amount")) {
-//                        text = text.replaceAll("Budget_amount",  "$"+String.format("%.2f", budgetAmount));
-//                        r.setText(text, 0);
-//                    }
-//                }
-//            }
-//        }
-//	    }
+			
+			XWPFTable tbl = tables.get(3);
+			for (XWPFTableRow row : tbl.getRows()) {
+				for (XWPFTableCell cell : row.getTableCells()) {
+					for (XWPFParagraph p : cell.getParagraphs()) {
+						for (XWPFRun r : p.getRuns()) {
+							String text = r.getText(0);
+							if (text.contains("Budget_amount")) {
+								text = text.replaceAll("Budget_amount", String.format("%.2f",budgetAmount));
+								r.setText(text, 0);
+							}
+						}
+					}
+				}
+			}
+			
 
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			doc.write(byteArrayOutputStream);
