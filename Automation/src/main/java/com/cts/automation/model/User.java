@@ -22,6 +22,8 @@ public class User {
 	
 	private Date endDate;
 	
+	private int empId;
+	
 	@JsonProperty("vendorTeam")
 	private List<String> vendorTeam;
 	

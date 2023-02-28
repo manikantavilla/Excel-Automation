@@ -107,7 +107,35 @@
         }
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    
     <script>
+    
+    window.addEventListener("load", function () {
+  	  var xhr = new XMLHttpRequest();
+  	  xhr.open('GET', 'http://localhost:8080/api/v1.0/vendors');
+  	  xhr.onload = function() {
+  	    if (xhr.status === 200) {
+  	      var vendors = JSON.parse(xhr.responseText);
+  	      console.log(vendors);
+  	      var dropdown = document.getElementById('vendor-dropdown');
+  	      for (var vendorId in vendors) {
+  	        if (vendors.hasOwnProperty(vendorId)) {
+  	          var name = vendors[vendorId].name;
+  	          var option = document.createElement('option');
+  	          option.text = name;
+  	          option.value = vendorId;
+  	          dropdown.add(option);
+  	        }
+  	      }
+  	    } else {
+  	      console.log('Request failed.  Returned status of ' + xhr.status);
+  	    }
+  	  };
+  	  xhr.send();
+  	});
+    
+    
         function addMorevendorFields() {
 
             var vendorTeam = document.getElementsByClassName('vendorTeam');
@@ -242,13 +270,14 @@
             }
             else return true;
         }
-
+        
         function submitForm() {
             const sheetName = document.getElementById("sheetName").value;
             const costCenter = document.getElementById("costCenter").value;
             const startDate = document.getElementById("startDate").value;
-            const endDate = document.getElementById("endDate").value;
-
+            const endDate = document.getElementById("endDate").value; 
+            
+			
             const vendorTeam = [];
             const vendorTeamInputs = document.getElementsByClassName("vendorname");
             const vendorselectInputs = document.getElementsByClassName("vendorselect");
@@ -262,8 +291,47 @@
             for (let i = 0; i < cvsTeamInputs.length; i++) {
                 cvsTeam.push(cvsTeamInputs[i].value+"-"+cvsselectInputs[i].value);
             }
-
+			
+            const empId = document.getElementById("empId").value;
+            
             console.log(cvsTeam)
+            
+            if (sheetName === "") {
+                alert("Please enter a sheet name.");
+                return;
+            }
+
+            if (costCenter === "") {
+                alert("Please enter a cost center.");
+                return;
+            }
+
+            if (startDate === "") {
+                alert("Please enter a start date.");
+                return;
+            }
+
+            if (endDate === "") {
+                alert("Please enter an end date.");
+                return;
+            }
+            
+            if (vendorTeam === "") {
+                alert("Please enter an vendor Team details.");
+                return;
+            }
+            
+            if (cvsTeam === "") {
+                alert("Please enter an cvs Team details.");
+                return;
+            }
+            
+            if (empId === "") {
+                alert("Please enter an empId.");
+                return;
+            }
+            
+            
             const filters = {
                 sheetName,
                 costCenter,
@@ -271,6 +339,7 @@
                 endDate,
                 vendorTeam,
                 cvsTeam,
+                empId
             };
 
             const formData = new FormData();
@@ -280,30 +349,41 @@
             // const xhr = new XMLHttpRequest();
             // xhr.open("POST", "http://localhost:8080/api/v1.0/createWordFile", true);
             // xhr.send(formData);
+           
 
-            const xhr = new XMLHttpRequest();
-            xhr.open("POST", "http://localhost:8080/api/v1.0/createWordFile", true);
-            xhr.responseType = "blob";
+                const xhr = new XMLHttpRequest();
+                xhr.open("POST", "http://localhost:8080/api/v1.0/createWordFile", true);
+                xhr.responseType = "blob";
 
-            xhr.onload = function (event) {
-                if (xhr.status === 200) {
-                    const blob = xhr.response;
-                    const link = document.createElement("a");
-                    link.href = URL.createObjectURL(blob);
-                    link.download = "SOW_Document.docx";
-                    link.click();
-                }
-                  if(xhr.status === 400){
-                    window.alert("Enter Proper Date!!!");
-                  }
-            };
+                xhr.onload = function (event) {
+                    if (xhr.status === 200) {
+                        const blob = xhr.response;
+                        const link = document.createElement("a");
+                        link.href = URL.createObjectURL(blob);
+                        link.download = "SOW_Document.docx";
+                        link.click();
+                    }
+                };
 
-            xhr.send(formData);
+                xhr.send(formData);
 
+                const xhr1 = new XMLHttpRequest();
+                xhr1.open("POST", "http://localhost:8080/api/v1.0/createExcelFile", true);
+                xhr1.responseType = "blob";
 
-        }
+                xhr1.onload = function (event) {
+                    if (xhr1.status === 200) {
+                        const blob = xhr1.response;
+                        const link1 = document.createElement("a");
+                        link1.href = URL.createObjectURL(blob);
+                        link1.download = "Submit_File.xlsx";
+                        link1.click();
+                    }
+                };
 
-
+                xhr1.send(formData);           
+            
+        }     
 
     </script>
 
@@ -389,17 +469,24 @@
                                 required />
                         </td>
                     </tr>
-
-
+					<tr>
+                        <td align="right"><label for="empid">Submitted by (EmpId) :</label></td>
+                        <td><input type="number" name="empid" id="empId" class="tb" required /></td>
+                    </tr>
+                    <tr>
+						<td></td>
+						<td><select id="vendor-dropdown"></select></td>
+					</tr>
                     <tr>
                         <td></td>
                         <td>
-                            <button type="button" onclick="submitForm()">Download SOW</button>
+                            <button type="button" onclick="submitForm()">Download SOW</button>  
+                                                
+                           
                         </td>
                     </tr>
 
-
-
+					
 
                 </table>
             </div>

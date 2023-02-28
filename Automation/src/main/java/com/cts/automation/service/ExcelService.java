@@ -40,11 +40,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cts.automation.model.User;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Service
-@Slf4j
 public class ExcelService {
+	
+	public static double budgetAmount = 0.0;
+	
 
 	public List<Map<String, Object>> ReadBasedOnCondition(MultipartFile file, User user) throws Exception {
 //		FileInputStream inputStream = (FileInputStream) file.getInputStream();;
@@ -206,7 +206,7 @@ public class ExcelService {
 				XWPFTable table = tables.get(i);
 				if (table.getText().contains("Vendor")) {
 					found = i;
-					log.info(Double.toString(found));
+//					log.info(Double.toString(found));
 					break;
 				}
 			}
@@ -239,69 +239,10 @@ public class ExcelService {
 				XWPFTable table = tables.get(i);
 				if (table.getText().contains("Deliverable")) {
 					tableIndex = i;
-					log.info(Double.toString(tableIndex));
+//					log.info(Double.toString(tableIndex));
 					break;
 				}
 			}
-//			// Remove the old table
-//			if (tableIndex != -1) {
-//				doc.removeBodyElement(tableIndex - 1);
-//
-//				Date StartDate = user.getStartDate();
-//				SimpleDateFormat StartDateFormat = new SimpleDateFormat("MMMM");
-//				String startDate = StartDateFormat.format(StartDate);
-//
-//				String endDate = "";
-//				if (user.getEndDate() != null) {
-//					Date EndDate = user.getEndDate();
-//					SimpleDateFormat EndDateFormat = new SimpleDateFormat("MMMM");
-//					endDate = EndDateFormat.format(EndDate);
-//				}
-//
-//				int monthStartIndex = 0;
-//				monthStartIndex = months.indexOf(startDate);
-//				int monthEndIndex = 0;
-//				if (endDate.length() > 0) {
-//					monthEndIndex = months.indexOf(endDate);
-//					for (int i = monthStartIndex + 1; i <= monthEndIndex + 1; i++) {
-//						XWPFTableRow row = newTable.createRow();
-//						XWPFTableCell cell1 = row.createCell();
-//						LocalDate date = LocalDate.of(LocalDate.now().getYear(), i, 1);
-//						cell1.setText("Services for the Month of " + months.get(i - 1) + " "
-//								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
-//						XWPFTableCell cell2 = row.createCell();
-//						cell2.setText(date.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() + "-"
-//								+ months.get(i - 1).substring(0, 3) + "-"
-//								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
-//					}
-//				} else {
-//					if (monthStartIndex == 0) {
-//						XWPFTableRow row = newTable.createRow();
-//						XWPFTableCell cell1 = row.createCell();
-//						LocalDate date = LocalDate.of(LocalDate.now().getYear(), monthStartIndex + 1, 1);
-//						cell1.setText("Services for the Month of " + months.get(0) + " "
-//								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
-//						XWPFTableCell cell2 = row.createCell();
-//						cell2.setText(date.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() + "-"
-//								+ months.get(0).substring(0, 3) + "-"
-//								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
-//					} else {
-//						XWPFTableRow row = newTable.createRow();
-//						XWPFTableCell cell1 = row.createCell();
-//						LocalDate date = LocalDate.of(LocalDate.now().getYear(), monthStartIndex, 1);
-//						cell1.setText("Services for the Month of " + months.get(monthStartIndex) + " "
-//								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
-//						XWPFTableCell cell2 = row.createCell();
-//						cell2.setText(date.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() + "-"
-//								+ months.get(monthStartIndex - 1).substring(0, 3) + "-"
-//								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
-//					}
-//				}
-//
-//				// Insert the new table at the same position as the old table
-//				doc.setTable(tableIndex, newTable);
-//			}
-
 			
 
 			Date StartDate = user.getStartDate();
@@ -349,7 +290,7 @@ public class ExcelService {
 					}
 				}
 			}
-			double budgetAmount = 0.0;
+			ExcelService.budgetAmount = 0.0;
 
 
 			// Deliverables Table Creation
@@ -468,7 +409,7 @@ public class ExcelService {
 						p3.createRun().setText("$ " + String.format("%.2f", RoleTotal[i][j].get(j)));
 						Object value = RoleTotal[i][j].get(j);
 						if (value instanceof Number) {
-							budgetAmount += ((Number) value).doubleValue();
+							ExcelService.budgetAmount += ((Number) value).doubleValue();
 						}
 						XWPFRun run3 = p3.createRun();
 						run3.addBreak(BreakType.TEXT_WRAPPING);
@@ -481,7 +422,7 @@ public class ExcelService {
 				XWPFTable Monthtable = tables.get(i);
 				if (Monthtable.getText().contains("Month")) {
 					targetFound = i;
-					log.info(Double.toString(targetFound));
+//					log.info(Double.toString(targetFound));
 					break;
 				}
 			}
@@ -491,29 +432,6 @@ public class ExcelService {
 				doc.setTable(targetFound, table);
 			}
 			
-//			XWPFTable TempTable = doc.createTable(RoleMonths.size() + 1, 5);
-//			XWPFTableRow tempHeaderRow = table.getRow(0);
-//			tempHeaderRow.getCell(0).setText("Months");
-//			tempHeaderRow.getCell(1).setText("Roles");
-//			tempHeaderRow.getCell(2).setText("Location");
-//			tempHeaderRow.getCell(3).setText("Rate");
-//			tempHeaderRow.getCell(4).setText("Total");
-//			for (int i = 0; i < RoleMonths.size(); i++) {
-////				TempTable.getRow(i + 1).getCell(0).setText(RoleMonths.get(i));
-//				for (int j = 0; j < AllRoles.size(); j++) {
-//					TempTable.getRow(j + 1).getCell(0).setText("Hi");
-//					TempTable.getRow(j + 1).getCell(1).setText(AllRoles.get(j));
-//					TempTable.getRow(j + 1).getCell(2).setText(RoleLocations.get(j));
-//					TempTable.getRow(j + 1).getCell(3).setText("$ " + String.valueOf(RoleRate.get(j)));
-//					TempTable.getRow(j + 1).getCell(4).setText("$ " + String.format("%.2f", RoleTotal[i][j].get(j)));
-//					
-//				}
-//			}
-			
-			
-			
-			
-
 			int tableCount = tables.size();
 			XWPFTable lastTable = tables.get(tableCount - 1);
 			XWPFTable last_2_Table = tables.get(tableCount - 2);
@@ -572,7 +490,7 @@ public class ExcelService {
 							run.setText(text, 0);
 						}
 						if (text != null && text.contains("budget_amount")) {
-							text = text.replace("budget_amount", "$" + String.format("%.2f", budgetAmount));
+							text = text.replace("budget_amount", "$" + String.format("%.2f", ExcelService.budgetAmount));
 							run.setText(text, 0);
 						}
 						break;
@@ -587,7 +505,7 @@ public class ExcelService {
 						for (XWPFRun r : p.getRuns()) {
 							String text = r.getText(0);
 							if (text.contains("Budget_amount")) {
-								text = text.replaceAll("Budget_amount", String.format("%.2f",budgetAmount));
+								text = text.replaceAll("Budget_amount", String.format("%.2f",ExcelService.budgetAmount));
 								r.setText(text, 0);
 							}
 						}
@@ -612,4 +530,75 @@ public class ExcelService {
 
 		}
 	}
+
+	public ResponseEntity<byte[]> insertDataIntoExcel(User user) throws Exception {
+		
+		FileInputStream excel_file = new FileInputStream(new File("C:\\Users\\2066253\\repository\\Excel-Automation\\SOWSF_COG2023-0XX.01-CCCC86-v1-3-_feb20211_TEMPLATE.xlsx"));
+	    XSSFWorkbook workbook = new XSSFWorkbook(excel_file);
+	    
+	  //for sow submission file
+	    Sheet sheet = workbook.getSheet("SOW Submission Form");  
+
+	    for (Row row : sheet) {
+	        for (Cell cell : row) {
+	            if (cell.getCellType() == CellType.NUMERIC && cell.getNumericCellValue() ==956801) {
+	                cell.setCellValue(user.getEmpId());
+	            }
+	            if (cell.getCellType() == CellType.STRING && cell.getStringCellValue().equals("COG2023-0XX.01_CCCC86_SOW_Business for Active Health-ChangeOrderForm#3.docx")) {
+		            cell.setCellValue("SOW_Document.docx");
+		        }
+	            
+	            if (cell.getCellType() == CellType.STRING && cell.getStringCellValue().equals("2. Is this the first SOW we have signed for this client?")) {
+	            	int cellIndex=cell.getColumnIndex();
+	                Cell nextCell = row.getCell(cellIndex + 1); 
+	                nextCell.setCellValue("Yes"); 
+	            }
+	            
+	            
+	            
+	            if (cell.getCellType() == CellType.NUMERIC && DateUtil.isCellDateFormatted(cell)) {
+	                
+	                Date date = cell.getDateCellValue();
+	                
+	                SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	                String formattedDate = dateFormat.format(date);
+	                
+	                if (formattedDate.equals("01-03-2023")) {
+	                	SimpleDateFormat logDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	                	String newDate = logDateFormat.format(user.getStartDate());
+	                	Date parsedDate = logDateFormat.parse(newDate);	                	
+	                	cell.setCellValue(parsedDate);
+	                }
+	                
+	                if (formattedDate.equals("31-12-2023")) {
+	                	SimpleDateFormat logDateFormat = new SimpleDateFormat("dd-MM-yyyy");
+	                	String newDate = logDateFormat.format(user.getEndDate());
+	                	Date parsedDate = logDateFormat.parse(newDate);	                	
+	                	cell.setCellValue(parsedDate);  
+	                }
+	                
+	                
+	            }
+	            
+	            if (cell.getCellType() == CellType.NUMERIC && cell.getNumericCellValue() == 24026.4) {
+	            	double cellValue = budgetAmount;
+	                cell.setCellValue(cellValue);
+	                
+	            }
+	            
+	        }
+	    }
+	    
+       
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        workbook.write(outputStream);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"));
+        headers.add("Content-Disposition", "attachment; filename=Submit_File1.xlsx");
+        headers.setCacheControl("must-revalidate, post-check=0, pre-check=0");
+        ResponseEntity<byte[]> response = new ResponseEntity<byte[]>(outputStream.toByteArray(), headers, HttpStatus.OK);
+        outputStream.close();
+	    return response;
+	}
+
 }
