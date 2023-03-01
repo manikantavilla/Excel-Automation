@@ -9,3 +9,15 @@ vendor:
             Manikanta
         role:
             Developer
+
+cvs:
+  208876:
+    name:
+     Renuka
+    role:
+     Debugger
+  998987:
+        name:
+            Priya
+        role:
+            Developer

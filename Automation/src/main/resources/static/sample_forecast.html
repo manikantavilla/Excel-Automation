@@ -133,6 +133,29 @@
   	    }
   	  };
   	  xhr.send();
+  	  
+  	var xhr2 = new XMLHttpRequest();
+	  xhr2.open('GET', 'http://localhost:8080/api/v1.0/cvs');
+	  xhr2.onload = function() {
+	    if (xhr2.status === 200) {
+	      var cvs = JSON.parse(xhr2.responseText);
+	      console.log(cvs);
+	      var dropdown = document.getElementById('cvs-dropdown');
+	      for (var cvsId in cvs) {
+	        if (cvs.hasOwnProperty(cvsId)) {
+	          var name = cvs[cvsId].name;
+	          var option = document.createElement('option');
+	          option.text = name;
+	          option.value = cvsId;
+	          dropdown.add(option);
+	        }
+	      }
+	    } else {
+	      console.log('Request failed.  Returned status of ' + xhr2.status);
+	    }
+	  };
+	  xhr2.send();
+  	  
   	});
     
     
@@ -476,6 +499,10 @@
                     <tr>
 						<td></td>
 						<td><select id="vendor-dropdown"></select></td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><select id="cvs-dropdown"></select></td>
 					</tr>
                     <tr>
                         <td></td>

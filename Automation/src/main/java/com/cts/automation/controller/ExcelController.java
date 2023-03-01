@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.cts.automation.model.CvsData;
 import com.cts.automation.model.User;
 import com.cts.automation.model.VendorData;
 import com.cts.automation.service.ExcelService;
@@ -35,6 +36,9 @@ public class ExcelController {
 	
 	@Autowired
     private VendorData vendorData;
+	
+	@Autowired
+    private CvsData cvsData;
 	
 	@GetMapping("/")
 	public ModelAndView homePage() {
@@ -62,6 +66,11 @@ public class ExcelController {
     @GetMapping("/vendors")
     public Map<String, Map<String, String>> getAllVendors() {   	    	
     	return vendorData.getVendor();
+    }
+    
+    @GetMapping("/cvs")
+    public Map<String, Map<String, String>> getAllCvsData() {   	    	
+    	return cvsData.getCvs();
     }
     
     @GetMapping("/vendorId")
