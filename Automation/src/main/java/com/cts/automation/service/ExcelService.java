@@ -31,6 +31,7 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,10 +39,18 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.cts.automation.model.CvsData;
 import com.cts.automation.model.User;
+import com.cts.automation.model.VendorData;
 
 @Service
 public class ExcelService {
+	
+	@Autowired
+    private VendorData vendorData;
+	
+	@Autowired
+	private CvsData cvsData;
 	
 	public static double budgetAmount = 0.0;
 	
@@ -177,15 +186,46 @@ public class ExcelService {
 
 			List<XWPFTable> tables = doc.getTables();
 
-			List<String> vendorTeamList = new ArrayList<String>();
-			vendorTeamList = user.getVendorTeam();
+			List<String> vendorTeamList = user.getVendorTeam();
+			List<String> vendorNameList = new ArrayList<String>();
+			List<String> vendorRoleList = new ArrayList<String>();
 
-			List<String> CVSTeamList = new ArrayList<String>();
-			CVSTeamList = user.getCvsTeam();
+			Map<String, Map<String, String>> vendorMap = vendorData.getVendor();
+			for (String vendorId : vendorTeamList) {
+			    Map<String, String> vendorDetails = vendorMap.get(vendorId);
+			    String vendorName = vendorDetails.get("name");
+			    String vendorRole = vendorDetails.get("role");
+			    vendorNameList.add(vendorName);
+			    vendorRoleList.add(vendorRole);
+			    
+			}
 
-			int rows = Math.max(vendorTeamList.size(), CVSTeamList.size());
+			
+
+			List<String> CVSTeamList = user.getCvsTeam();
+			List<String> CVSNameList = new ArrayList<String>();
+			List<String> CVSRoleList = new ArrayList<String>();
+		
+			Map<String, Map<String, String>> cvsMap = cvsData.getCvs();
+			for (String cvsId : CVSTeamList) {
+			    Map<String, String> cvsDetails = cvsMap.get(cvsId);
+			    String cvsName = cvsDetails.get("name");
+			    String cvsRole = cvsDetails.get("role");
+			    CVSNameList.add(cvsName);
+			    CVSRoleList.add(cvsRole);
+			    
+			}
+			
+			
+			int rows = Math.max(vendorNameList.size(), CVSNameList.size());
 
 			XWPFTable nTable = doc.createTable(rows + 1, 2);
+			
+			
+			int size = 9800;
+			nTable.setWidth("100%");
+			nTable.getCTTbl().addNewTblPr().addNewTblW().setW(BigInteger.valueOf(size));
+			
 			XWPFTableRow nTableheaderRow = nTable.getRow(0);
 			XWPFParagraph para = nTableheaderRow.getCell(0).getParagraphs().get(0);
 			XWPFRun nTableRun = para.createRun();
@@ -197,8 +237,8 @@ public class ExcelService {
 			nTableRun1.setText("CVS Project Team:");
 			for (int j = 0; j < rows; j++) {
 				XWPFTableRow nextRow = nTable.getRow(j + 1);
-				nextRow.getCell(0).setText(j < vendorTeamList.size() ? vendorTeamList.get(j) : "");
-				nextRow.getCell(1).setText(j < CVSTeamList.size() ? CVSTeamList.get(j) : "");
+				nextRow.getCell(0).setText(j < vendorNameList.size() ? vendorNameList.get(j) + " - " + vendorRoleList.get(j) : "");
+				nextRow.getCell(1).setText(j < CVSNameList.size() ? CVSNameList.get(j) + " - " + CVSRoleList.get(j):"");
 			}
 
 			int found = -1;
@@ -505,9 +545,10 @@ public class ExcelService {
 						for (XWPFRun r : p.getRuns()) {
 							String text = r.getText(0);
 							if (text.contains("Budget_amount")) {
-								text = text.replaceAll("Budget_amount", String.format("%.2f",ExcelService.budgetAmount));
-								r.setText(text, 0);
+							    text = text.replaceAll("Budget_amount", String.format("\\$ %.2f", ExcelService.budgetAmount));
+							    r.setText(text, 0);
 							}
+
 						}
 					}
 				}
@@ -585,6 +626,39 @@ public class ExcelService {
 	                cell.setCellValue(cellValue);
 	                
 	            }
+	            
+	            if (cell.getCellType() == CellType.NUMERIC && cell.getNumericCellValue() == 383065) {
+	            	
+	            Map<String, Map<String, String>> vendorMap = vendorData.getVendor();
+
+	            for (String vendorId : vendorMap.keySet()) {
+	                Map<String, String> vendorDetails = vendorMap.get(vendorId);
+	                String name = vendorDetails.get("name");
+	                String role = vendorDetails.get("role");
+	                
+	                if (role.equals("Client Relationship Manager")) {
+	                	cell.setCellValue(vendorId);
+	                    
+	                }
+	            }
+
+	            } 
+	            if (cell.getCellType() == CellType.NUMERIC && cell.getNumericCellValue() == 424844) {
+	            	
+		            Map<String, Map<String, String>> vendorMap = vendorData.getVendor();
+
+		            for (String vendorId : vendorMap.keySet()) {
+		                Map<String, String> vendorDetails = vendorMap.get(vendorId);
+		                String name = vendorDetails.get("name");
+		                String role = vendorDetails.get("role");
+		                
+		                if (role.equals("Engagement Manager")) {
+		                	cell.setCellValue(vendorId);
+		                   
+		                }
+		            }
+
+		            } 
 	            
 	        }
 	    }

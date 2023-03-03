@@ -108,110 +108,73 @@
     </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    
-    <script>
-    
-    window.addEventListener("load", function () {
-  	  var xhr = new XMLHttpRequest();
-  	  xhr.open('GET', 'http://localhost:8080/api/v1.0/vendors');
-  	  xhr.onload = function() {
-  	    if (xhr.status === 200) {
-  	      var vendors = JSON.parse(xhr.responseText);
-  	      console.log(vendors);
-  	      var dropdown = document.getElementById('vendor-dropdown');
-  	      for (var vendorId in vendors) {
-  	        if (vendors.hasOwnProperty(vendorId)) {
-  	          var name = vendors[vendorId].name;
-  	          var option = document.createElement('option');
-  	          option.text = name;
-  	          option.value = vendorId;
-  	          dropdown.add(option);
-  	        }
-  	      }
-  	    } else {
-  	      console.log('Request failed.  Returned status of ' + xhr.status);
-  	    }
-  	  };
-  	  xhr.send();
-  	  
-  	var xhr2 = new XMLHttpRequest();
-	  xhr2.open('GET', 'http://localhost:8080/api/v1.0/cvs');
-	  xhr2.onload = function() {
-	    if (xhr2.status === 200) {
-	      var cvs = JSON.parse(xhr2.responseText);
-	      console.log(cvs);
-	      var dropdown = document.getElementById('cvs-dropdown');
-	      for (var cvsId in cvs) {
-	        if (cvs.hasOwnProperty(cvsId)) {
-	          var name = cvs[cvsId].name;
-	          var option = document.createElement('option');
-	          option.text = name;
-	          option.value = cvsId;
-	          dropdown.add(option);
-	        }
-	      }
-	    } else {
-	      console.log('Request failed.  Returned status of ' + xhr2.status);
-	    }
-	  };
-	  xhr2.send();
-  	  
-  	});
-    
-    
-        function addMorevendorFields() {
 
-            var vendorTeam = document.getElementsByClassName('vendorTeam');
+    <script>
+
+
+
+        function addMorevendorFields() {
+            var vendorTeam = Array.from(document.getElementsByClassName('vendorTeam'));
             var tr = document.createElement('tr');
             tr.setAttribute('class', 'vendorTeam');
             var td1 = document.createElement('td');
             tr.appendChild(td1);
             var td2 = document.createElement('td');
-            var newField = document.createElement('input');
-            newField.setAttribute('type', 'text');
-            newField.setAttribute('name', 'vendorname');
-            newField.setAttribute('class', 'vendorname');
-            newField.setAttribute('placeholder', 'Another Field');
-            td2.appendChild(newField);
+            var dropdown = document.createElement('select');
+            dropdown.setAttribute('class', 'vendorIdList');
+            td2.appendChild(dropdown);
             tr.appendChild(td2);
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://localhost:8080/api/v1.0/vendors');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var vendors = JSON.parse(xhr.responseText);
+                    for (var vendorId in vendors) {
+                        if (vendors.hasOwnProperty(vendorId)) {
+                            var name = vendors[vendorId].name;
+                            var option = document.createElement('option');
+                            option.text = name;
+                            option.value = vendorId;
+                            dropdown.add(option);
+                        }
+                    }
+
+                } else {
+                    console.log('Request failed.  Returned status of ' + xhr.status);
+                }
+            };
+            xhr.send();
             var td3 = document.createElement('td');
-            var select = document.createElement('select');
-            select.setAttribute('name', 'options');
-            select.setAttribute('class', 'vendorselect');
-
-            var option0 = document.createElement('option');
-            option0.setAttribute('value', 'Select Option');
-            option0.innerHTML = 'Select Option';
-            select.appendChild(option0);
-
-            var option1 = document.createElement('option');
-            option1.setAttribute('value', 'Client Relationship Manager');
-            option1.innerHTML = 'Client Relationship Manager';
-            select.appendChild(option1);
-
-            var option2 = document.createElement('option');
-            option2.setAttribute('value', 'Engagement Manager');
-            option2.innerHTML = 'Engagement Manager';
-            select.appendChild(option2);
-
-            var option3 = document.createElement('option');
-            option3.setAttribute('value', 'Sr. Engineering Manager');
-            option3.innerHTML = 'Sr. Engineering Manager';
-            select.appendChild(option3);
-
-            var option4 = document.createElement('option');
-            option4.setAttribute('value', 'Sr Dir, IT Program Mgmt');
-            option4.innerHTML = 'Sr Dir, IT Program Mgmt';
-            select.appendChild(option4);
-
-            td3.appendChild(select);
             tr.appendChild(td3);
             var td4 = document.createElement('td');
             tr.appendChild(td4);
-            var td5 = document.createElement('td');
-            tr.appendChild(td5);
             vendorTeam[vendorTeam.length - 1].insertAdjacentElement('afterend', tr);
         }
+
+        function loadVendors() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://localhost:8080/api/v1.0/vendors');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var vendors = JSON.parse(xhr.responseText);
+                    console.log(vendors);
+                    var dropdown = document.getElementById('vendor-dropdown');
+                    for (var vendorId in vendors) {
+                        if (vendors.hasOwnProperty(vendorId)) {
+                            var name = vendors[vendorId].name;
+                            var option = document.createElement('option');
+                            option.text = name;
+                            option.value = vendorId;
+                            dropdown.add(option);
+                        }
+                    }
+                } else {
+                    console.log('Request failed.  Returned status of ' + xhr.status);
+                }
+            };
+            xhr.send();
+        }
+
 
         function removevendorFields() {
             var vendorTeam = document.getElementsByClassName('vendorTeam');
@@ -221,60 +184,70 @@
         }
 
         function addMorecvsFields() {
-
-            var cvsTeam = document.getElementsByClassName('cvsTeam');
+            var cvsTeam = Array.from(document.getElementsByClassName('cvsTeam'));
             var tr = document.createElement('tr');
             tr.setAttribute('class', 'cvsTeam');
             var td1 = document.createElement('td');
             tr.appendChild(td1);
             var td2 = document.createElement('td');
-            var newField = document.createElement('input');
-            newField.setAttribute('type', 'text');
-            newField.setAttribute('name', 'cvsname');
-            newField.setAttribute('class', 'cvsname');
-            newField.setAttribute('placeholder', 'Another Field');
-            td2.appendChild(newField);
+            var dropdown = document.createElement('select');
+            dropdown.setAttribute('class', 'cvsIdList');
+            td2.appendChild(dropdown);
             tr.appendChild(td2);
+
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://localhost:8080/api/v1.0/cvs');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var cvs = JSON.parse(xhr.responseText);
+                    for (var cvsId in cvs) {
+                        if (cvs.hasOwnProperty(cvsId)) {
+                            var name = cvs[cvsId].name;
+                            var option = document.createElement('option');
+                            option.text = name;
+                            option.value = cvsId;
+                            dropdown.add(option);
+                        }
+                    }
+                } else {
+                    console.log('Request failed.  Returned status of ' + xhr.status);
+                }
+            };
+            xhr.send();
+
             var td3 = document.createElement('td');
-            var select = document.createElement('select');
-            select.setAttribute('name', 'options');
-            select.setAttribute('class', 'cvsselect');
-
-            var option0 = document.createElement('option');
-            option0.setAttribute('value', 'Select Option');
-            option0.innerHTML = 'Select Option';
-            select.appendChild(option0);
-
-            var option1 = document.createElement('option');
-            option1.setAttribute('value', 'Client Relationship Manager');
-            option1.innerHTML = 'Client Relationship Manager';
-            select.appendChild(option1);
-
-            var option2 = document.createElement('option');
-            option2.setAttribute('value', 'Engagement Manager');
-            option2.innerHTML = 'Engagement Manager';
-            select.appendChild(option2);
-
-            var option3 = document.createElement('option');
-            option3.setAttribute('value', 'Sr. Engineering Manager');
-            option3.innerHTML = 'Sr. Engineering Manager';
-            select.appendChild(option3);
-
-            var option4 = document.createElement('option');
-            option4.setAttribute('value', 'Sr Dir, IT Program Mgmt');
-            option4.innerHTML = 'Sr Dir, IT Program Mgmt';
-            select.appendChild(option4);
-
-            td3.appendChild(select);
             tr.appendChild(td3);
             var td4 = document.createElement('td');
             tr.appendChild(td4);
-            var td5 = document.createElement('td');
-            tr.appendChild(td5);
             cvsTeam[cvsTeam.length - 1].insertAdjacentElement('afterend', tr);
-
-
         }
+
+
+
+        function loadCVS() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://localhost:8080/api/v1.0/cvs');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var cvs = JSON.parse(xhr.responseText);
+                    var dropdown = document.getElementById('cvs-dropdown');
+                    for (var cvsId in cvs) {
+                        if (cvs.hasOwnProperty(cvsId)) {
+                            var name = cvs[cvsId].name;
+                            var option = document.createElement('option');
+                            option.text = name;
+                            option.value = cvsId;
+                            dropdown.add(option);
+                        }
+                    }
+                } else {
+                    console.log('Request failed.  Returned status of ' + xhr.status);
+                }
+            };
+            xhr.send();
+        }
+
+
 
         function removecvsFields() {
             var cvsTeam = document.getElementsByClassName('cvsTeam');
@@ -293,32 +266,30 @@
             }
             else return true;
         }
-        
+
         function submitForm() {
             const sheetName = document.getElementById("sheetName").value;
             const costCenter = document.getElementById("costCenter").value;
             const startDate = document.getElementById("startDate").value;
-            const endDate = document.getElementById("endDate").value; 
-            
-			
+            const endDate = document.getElementById("endDate").value;
+
+
             const vendorTeam = [];
-            const vendorTeamInputs = document.getElementsByClassName("vendorname");
-            const vendorselectInputs = document.getElementsByClassName("vendorselect");
-                for (let i = 0; i < vendorTeamInputs.length; i++) {
-                    vendorTeam.push(vendorTeamInputs[i].value+"-" +vendorselectInputs[i].value);
-                }
-                console.log(vendorTeam)
-            const cvsTeam = [];
-            const cvsTeamInputs = document.getElementsByClassName("cvsname");
-            const cvsselectInputs = document.getElementsByClassName("cvsselect");
-            for (let i = 0; i < cvsTeamInputs.length; i++) {
-                cvsTeam.push(cvsTeamInputs[i].value+"-"+cvsselectInputs[i].value);
+            const vendorTeamInputs = document.getElementsByClassName("vendorIdList");
+            for (let i = 0; i < vendorTeamInputs.length; i++) {
+                vendorTeam.push(vendorTeamInputs[i].value);
             }
-			
+            console.log(vendorTeam)
+            const cvsTeam = [];
+            const cvsTeamInputs = document.getElementsByClassName("cvsIdList");
+            for (let i = 0; i < cvsTeamInputs.length; i++) {
+                cvsTeam.push(cvsTeamInputs[i].value);
+            }
+
             const empId = document.getElementById("empId").value;
-            
+
             console.log(cvsTeam)
-            
+
             if (sheetName === "") {
                 alert("Please enter a sheet name.");
                 return;
@@ -338,23 +309,23 @@
                 alert("Please enter an end date.");
                 return;
             }
-            
+
             if (vendorTeam === "") {
                 alert("Please enter an vendor Team details.");
                 return;
             }
-            
+
             if (cvsTeam === "") {
                 alert("Please enter an cvs Team details.");
                 return;
             }
-            
+
             if (empId === "") {
                 alert("Please enter an empId.");
                 return;
             }
-            
-            
+
+
             const filters = {
                 sheetName,
                 costCenter,
@@ -369,50 +340,45 @@
             formData.append("forecast_file", document.getElementById("upload_file").files[0]);
             formData.append("filters", JSON.stringify(filters));
 
-            // const xhr = new XMLHttpRequest();
-            // xhr.open("POST", "http://localhost:8080/api/v1.0/createWordFile", true);
-            // xhr.send(formData);
-           
+            const xhr00 = new XMLHttpRequest();
+            xhr00.open("POST", "http://localhost:8080/api/v1.0/createWordFile", true);
+            xhr00.responseType = "blob";
 
-                const xhr = new XMLHttpRequest();
-                xhr.open("POST", "http://localhost:8080/api/v1.0/createWordFile", true);
-                xhr.responseType = "blob";
+            xhr00.onload = function (event) {
+                if (xhr00.status === 200) {
+                    const blob = xhr00.response;
+                    const link = document.createElement("a");
+                    link.href = URL.createObjectURL(blob);
+                    link.download = "SOW_Document.docx";
+                    link.click();
+                }
+            };
 
-                xhr.onload = function (event) {
-                    if (xhr.status === 200) {
-                        const blob = xhr.response;
-                        const link = document.createElement("a");
-                        link.href = URL.createObjectURL(blob);
-                        link.download = "SOW_Document.docx";
-                        link.click();
-                    }
-                };
+            xhr00.send(formData);
 
-                xhr.send(formData);
+            const xhr01 = new XMLHttpRequest();
+            xhr01.open("POST", "http://localhost:8080/api/v1.0/createExcelFile", true);
+            xhr01.responseType = "blob";
 
-                const xhr1 = new XMLHttpRequest();
-                xhr1.open("POST", "http://localhost:8080/api/v1.0/createExcelFile", true);
-                xhr1.responseType = "blob";
+            xhr01.onload = function (event) {
+                if (xhr01.status === 200) {
+                    const blob = xhr01.response;
+                    const link1 = document.createElement("a");
+                    link1.href = URL.createObjectURL(blob);
+                    link1.download = "Submit_File.xlsx";
+                    link1.click();
+                }
+            };
 
-                xhr1.onload = function (event) {
-                    if (xhr1.status === 200) {
-                        const blob = xhr1.response;
-                        const link1 = document.createElement("a");
-                        link1.href = URL.createObjectURL(blob);
-                        link1.download = "Submit_File.xlsx";
-                        link1.click();
-                    }
-                };
+            xhr01.send(formData);
 
-                xhr1.send(formData);           
-            
-        }     
+        }
 
     </script>
 
 </head>
 
-<body>
+<body onload="loadCVS(); loadVendors()">
 
     <form>
         <div id="main">
@@ -444,18 +410,13 @@
 
                     <tr class="vendorTeam">
                         <td align="right"><label for="vendorname">Vendor Project Team :</label></td>
-                        <td><input type="text" name="vendorname" id="vendor" class="vendorname" placeholder="Name"
-                                required /> </td>
                         <td>
-                            <select class="vendorselect">
-                                <option value="Select Option">Select Option</option>
-                                <option value="Client Relationship Manager">Client Relationship Manager</option>
-                                <option value="Engagement Manager">Engagement Manager</option>
-                                <option value="Sr. Engineering Manager"> Sr. Engineering Manager</option>
-                                <option value="Sr Dir, IT Program Mgmt"> Sr Dir, IT Program Mgmt</option>
+                            <label for="vendor-dropdown"></label>
+                            <select id="vendor-dropdown" class="vendorIdList">
+                                <option value="" selected>Select Vendor</option>
                             </select>
-
                         </td>
+
 
                         <td><a href="#" id="add_more_vendor_fields" onclick="addMorevendorFields()"><i
                                     class="fas fa-plus"></i>+Add</a></td>
@@ -467,18 +428,14 @@
 
                     <tr class="cvsTeam">
                         <td align="right"><label for="cvsname">CVS Project Team :</label></td>
-                        <td><input type="text" name="cvsname" id="cvs" class="cvsname" placeholder="Name" required />
-                        </td>
                         <td>
-                            <select class="cvsselect">
-                                <option value="Select Option">Select Option</option>
-                                <option value="Client Relationship Manager">Client Relationship Manager</option>
-                                <option value="Engagement Manager">Engagement Manager</option>
-                                <option value="Sr. Engineering Manager"> Sr. Engineering Manager</option>
-                                <option value="Sr Dir, IT Program Mgmt"> Sr Dir, IT Program Mgmt</option>
+                            <label for="cvs-dropdown"></label>
+                            <select id="cvs-dropdown" class="cvsIdList">
+                                <option value="" selected>Select CVS</option>
                             </select>
-
                         </td>
+
+
                         <td><a href="#" id="add_more_cvs_fields" onclick="addMorecvsFields()"><i
                                     class="fas fa-plus"></i>+Add</a></td>
                         <td><a href="#" id="remove_cvs_fields" onclick="removecvsFields()"><i
@@ -492,28 +449,21 @@
                                 required />
                         </td>
                     </tr>
-					<tr>
+                    <tr>
                         <td align="right"><label for="empid">Submitted by (EmpId) :</label></td>
                         <td><input type="number" name="empid" id="empId" class="tb" required /></td>
                     </tr>
-                    <tr>
-						<td></td>
-						<td><select id="vendor-dropdown"></select></td>
-					</tr>
-					<tr>
-						<td></td>
-						<td><select id="cvs-dropdown"></select></td>
-					</tr>
+
+
                     <tr>
                         <td></td>
                         <td>
-                            <button type="button" onclick="submitForm()">Download SOW</button>  
-                                                
-                           
+                            <button type="button" onclick="submitForm()">Download SOW</button>
+
                         </td>
                     </tr>
 
-					
+
 
                 </table>
             </div>

@@ -72,23 +72,6 @@ public class ExcelController {
     public Map<String, Map<String, String>> getAllCvsData() {   	    	
     	return cvsData.getCvs();
     }
-    
-    @GetMapping("/vendorId")
-    public List<String> getVendorNameById() { 
-    	List<String> result = new ArrayList<>();
-    	
-    	Map<String, Map<String, String>> ven= new HashMap<>();
-    	ven = vendorData.getVendor();
-    	for(Map.Entry<String, Map<String, String>> entry : ven.entrySet()) {
-    		for(Map.Entry<String, String> entry2 : entry.getValue().entrySet()) {
-    			if(entry.getKey().equals("208876")) {
-    				result.add(entry2.getValue());
-    			}
-    		}
-    	}
-    	return result;
-    }
-
-  
+      
 }
 
