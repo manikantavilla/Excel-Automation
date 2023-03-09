@@ -110,8 +110,44 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <script>
-
-
+    
+    function loadCostCenters() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:8080/api/v1.0/cost-centers');
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var costCenters = JSON.parse(xhr.responseText);
+                var dropdown = document.getElementById('costCenter');
+                console.log(costCenters);
+                for (var i = 0; i < costCenters.length; i++) {
+                  var option = document.createElement("option");
+                  option.value = costCenters[i].code;
+                  option.text = costCenters[i].code;
+                  dropdown.appendChild(option);
+            } 
+        }
+        };
+        xhr.send();
+    }
+    
+    function loadSheetNames() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:8080/api/v1.0/sheetNames');
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var sheetNames = JSON.parse(xhr.responseText);
+                var dropdown = document.getElementById('sheetName');
+                console.log(sheetNames);
+                for (var i = 0; i < sheetNames.length; i++) {
+                  var option = document.createElement("option");
+                  option.value = sheetNames[i].sheetN;
+                  option.text = sheetNames[i].sheetN;
+                  dropdown.appendChild(option);
+            } 
+        }
+        };
+        xhr.send();
+    }
 
         function addMorevendorFields() {
             var vendorTeam = Array.from(document.getElementsByClassName('vendorTeam'));
@@ -255,6 +291,10 @@
                 cvsTeam[cvsTeam.length - 1].remove();
             }
         }
+        
+
+
+        
 
         function checkFile(sender, validExts) {
             var fileExt = sender.value;
@@ -285,8 +325,6 @@
             for (let i = 0; i < cvsTeamInputs.length; i++) {
                 cvsTeam.push(cvsTeamInputs[i].value);
             }
-
-            const empId = document.getElementById("empId").value;
 
             console.log(cvsTeam)
 
@@ -320,10 +358,6 @@
                 return;
             }
 
-            if (empId === "") {
-                alert("Please enter an empId.");
-                return;
-            }
 
 
             const filters = {
@@ -332,8 +366,7 @@
                 startDate,
                 endDate,
                 vendorTeam,
-                cvsTeam,
-                empId
+                cvsTeam
             };
 
             const formData = new FormData();
@@ -378,7 +411,7 @@
 
 </head>
 
-<body onload="loadCVS(); loadVendors()">
+<body onload="loadCVS(); loadVendors(); loadCostCenters(); loadSheetNames()">
 
     <form>
         <div id="main">
@@ -390,12 +423,15 @@
 
                     <tr>
                         <td align="right"><label for="sheetName">Sheet Name :</label></td>
-                        <td><input type="text" name="sheetName" id="sheetName" class="tb" required /></td>
+                       <!-- <td><input type="text" name="sheetName" id="sheetName" class="tb" required /></td> -->
+                        <td><select id="sheetName"></select></td>
                     </tr>
 
                     <tr>
                         <td align="right"><label for="costcenter">Cost center :</label></td>
-                        <td><input type="text" name="costcenter" id="costCenter" class="tb" required /></td>
+                        <!-- <td><input type="text" name="costcenter" id="costCenter" class="tb" required /></td> -->
+                        <td><select id="costCenter"></select></td>
+                        
                     </tr>
 
                     <tr>
@@ -434,7 +470,7 @@
                                 <option value="" selected>Select CVS</option>
                             </select>
                         </td>
-
+						
 
                         <td><a href="#" id="add_more_cvs_fields" onclick="addMorecvsFields()"><i
                                     class="fas fa-plus"></i>+Add</a></td>
@@ -448,10 +484,6 @@
                         <td><input id="upload_file" accept=".xls,.xlsx,.csv," name="forecastFile" type="file"
                                 required />
                         </td>
-                    </tr>
-                    <tr>
-                        <td align="right"><label for="empid">Submitted by (EmpId) :</label></td>
-                        <td><input type="number" name="empid" id="empId" class="tb" required /></td>
                     </tr>
 
 
