@@ -1,6 +1,7 @@
 package com.cts.automation.controller;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -61,12 +62,14 @@ public class ExcelController {
 
 	@PostMapping("/createWordFile")
     public ResponseEntity<byte[]> createWordFile(@RequestPart("forecast_file") MultipartFile file,@RequestPart("filters") String filters) throws Exception {
-        User user = new ObjectMapper().readValue(filters, User.class);
+        log.info("Word");
+    	User user = new ObjectMapper().readValue(filters, User.class);
         return excelService.insertDataIntoWord(file,user);
     }
     
     @PostMapping("/createExcelFile")
     public ResponseEntity<byte[]> createExcelFile(@RequestPart("forecast_file") MultipartFile file, @RequestPart("filters") String filters) throws Exception {
+    	log.info("excel");
     	User user = new ObjectMapper().readValue(filters, User.class);
     return excelService.insertDataIntoExcel(user);
     }
@@ -98,5 +101,54 @@ public class ExcelController {
         }
         return result;
     }
+    
+    @GetMapping("/sowName")
+    public List getSOWName() {
+    	log.info("file");
+    	String NewSFName = new String();
+    	
+    	String NeWSFName = new String();
+    	
+    	 String NewSowName = new String();
+    	
+    	for (int i = 0; i < ExcelService.defaultName.length(); i++) {
+    		NewSowName += ExcelService.defaultName.charAt(i);
+  
+            if (i == 3) {
+            	NewSowName += ExcelService.sowName;
+            }
+        }
+    	NewSowName += ".docx";
+        log.info(NewSowName);
+        
+        
+			  
+        for (int i = 0; i < ExcelService.defaultName.length(); i++) {
+        	NewSFName += ExcelService.defaultName.charAt(i);
+  
+            if (i == 2) {
+            	NewSFName += "SF";
+            }
+        }
+        
+        for (int i = 0; i < NewSFName.length(); i++) {
+        	NeWSFName += NewSFName.charAt(i);
+  
+        	if (i == 5) {
+        		NeWSFName +=ExcelService.sowName;
+            }
+        }
+        NeWSFName += ".xlsx";
+        log.info(NeWSFName);
+    	
+        List fileNames = new ArrayList<>();
+        fileNames.add(NewSowName);
+        fileNames.add(NeWSFName);
+        NewSowName = "";
+        NeWSFName = "";
+        NewSFName = "";
+        return fileNames;
+    }
+    
 }
 

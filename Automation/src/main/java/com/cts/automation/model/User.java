@@ -22,10 +22,16 @@ public class User {
 	
 	private Date endDate;
 	
+	private boolean sow;
+	
 	@JsonProperty("vendorTeam")
 	private List<String> vendorTeam;
 	
 	@JsonProperty("cvsTeam")
 	private List<String> cvsTeam;
+	
+	private String empId;
+	
+	private String sowName;
 	
 }

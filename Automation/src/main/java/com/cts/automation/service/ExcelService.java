@@ -63,6 +63,9 @@ public class ExcelService {
 	
 	public static double budgetAmount = 0.0;
 	
+	public static String sowName="";
+	
+	public static String defaultName = new String();
 
 	public List<Map<String, Object>> ReadBasedOnCondition(MultipartFile file, User user) throws Exception {
 //		FileInputStream inputStream = (FileInputStream) file.getInputStream();;
@@ -236,14 +239,20 @@ public class ExcelService {
 			nTable.getCTTbl().addNewTblPr().addNewTblW().setW(BigInteger.valueOf(size));
 			
 			XWPFTableRow nTableheaderRow = nTable.getRow(0);
+			nTableheaderRow.getCell(0).setColor("CCE1FD");
+			nTableheaderRow.getCell(1).setColor("CCE1FD");
 			XWPFParagraph para = nTableheaderRow.getCell(0).getParagraphs().get(0);
 			XWPFRun nTableRun = para.createRun();
 			nTableRun.setBold(true);
 			nTableRun.setText("Vendor Project Team:");
+			nTableRun.setFontFamily("Arial");
+			nTableRun.setFontSize(10);
 			XWPFParagraph para1 = nTableheaderRow.getCell(1).getParagraphs().get(0);
 			XWPFRun nTableRun1 = para1.createRun();
 			nTableRun1.setBold(true);
 			nTableRun1.setText("CVS Project Team:");
+			nTableRun1.setFontFamily("Arial");
+			nTableRun1.setFontSize(10);
 			for (int j = 0; j < rows; j++) {
 				XWPFTableRow nextRow = nTable.getRow(j + 1);
 				nextRow.getCell(0).setText(j < vendorNameList.size() ? vendorNameList.get(j) + " - " + vendorRoleList.get(j) : "");
@@ -331,14 +340,20 @@ public class ExcelService {
 			// Deliverables Table Creation
 			XWPFTable DeliverableTable = doc.createTable(RoleMonths.size() + 1, 2);
 			XWPFTableRow deliverablesTableheaderRow = DeliverableTable.getRow(0);
+			deliverablesTableheaderRow.getCell(0).setColor("CCE1FD");
+			deliverablesTableheaderRow.getCell(1).setColor("CCE1FD");
 			XWPFParagraph Para = deliverablesTableheaderRow.getCell(0).getParagraphs().get(0);
 			XWPFRun deliverablesheaderTableRun = Para.createRun();
 			deliverablesheaderTableRun.setBold(true);
 			deliverablesheaderTableRun.setText("Deliverables");
+			deliverablesheaderTableRun.setFontFamily("Arial");
+			deliverablesheaderTableRun.setFontSize(10);
 			XWPFParagraph Para1 = deliverablesTableheaderRow.getCell(1).getParagraphs().get(0);
 			XWPFRun deliverablesTableheaderRun1 = Para1.createRun();
 			deliverablesTableheaderRun1.setBold(true);
 			deliverablesTableheaderRun1.setText("Date to complete");
+			deliverablesTableheaderRun1.setFontFamily("Arial");
+			deliverablesTableheaderRun1.setFontSize(10);
 			if (tableIndex != -1) {
 				doc.removeBodyElement(tableIndex - 1);
 
@@ -368,9 +383,11 @@ public class ExcelService {
 						cell1.setText("Services for the Month of " + months.get(i - 1) + " "
 								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
 						XWPFTableCell cell2 = row.getCell(1);
+						
 						cell2.setText(date.with(TemporalAdjusters.lastDayOfMonth()).getDayOfMonth() + "-"
 								+ months.get(i - 1).substring(0, 3) + "-"
-								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
+								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());	
+						
 					}
 				} else {
 					if (mStartIndex == 0) {
@@ -450,11 +467,46 @@ public class ExcelService {
 
 			// Add the header row
 			XWPFTableRow hRow = Trail.getRow(0);
-			hRow.getCell(0).setText("Months");
-			hRow.getCell(1).setText("Roles");
-			hRow.getCell(2).setText("Location");
-			hRow.getCell(3).setText("Rate");
-			hRow.getCell(4).setText("Total");
+			hRow.getCell(0).setColor("CCE1FD");
+			hRow.getCell(1).setColor("CCE1FD");
+			hRow.getCell(2).setColor("CCE1FD");
+			hRow.getCell(3).setColor("CCE1FD");
+			hRow.getCell(4).setColor("CCE1FD");
+			
+			XWPFParagraph ParaFoeMonths = hRow.getCell(0).getParagraphs().get(0);
+			XWPFRun hRun = ParaFoeMonths.createRun();
+			hRun.setBold(true);
+			hRun.setText("Months");
+			hRun.setFontFamily("Arial");
+			hRun.setFontSize(10);
+			
+			XWPFParagraph paraForRoles = hRow.getCell(1).getParagraphs().get(0);
+			XWPFRun hRowRun2 = paraForRoles.createRun();
+			hRowRun2.setText("Roles");
+			hRowRun2.setBold(true);
+			hRowRun2.setFontFamily("Arial");
+			hRowRun2.setFontSize(10);
+			
+			XWPFParagraph paraForLocation = hRow.getCell(2).getParagraphs().get(0);
+			XWPFRun hRowRun3 = paraForLocation.createRun();
+			hRowRun3.setText("Location");
+			hRowRun3.setBold(true);
+			hRowRun3.setFontFamily("Arial");
+			hRowRun3.setFontSize(10);
+			
+			XWPFParagraph paraForRate = hRow.getCell(3).getParagraphs().get(0);
+			XWPFRun hRowRun4 = paraForRate.createRun();
+			hRowRun4.setText("Rate");
+			hRowRun4.setBold(true);
+			hRowRun4.setFontFamily("Arial");
+			hRowRun4.setFontSize(10);
+			
+			XWPFParagraph paraForTotal = hRow.getCell(4).getParagraphs().get(0);
+			XWPFRun hRowRun5 = paraForTotal.createRun();
+			hRowRun5.setText("Total");
+			hRowRun5.setBold(true);
+			hRowRun5.setFontFamily("Arial");
+			hRowRun5.setFontSize(10);
 
 			int x = 1;
 			String prevMonth = "";
@@ -471,7 +523,7 @@ public class ExcelService {
 			            // Check the number of cells to merge based on the length of AllRoles
 			            int numCellsToMerge = AllRoles.size();
 			            if (numCellsToMerge > 1) {
-			                // Merge the cells
+			               // Merge the cells
 			                CTVMerge vMerge = CTVMerge.Factory.newInstance();
 			                vMerge.setVal(STMerge.RESTART);
 			                XWPFTableCell cell = nRow.getCell(0);
@@ -529,6 +581,7 @@ public class ExcelService {
 				for (XWPFRun run : runs) {
 					String text = run.getText(0);
 					for (Map<String, Object> row : rowsData) {
+						ExcelService.sowName =  (String) row.get("Contract#");
 						if (text != null && text.contains("Contract")) {
 							text = text.replace("Contract", (String) row.get("Contract#"));
 							run.setText(text, 0);
@@ -597,6 +650,9 @@ public class ExcelService {
 				}
 			}
 			
+			defaultName = user.getSowName();
+//			String NewSowName = new String();	  
+	        
 
 			ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 			doc.write(byteArrayOutputStream);
@@ -614,6 +670,7 @@ public class ExcelService {
 
 		}
 	}
+	
 
 	public ResponseEntity<byte[]> insertDataIntoExcel(User user) throws Exception {
 		
@@ -625,9 +682,9 @@ public class ExcelService {
 
 	    for (Row row : sheet) {
 	        for (Cell cell : row) {
-//	            if (cell.getCellType() == CellType.NUMERIC && cell.getNumericCellValue() ==956801) {
-//	                cell.setCellValue(user.getEmpId());
-//	            }
+	            if (cell.getCellType() == CellType.NUMERIC && cell.getNumericCellValue() ==956801) {
+	                cell.setCellValue(user.getEmpId());
+	            }
 	            if (cell.getCellType() == CellType.STRING && cell.getStringCellValue().equals("COG2023-0XX.01_CCCC86_SOW_Business for Active Health-ChangeOrderForm#3.docx")) {
 		            cell.setCellValue("SOW_Document.docx");
 		        }
@@ -689,23 +746,23 @@ public class ExcelService {
 
 	            } 
 	            
-	            if (cell.getCellType() == CellType.NUMERIC && cell.getNumericCellValue() == 956801) {
+//	            if (cell.getCellType() == CellType.NUMERIC && cell.getNumericCellValue() == 956801) {
+//
+//	            	
+//		            Map<String, Map<String, String>> vendorMap = vendorData.getVendor();
+//
+//		            for (String vendorId : vendorMap.keySet()) {
+//		                Map<String, String> vendorDetails = vendorMap.get(vendorId);
+//		                String name = vendorDetails.get("name");
+//		                String role = vendorDetails.get("role");
+//		                
+//		                if (role.equals("Sr Engineering Manager")) {
+//		                	cell.setCellValue(vendorId);
+//		                    
+//		                }
+//		            }
 
-	            	
-		            Map<String, Map<String, String>> vendorMap = vendorData.getVendor();
-
-		            for (String vendorId : vendorMap.keySet()) {
-		                Map<String, String> vendorDetails = vendorMap.get(vendorId);
-		                String name = vendorDetails.get("name");
-		                String role = vendorDetails.get("role");
-		                
-		                if (role.equals("Sr Engineering Manager")) {
-		                	cell.setCellValue(vendorId);
-		                    
-		                }
-		            }
-
-		            } 
+//		            } 
 	            
 	            if (cell.getCellType() == CellType.NUMERIC && cell.getNumericCellValue() == 424844) {
 

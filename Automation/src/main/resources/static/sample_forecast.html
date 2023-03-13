@@ -4,112 +4,128 @@
 <head>
     <title>Forecast Form</title>
     <style type="text/css">
-        @import url('https://fonts.googleapis.com/css2?family=Jost:wght@100;300;400;700&display=swap');
+@import
+	url('https://fonts.googleapis.com/css2?family=Jost:wght@100;300;400;700&display=swap')
+	;
 
-        body {
-            margin: 0px;
-            background-color: #f26724;
-            color: #f9fcf5;
-            font-family: Arial, Helvetica, sans-serif;
-        }
+body {
+	margin: 0px;
+	background-color: #f26724;
+	color: #f9fcf5;
+	font-family: Arial, Helvetica, sans-serif;
+}
 
-        a {
-            color: rgb(247, 242, 242);
-            text-decoration: none;
-            font-size: 18px;
+a {
+	color: rgb(247, 242, 242);
+	text-decoration: none;
+	font-size: 18px;
+}
 
-        }
+body {
+	margin: 0px;
+	background-color: #f26724;
+	color: #f9fcf5;
+	font-family: Arial, Helvetica, sans-serif;
+}
 
-        body {
-            margin: 0px;
-            background-color: #f26724;
-            color: #f9fcf5;
-            font-family: Arial, Helvetica, sans-serif;
-        }
+#main {
+	width: 800px;
+	height: auto;
+	overflow: hidden;
+	padding-bottom: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	border-radius: 5px;
+	padding-left: 10px;
+	margin-top: 100px;
+	border-top: 3px double #f1f1f1;
+	border-bottom: 3px double #f1f1f1;
+	padding-top: 20px;
+}
 
-        #main {
-            width: 800px;
-            height: auto;
-            overflow: hidden;
-            padding-bottom: 20px;
-            margin-left: auto;
-            margin-right: auto;
-            border-radius: 5px;
-            padding-left: 10px;
-            margin-top: 100px;
-            border-top: 3px double #f1f1f1;
-            border-bottom: 3px double #f1f1f1;
-            padding-top: 20px;
-        }
+#main table {
+	font-family: "Comic Sans MS", cursive;
+}
 
-        #main table {
-            font-family: "Comic Sans MS", cursive;
-        }
+#main .tb, .vendorname, .cvsname {
+	height: 28px;
+	width: 250px;
+	border: 1px solid #f26724;
+	color: #fd7838;
+	font-weight: bold;
+	border-left: 5px solid #f7f7f7;
+	opacity: 0.9;
+}
 
-        #main .tb,
-        .vendorname,
-        .cvsname {
-            height: 28px;
-            width: 250px;
-            border: 1px solid #f26724;
-            color: #fd7838;
-            font-weight: bold;
-            border-left: 5px solid #f7f7f7;
-            opacity: 0.9;
-        }
+#main .tb:focus, .vendorname:focus, .cvsname:focus {
+	height: 28px;
+	border: 1px solid #f26724;
+	outline: none;
+	border-left: 5px solid #f7f7f7;
+}
 
-        #main .tb:focus,
-        .vendorname:focus,
-        .cvsname:focus {
-            height: 28px;
-            border: 1px solid #f26724;
-            outline: none;
-            border-left: 5px solid #f7f7f7;
-        }
+#main .btn {
+	width: 150px;
+	height: 32px;
+	outline: none;
+	color: #f7f7f7;
+	font-weight: bold;
+	border: 0px solid #f26724;
+	text-shadow: 0px 0.5px 0.5px #fff;
+	border-radius: 2px;
+	font-weight: 600;
+	color: #f26724;
+	letter-spacing: 1px;
+	font-size: 14px;
+	background-color: #f1f1f1;
+	-webkit-transition: 1s;
+	-moz-transition: 1s;
+	transition: 1s;
+}
 
-        #main .btn {
-            width: 150px;
-            height: 32px;
-            outline: none;
-            color: #f7f7f7;
-            font-weight: bold;
-            border: 0px solid #f26724;
-            text-shadow: 0px 0.5px 0.5px #fff;
-            border-radius: 2px;
-            font-weight: 600;
-            color: #f26724;
-            letter-spacing: 1px;
-            font-size: 14px;
-            background-color: #f1f1f1;
-            -webkit-transition: 1s;
-            -moz-transition: 1s;
-            transition: 1s;
-        }
+#main .btn:hover {
+	background-color: #f26724;
+	outline: none;
+	border-radius: 2px;
+	color: #f1f1f1;
+	border: 1px solid #f1f1f1;
+	-webkit-transition: 1s;
+	-moz-transition: 1s;
+	transition: 1s;
+}
 
-        #main .btn:hover {
-            background-color: #f26724;
-            outline: none;
-            border-radius: 2px;
-            color: #f1f1f1;
-            border: 1px solid #f1f1f1;
-            -webkit-transition: 1s;
-            -moz-transition: 1s;
-            transition: 1s;
-        }
+select {
+	width: 150px;
+	height: 30px;
+}
 
-        select {
-            width: 150px;
-            height: 30px;
-        }
+a {
+	color: white;
+}
 
-        a {
-            color: white;
-        }
-    </style>
+input[type="range"] {
+	width: 30px;
+}
+
+.screen-reader-only {
+	position: absolute;
+	top: -9999px;
+	left: -9999px;
+}
+</style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <script>
+    
+    function redirectToPage() {
+		var rangeInput = document.getElementById('choice');
+		if (rangeInput.value == 0) {
+			window.location.href = 'Amendment.html';
+		} else if (rangeInput.value == 1) {
+			window.location.href = 'sample_forecast.html';
+		}
+	}
     
     function loadCostCenters() {
         var xhr = new XMLHttpRequest();
@@ -312,6 +328,8 @@
             const costCenter = document.getElementById("costCenter").value;
             const startDate = document.getElementById("startDate").value;
             const endDate = document.getElementById("endDate").value;
+            const empId = document.getElementById("empId").value;
+            const sowName = document.getElementById("sowName").value;
 
 
             const vendorTeam = [];
@@ -357,6 +375,11 @@
                 alert("Please enter an cvs Team details.");
                 return;
             }
+            
+            if (empId === "") {
+                alert("Please enter an empId.");
+                return;
+            }
 
 
 
@@ -366,44 +389,69 @@
                 startDate,
                 endDate,
                 vendorTeam,
-                cvsTeam
+                cvsTeam,
+                empId,
+                sowName
             };
 
             const formData = new FormData();
             formData.append("forecast_file", document.getElementById("upload_file").files[0]);
             formData.append("filters", JSON.stringify(filters));
+            
+            
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8080/api/v1.0/createWordFile", true);
+            xhr.responseType = "blob";  
 
-            const xhr00 = new XMLHttpRequest();
-            xhr00.open("POST", "http://localhost:8080/api/v1.0/createWordFile", true);
-            xhr00.responseType = "blob";
+            xhr.onload = function (event) {
+              if (xhr.status === 200) {
+                const xhrSF = new XMLHttpRequest();
+                xhrSF.open('GET', 'http://localhost:8080/api/v1.0/sowName');
+                xhrSF.onload = function (event) {
+                  if (xhrSF.status === 200) {
+                    var SOWName = JSON.parse(xhrSF.responseText);
+                    console.log("Hiiiiiiii")
+                    console.log(SOWName);
+                    
+                    const xhr00 = new XMLHttpRequest();
+                    xhr00.open("POST", "http://localhost:8080/api/v1.0/createWordFile", true);
+                    xhr00.responseType = "blob";  
 
-            xhr00.onload = function (event) {
-                if (xhr00.status === 200) {
-                    const blob = xhr00.response;
-                    const link = document.createElement("a");
-                    link.href = URL.createObjectURL(blob);
-                    link.download = "SOW_Document.docx";
-                    link.click();
+                    xhr00.onload = function (event) {
+                      if (xhr00.status === 200) {
+                        const blob = xhr00.response;
+                        const link = document.createElement("a");
+                        link.href = URL.createObjectURL(blob);
+                        link.download = SOWName[0];
+                        link.click();
+                        
+                        const xhr01 = new XMLHttpRequest();
+                        xhr01.open("POST", "http://localhost:8080/api/v1.0/createExcelFile", true);
+                        xhr01.responseType = "blob";
+
+                        xhr01.onload = function (event) {
+                          if (xhr01.status === 200) {
+                            const blob = xhr01.response;
+                            const link1 = document.createElement("a");
+                            link1.href = URL.createObjectURL(blob);
+                            link1.download = SOWName[1];
+                            link1.click();
+                          }
+                        };
+
+                        xhr01.send(formData);
+                      }
+                    };
+
+                    xhr00.send(formData);
+                  }
                 }
+
+                xhrSF.send();
+              }
             };
 
-            xhr00.send(formData);
-
-            const xhr01 = new XMLHttpRequest();
-            xhr01.open("POST", "http://localhost:8080/api/v1.0/createExcelFile", true);
-            xhr01.responseType = "blob";
-
-            xhr01.onload = function (event) {
-                if (xhr01.status === 200) {
-                    const blob = xhr01.response;
-                    const link1 = document.createElement("a");
-                    link1.href = URL.createObjectURL(blob);
-                    link1.download = "Submit_File.xlsx";
-                    link1.click();
-                }
-            };
-
-            xhr01.send(formData);
+            xhr.send(formData);
 
         }
 
@@ -421,7 +469,19 @@
             <div class="login">
                 <table cellspacing="2" align="center" cellpadding="8" border="0">
 
-                    <tr>
+					<tr>
+				<td></td>
+				<td>
+					<div>
+						<label class="screen-reader-only" for="choice">SOW or Amendment?</label>
+						<span aria-hidden="true">Amendment</span>
+						<input type="range" max="1" id="choice" name="choice" onchange="redirectToPage();">
+						<span aria-hidden="true">SOW</span>
+					</div>
+				</td>
+			</tr>
+
+					<tr>
                         <td align="right"><label for="sheetName">Sheet Name :</label></td>
                        <!-- <td><input type="text" name="sheetName" id="sheetName" class="tb" required /></td> -->
                         <td><select id="sheetName"></select></td>
@@ -486,7 +546,22 @@
                         </td>
                     </tr>
 
-
+					<tr>
+                        <td align="right"><label for="sowName">SOW Document Name :</label></td>
+                        <td><input type="text" name="sowName" id="sowName" class="tb" value="SOW_.01-CC-v1-3-feb2011" required /></td>
+                    </tr>
+                    
+                   <!--  <tr>
+                        <td align="right"><label for="submitName">Submit Form Name :</label></td>
+                        <td><input type="text" name="submitName" id="submitName" class="tb" required /></td>
+                    </tr>
+                    -->
+                    
+					<tr>
+                        <td align="right"><label for="empid">Submitted by (EmpId) :</label></td>
+                        <td><input type="number" name="empid" id="empId" class="tb" required /></td>
+                    </tr>
+                    
                     <tr>
                         <td></td>
                         <td>

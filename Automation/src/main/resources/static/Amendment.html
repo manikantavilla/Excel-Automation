@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Forecast Form</title>
+<style type="text/css">
+@import
+	url('https://fonts.googleapis.com/css2?family=Jost:wght@100;300;400;700&display=swap')
+	;
+
+body {
+	margin: 0px;
+	background-color: #f26724;
+	color: #f9fcf5;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+a {
+	color: rgb(247, 242, 242);
+	text-decoration: none;
+	font-size: 18px;
+}
+
+body {
+	margin: 0px;
+	background-color: #f26724;
+	color: #f9fcf5;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+#main {
+	width: 800px;
+	height: auto;
+	overflow: hidden;
+	padding-bottom: 20px;
+	margin-left: auto;
+	margin-right: auto;
+	border-radius: 5px;
+	padding-left: 10px;
+	margin-top: 100px;
+	border-top: 3px double #f1f1f1;
+	border-bottom: 3px double #f1f1f1;
+	padding-top: 20px;
+}
+
+#main table {
+	font-family: "Comic Sans MS", cursive;
+}
+
+#main .tb, .vendorname, .cvsname {
+	height: 28px;
+	width: 250px;
+	border: 1px solid #f26724;
+	color: #fd7838;
+	font-weight: bold;
+	border-left: 5px solid #f7f7f7;
+	opacity: 0.9;
+}
+
+#main .tb:focus, .vendorname:focus, .cvsname:focus {
+	height: 28px;
+	border: 1px solid #f26724;
+	outline: none;
+	border-left: 5px solid #f7f7f7;
+}
+
+#main .btn {
+	width: 150px;
+	height: 32px;
+	outline: none;
+	color: #f7f7f7;
+	font-weight: bold;
+	border: 0px solid #f26724;
+	text-shadow: 0px 0.5px 0.5px #fff;
+	border-radius: 2px;
+	font-weight: 600;
+	color: #f26724;
+	letter-spacing: 1px;
+	font-size: 14px;
+	background-color: #f1f1f1;
+	-webkit-transition: 1s;
+	-moz-transition: 1s;
+	transition: 1s;
+}
+
+#main .btn:hover {
+	background-color: #f26724;
+	outline: none;
+	border-radius: 2px;
+	color: #f1f1f1;
+	border: 1px solid #f1f1f1;
+	-webkit-transition: 1s;
+	-moz-transition: 1s;
+	transition: 1s;
+}
+
+select {
+	width: 150px;
+	height: 30px;
+}
+
+a {
+	color: white;
+}
+
+input[type="range"] {
+	width: 30px;
+}
+
+.screen-reader-only {
+	position: absolute;
+	top: -9999px;
+	left: -9999px;
+}
+</style>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+		function redirectToPage() {
+			var rangeInput = document.getElementById('choice');
+			if (rangeInput.value == 0) {
+				window.location.href = 'sample_forecast.html';
+			} else if (rangeInput.value == 1) {
+				window.location.href = 'Amendment.html';
+			}
+		}
+	</script>
+<form>
+	<div id="main">
+		<h2>
+			<center>Forecast Details Form</center>
+		</h2>
+		<div class="login">
+			<table cellspacing="2" align="center" cellpadding="8" border="0">
+
+				<tr>
+					<td></td>
+					<td>
+						<div>
+							<label class="screen-reader-only" for="choice">SOW or
+								Amendment?</label> <span aria-hidden="true">SOW</span> <input
+								type="range" max="1" id="choice" name="choice"
+								onchange="redirectToPage();"> <span aria-hidden="true">Amendment</span>
+						</div>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</form>
+</body>
+</html>
