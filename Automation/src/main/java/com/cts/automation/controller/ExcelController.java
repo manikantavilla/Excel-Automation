@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.cts.automation.model.Amendment;
 import com.cts.automation.model.CostCenters;
 import com.cts.automation.model.CvsData;
 import com.cts.automation.model.SheetName;
@@ -105,50 +106,14 @@ public class ExcelController {
     @GetMapping("/sowName")
     public List getSOWName() {
     	log.info("file");
-    	String NewSFName = new String();
-    	
-    	String NeWSFName = new String();
-    	
-    	 String NewSowName = new String();
-    	
-    	for (int i = 0; i < ExcelService.defaultName.length(); i++) {
-    		NewSowName += ExcelService.defaultName.charAt(i);
-  
-            if (i == 3) {
-            	NewSowName += ExcelService.sowName;
-            }
-        }
-    	NewSowName += ".docx";
-        log.info(NewSowName);
-        
-        
-			  
-        for (int i = 0; i < ExcelService.defaultName.length(); i++) {
-        	NewSFName += ExcelService.defaultName.charAt(i);
-  
-            if (i == 2) {
-            	NewSFName += "SF";
-            }
-        }
-        
-        for (int i = 0; i < NewSFName.length(); i++) {
-        	NeWSFName += NewSFName.charAt(i);
-  
-        	if (i == 5) {
-        		NeWSFName +=ExcelService.sowName;
-            }
-        }
-        NeWSFName += ".xlsx";
-        log.info(NeWSFName);
-    	
-        List fileNames = new ArrayList<>();
-        fileNames.add(NewSowName);
-        fileNames.add(NeWSFName);
-        NewSowName = "";
-        NeWSFName = "";
-        NewSFName = "";
-        return fileNames;
+    	return excelService.FileNames();
     }
     
+    
+    
+    @PostMapping("/getTempExcelData")
+    public List<Map<String, Object>> readAmendmentData(@RequestPart("forecast_file") MultipartFile file,@RequestPart("filters") Amendment user) throws Exception {
+        return excelService.ReadAmendmentData(file,user);
+    }
 }
 
