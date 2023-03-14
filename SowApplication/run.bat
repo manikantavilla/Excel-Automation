@@ -1,5 +1,5 @@
 @echo off
-set JAVA_HOME=C:\Program Files\Java\jdk-17
+set JAVA_HOME=C:\Users\2066253\repository\Excel-Automation\SowApplication\jdk-17
 set CLASSPATH=C:\Automation-0.0.1-SNAPSHOT.jar;C:\config.properties
 
 REM Read config.properties file
