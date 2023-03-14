@@ -20,7 +20,9 @@ import org.springframework.web.servlet.ModelAndView;
 import com.cts.automation.model.Amendment;
 import com.cts.automation.model.CostCenters;
 import com.cts.automation.model.CvsData;
+import com.cts.automation.model.SOWPath;
 import com.cts.automation.model.SheetName;
+import com.cts.automation.model.SubmitPath;
 import com.cts.automation.model.User;
 import com.cts.automation.model.VendorData;
 import com.cts.automation.service.ExcelService;
@@ -49,6 +51,12 @@ public class ExcelController {
 	
 	@Autowired
     private CvsData cvsData;
+	
+	@Autowired
+	private SOWPath SowPath;
+	
+	@Autowired
+	private SubmitPath submiTPath;
 	
 	@GetMapping("/")
 	public ModelAndView homePage() {
@@ -114,6 +122,16 @@ public class ExcelController {
     @PostMapping("/getTempExcelData")
     public List<Map<String, Object>> readAmendmentData(@RequestPart("forecast_file") MultipartFile file,@RequestPart("filters") Amendment user) throws Exception {
         return excelService.ReadAmendmentData(file,user);
+    }
+    
+    @GetMapping("/getSowPath")
+    public String getsowPath() {
+    	return SowPath.getSowPath();
+    }
+    
+    @GetMapping("/getSubmitPath")
+    public String getsubmitPath() {
+    	return submiTPath.getSubmitPath();
     }
 }
 

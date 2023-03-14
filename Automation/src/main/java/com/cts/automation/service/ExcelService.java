@@ -47,6 +47,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.cts.automation.model.Amendment;
 import com.cts.automation.model.CvsData;
+import com.cts.automation.model.SOWPath;
+import com.cts.automation.model.SubmitPath;
 import com.cts.automation.model.User;
 import com.cts.automation.model.VendorData;
 
@@ -61,6 +63,12 @@ public class ExcelService {
 
 	@Autowired
 	private CvsData cvsData;
+	
+	@Autowired
+	private SOWPath SowPath;
+	
+	@Autowired
+	private SubmitPath submiTPath;
 
 	public static double budgetAmount = 0.0;
 
@@ -197,8 +205,7 @@ public class ExcelService {
 	}
 
 	public ResponseEntity<byte[]> insertDataIntoWord(MultipartFile file, User user) throws Exception {
-		FileInputStream inputStream = new FileInputStream(new File(
-				"C:\\Users\\2066253\\repository\\Excel-Automation\\COG2023-0XX_CCCC86_SOW_Business for Active Health_2023 (4).docx"));
+		FileInputStream inputStream = new FileInputStream(new File(SowPath.getSowPath()));
 		XWPFDocument doc = new XWPFDocument(inputStream);
 		List<Map<String, Object>> rowsData = new ArrayList<Map<String, Object>>();
 		rowsData = ReadBasedOnCondition(file, user);
@@ -689,8 +696,7 @@ public class ExcelService {
 
 	public ResponseEntity<byte[]> insertDataIntoExcel(User user) throws Exception {
 
-		FileInputStream excel_file = new FileInputStream(new File(
-				"C:\\Users\\2066253\\repository\\Excel-Automation\\SOWSF_COG2023-0XX.01-CCCC86-v1-3-_feb20211_TEMPLATE.xlsx"));
+		FileInputStream excel_file = new FileInputStream(new File(submiTPath.getSubmitPath()));
 		XSSFWorkbook workbook = new XSSFWorkbook(excel_file);
 
 		// for sow submission file
