@@ -119,13 +119,13 @@ input[type="range"] {
 		function redirectToPage() {
 			var rangeInput = document.getElementById('choice');
 			if (rangeInput.value == 0) {
-				window.location.href = 'sample_forecast.html';
+				window.location.href = 'sowForecast.html';
 			} else if (rangeInput.value == 1) {
 				window.location.href = 'Amendment.html';
 			}
 		}
 	</script>
-<form>
+ <form id="myForm">
 	<div id="main">
 		<h2>
 			<center>Forecast Details Form</center>
@@ -144,9 +144,115 @@ input[type="range"] {
 						</div>
 					</td>
 				</tr>
-			</table>
-		</div>
-	</div>
-</form>
+
+                    <tr>
+                        <td align="right"><label for="sheetName">Sheet Name :</label></td>
+                       <!-- <td><input type="text" name="sheetName" id="sheetName" class="tb" required /></td> -->
+                        <td><select id="sheetName" class="fixedwidth"></select></td>
+                    </tr>
+
+                    <tr>
+                        <td align="right"><label for="costcenter">Cost center :</label></td>
+                        <!-- <td><input type="text" name="costcenter" id="costCenter" class="tb" required /></td> -->
+                        <td><select id="costCenter" class="fixedwidth"></select></td>
+                        
+                    </tr>
+
+                    <tr>
+                        <td align="right"><label for="startdate">StartDate :</label></td>
+                        <td><input type="date" name="startdate" id="startDate" class="tb fixedwidth" required /></td>
+                    </tr>
+
+                    <tr>
+                        <td align="right"><label for="enddate">EndDate :</label></td>
+                        <td><input type="date" name="enddate" id="endDate" class="tb fixedwidth" required /></td>
+                    </tr>
+
+                    <tr>
+                        <td align="right"><label for="resourcedate">Amendment Date :</label></td>
+                        <td><input type="date" name="resourcedate" id="resourceDate" class="tb fixedwidth" required /></td>
+                    </tr>
+                    
+                    <tr>
+                        <td align="right"><label for="sowAmount">Amount submitted in SOW :</label></td>
+                        <td><input type="number" name="sowAmount" id="sowAmount" class="tb fixedwidth" required /></td>
+                    </tr>
+
+                    <tr>
+  <td align="right"><label for="additionResource">Resources data:</label></td>
+  <td>
+    <textarea name="additionResource" id="additionResource" class="tb fixedwidth" rows="5" cols="50" maxlength="150" required></textarea>
+  </td>
+</tr>
+
+
+                    <tr class="vendorTeam">
+                        <td align="right"><label for="vendorname">Vendor Project Team :</label></td>
+                        <td>
+                            <label for="vendor-dropdown"></label>
+                            <select id="vendor-dropdown" class="vendorIdList fixedwidth">
+                                <option value="" selected>Select Vendor</option>
+                            </select>
+                        </td>
+
+
+                        <td><a href="#" id="add_more_vendor_fields" onclick="addMorevendorFields()"><i
+                                    class="fas fa-plus"></i>+Add</a></td>
+                        <td><a href="#" id="remove_vendor_fields" onclick="removevendorFields()"><i
+                                    class="fas fa-plus"></i>-Remove</a></td>
+
+
+                    </tr>
+
+                    <tr class="cvsTeam">
+                        <td align="right"><label for="cvsname">CVS Project Team :</label></td>
+                        <td>
+                            <label for="cvs-dropdown"></label>
+                            <select id="cvs-dropdown" class="cvsIdList fixedwidth">
+                                <option value="" selected>Select CVS</option>
+                            </select>
+                        </td>
+						
+
+                        <td><a href="#" id="add_more_cvs_fields" onclick="addMorecvsFields()"><i
+                                    class="fas fa-plus"></i>+Add</a></td>
+                        <td><a href="#" id="remove_cvs_fields" onclick="removecvsFields()"><i
+                                    class="fas fa-plus"></i>-Remove</a></td>
+
+
+                    </tr>
+
+                    <tr>
+                        <td align="right">Select file to upload :</td>
+                        <td><input id="upload_file" accept=".xls,.xlsx,.csv," name="forecastFile" type="file" class="fixedwidth"
+                                required />
+                        </td>
+                    </tr>
+
+					<tr>
+                        <td align="right"><label for="amendmentName">Amendment Document Name :</label></td>
+                        <td><input type="text" name="amendmentName" id="amendmentName" class="tb fixedwidth" value="SOW_.01-CC-v1-3-feb2011" required /></td>
+                    </tr>
+                    
+                  
+                    
+					<tr>
+                        <td align="right"><label for="empid">Submitted by (EmpId) :</label></td>
+                        <td><input type="number" name="empid" id="empId" class="tb fixedwidth" required /></td>
+                    </tr>
+                    
+                    <tr>
+                        <td></td>
+                        <td>
+                            <button type="button" onclick="submitForm()" class="btn">Submit</button>
+
+                        </td>
+                    </tr>
+
+                </table>
+            </div>
+        </div>
+    </form>
+
 </body>
 </html>

@@ -2,18 +2,11 @@
 <html>
 
 <head>
-    <title>Forecast Form</title>
-    <style type="text/css">
+<title>Forecast Form</title>
+<style type="text/css">
 @import
 	url('https://fonts.googleapis.com/css2?family=Jost:wght@100;300;400;700&display=swap')
 	;
-
-body {
-	margin: 0px;
-	background-color: #f26724;
-	color: #f9fcf5;
-	font-family: Arial, Helvetica, sans-serif;
-}
 
 a {
 	color: rgb(247, 242, 242);
@@ -55,6 +48,10 @@ body {
 	font-weight: bold;
 	border-left: 5px solid #f7f7f7;
 	opacity: 0.9;
+}
+
+.fixedwidth {
+	width: 256px;
 }
 
 #main .tb:focus, .vendorname:focus, .cvsname:focus {
@@ -113,17 +110,18 @@ input[type="range"] {
 	left: -9999px;
 }
 </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
-    <script>
+<script>
     
     function redirectToPage() {
 		var rangeInput = document.getElementById('choice');
 		if (rangeInput.value == 0) {
 			window.location.href = 'Amendment.html';
 		} else if (rangeInput.value == 1) {
-			window.location.href = 'sample_forecast.html';
+			window.location.href = 'sowForecast.html';
 		}
 	}
     
@@ -164,7 +162,8 @@ input[type="range"] {
         };
         xhr.send();
     }
-
+		var vendorRole = [];
+		var vendorName = [];
         function addMorevendorFields() {
             var vendorTeam = Array.from(document.getElementsByClassName('vendorTeam'));
             var tr = document.createElement('tr');
@@ -173,9 +172,14 @@ input[type="range"] {
             tr.appendChild(td1);
             var td2 = document.createElement('td');
             var dropdown = document.createElement('select');
-            dropdown.setAttribute('class', 'vendorIdList');
+            dropdown.setAttribute('class', 'vendorIdList fixedwidth');
+            
             td2.appendChild(dropdown);
             tr.appendChild(td2);
+            var option = document.createElement('option');
+            option.text = "Select Associate";
+            option.value = "";
+            dropdown.add(option);
             var xhr = new XMLHttpRequest();
             xhr.open('GET', 'http://localhost:8080/api/v1.0/vendors');
             xhr.onload = function () {
@@ -190,7 +194,6 @@ input[type="range"] {
                             dropdown.add(option);
                         }
                     }
-
                 } else {
                     console.log('Request failed.  Returned status of ' + xhr.status);
                 }
@@ -214,6 +217,8 @@ input[type="range"] {
                     for (var vendorId in vendors) {
                         if (vendors.hasOwnProperty(vendorId)) {
                             var name = vendors[vendorId].name;
+                            vendorName.push(vendors[vendorId].name);
+                            vendorRole.push(vendors[vendorId].role);
                             var option = document.createElement('option');
                             option.text = name;
                             option.value = vendorId;
@@ -243,10 +248,13 @@ input[type="range"] {
             tr.appendChild(td1);
             var td2 = document.createElement('td');
             var dropdown = document.createElement('select');
-            dropdown.setAttribute('class', 'cvsIdList');
+            dropdown.setAttribute('class', 'cvsIdList fixedwidth');
             td2.appendChild(dropdown);
             tr.appendChild(td2);
-
+            var option = document.createElement('option');
+            option.text = "Select Associate";
+            option.value = "";
+            dropdown.add(option);
             var xhr = new XMLHttpRequest();
             xhr.open('GET', 'http://localhost:8080/api/v1.0/cvs');
             xhr.onload = function () {
@@ -309,9 +317,6 @@ input[type="range"] {
         }
         
 
-
-        
-
         function checkFile(sender, validExts) {
             var fileExt = sender.value;
             fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
@@ -330,6 +335,7 @@ input[type="range"] {
             const endDate = document.getElementById("endDate").value;
             const empId = document.getElementById("empId").value;
             const sowName = document.getElementById("sowName").value;
+            const fileInput = document.getElementById("upload_file").value;
 
 
             const vendorTeam = [];
@@ -337,7 +343,7 @@ input[type="range"] {
             for (let i = 0; i < vendorTeamInputs.length; i++) {
                 vendorTeam.push(vendorTeamInputs[i].value);
             }
-            console.log(vendorTeam)
+            
             const cvsTeam = [];
             const cvsTeamInputs = document.getElementsByClassName("cvsIdList");
             for (let i = 0; i < cvsTeamInputs.length; i++) {
@@ -365,23 +371,35 @@ input[type="range"] {
                 alert("Please enter an end date.");
                 return;
             }
+			
+            
+      
+            if (vendorTeam.filter(x => x !== '').length === 0) {
+            	  alert("Please enter at least one vendor team detail.");
+            	  return;
+            	}
 
-            if (vendorTeam === "") {
-                alert("Please enter an vendor Team details.");
-                return;
-            }
+            	if (cvsTeam.filter(x => x !== '').length === 0) {
+            	  alert("Please enter at least one CVS team detail.");
+            	  return;
+            	}
+            	
+            	if (sowName === "") {
+                    alert("Please enter an Sow Name.");
+                    return;
+                }
+            	
+            	if (fileInput === '') {
+            	    alert("Please select a file to upload.");
+            	    return;
+            	  }
 
-            if (cvsTeam === "") {
-                alert("Please enter an cvs Team details.");
-                return;
-            }
             
             if (empId === "") {
                 alert("Please enter an empId.");
                 return;
             }
-
-
+           
 
             const filters = {
                 sheetName,
@@ -397,13 +415,18 @@ input[type="range"] {
             const formData = new FormData();
             formData.append("forecast_file", document.getElementById("upload_file").files[0]);
             formData.append("filters", JSON.stringify(filters));
-            
-            
+
+           
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "http://localhost:8080/api/v1.0/createWordFile", true);
             xhr.responseType = "blob";  
 
             xhr.onload = function (event) {
+              	  if (xhr.status === 400) {
+              	    alert("No data found for your input.Please try with different inputs.");
+              	    return;
+              	  }
+              	  
               if (xhr.status === 200) {
                 const xhrSF = new XMLHttpRequest();
                 xhrSF.open('GET', 'http://localhost:8080/api/v1.0/sowName');
@@ -436,146 +459,166 @@ input[type="range"] {
                             link1.href = URL.createObjectURL(blob);
                             link1.download = SOWName[1];
                             link1.click();
+                            
+                            alert("Submitted Successfully");
+                            
                           }
                         };
 
                         xhr01.send(formData);
+                      }
+                      else{
+                      	alert("Download Failed!!!");
                       }
                     };
 
                     xhr00.send(formData);
                   }
                 }
+                
 
                 xhrSF.send();
               }
+              
             };
-
+            
             xhr.send(formData);
+            document.getElementById("myForm").reset();
 
         }
+       
 
     </script>
 
 </head>
 
-<body onload="loadCVS(); loadVendors(); loadCostCenters(); loadSheetNames()">
+<body
+	onload="loadCVS(); loadVendors(); loadCostCenters(); loadSheetNames()">
 
-    <form>
-        <div id="main">
-            <h2>
-                <center>Forecast Details Form</center>
-            </h2>
-            <div class="login">
-                <table cellspacing="2" align="center" cellpadding="8" border="0">
-
-					<tr>
-				<td></td>
-				<td>
-					<div>
-						<label class="screen-reader-only" for="choice">SOW or Amendment?</label>
-						<span aria-hidden="true">Amendment</span>
-						<input type="range" max="1" id="choice" name="choice" onchange="redirectToPage();">
-						<span aria-hidden="true">SOW</span>
-					</div>
-				</td>
-			</tr>
+	<form id="myForm">
+		<div id="main">
+			<h2>
+				<center>Forecast Details Form</center>
+			</h2>
+			<div class="login">
+				<table cellspacing="2" align="center" cellpadding="8" border="0">
 
 					<tr>
-                        <td align="right"><label for="sheetName">Sheet Name :</label></td>
-                       <!-- <td><input type="text" name="sheetName" id="sheetName" class="tb" required /></td> -->
-                        <td><select id="sheetName"></select></td>
-                    </tr>
-
-                    <tr>
-                        <td align="right"><label for="costcenter">Cost center :</label></td>
-                        <!-- <td><input type="text" name="costcenter" id="costCenter" class="tb" required /></td> -->
-                        <td><select id="costCenter"></select></td>
-                        
-                    </tr>
-
-                    <tr>
-                        <td align="right"><label for="startdate">StartDate :</label></td>
-                        <td><input type="date" name="startdate" id="startDate" class="tb" required /></td>
-                    </tr>
-
-                    <tr>
-                        <td align="right"><label for="enddate">EndDate :</label></td>
-                        <td><input type="date" name="enddate" id="endDate" class="tb" required /></td>
-                    </tr>
-
-                    <tr class="vendorTeam">
-                        <td align="right"><label for="vendorname">Vendor Project Team :</label></td>
-                        <td>
-                            <label for="vendor-dropdown"></label>
-                            <select id="vendor-dropdown" class="vendorIdList">
-                                <option value="" selected>Select Vendor</option>
-                            </select>
-                        </td>
-
-
-                        <td><a href="#" id="add_more_vendor_fields" onclick="addMorevendorFields()"><i
-                                    class="fas fa-plus"></i>+Add</a></td>
-                        <td><a href="#" id="remove_vendor_fields" onclick="removevendorFields()"><i
-                                    class="fas fa-plus"></i>-Remove</a></td>
-
-
-                    </tr>
-
-                    <tr class="cvsTeam">
-                        <td align="right"><label for="cvsname">CVS Project Team :</label></td>
-                        <td>
-                            <label for="cvs-dropdown"></label>
-                            <select id="cvs-dropdown" class="cvsIdList">
-                                <option value="" selected>Select CVS</option>
-                            </select>
-                        </td>
-						
-
-                        <td><a href="#" id="add_more_cvs_fields" onclick="addMorecvsFields()"><i
-                                    class="fas fa-plus"></i>+Add</a></td>
-                        <td><a href="#" id="remove_cvs_fields" onclick="removecvsFields()"><i
-                                    class="fas fa-plus"></i>-Remove</a></td>
-
-
-                    </tr>
-                    <tr>
-                        <td align="right">Select file to upload :</td>
-                        <td><input id="upload_file" accept=".xls,.xlsx,.csv," name="forecastFile" type="file"
-                                required />
-                        </td>
-                    </tr>
+						<td></td>
+						<td>
+							<div>
+								<label class="screen-reader-only" for="choice">SOW or
+									Amendment?</label> <span aria-hidden="true">Amendment</span> <input
+									type="range" max="1" id="choice" name="choice"
+									onchange="redirectToPage();"> <span aria-hidden="true">SOW</span>
+							</div>
+						</td>
+					</tr>
 
 					<tr>
-                        <td align="right"><label for="sowName">SOW Document Name :</label></td>
-                        <td><input type="text" name="sowName" id="sowName" class="tb" value="SOW_.01-CC-v1-3-feb2011" required /></td>
-                    </tr>
-                    
-                   <!--  <tr>
+						<td align="right"><label for="sheetName">Sheet Name :</label></td>
+						<!-- <td><input type="text" name="sheetName" id="sheetName" class="tb" required /></td> -->
+						<td><select id="sheetName" class="fixedwidth"></select></td>
+					</tr>
+
+					<tr>
+						<td align="right"><label for="costcenter">Cost center
+								:</label></td>
+						<!-- <td><input type="text" name="costcenter" id="costCenter" class="tb" required /></td> -->
+						<td><select id="costCenter" class="fixedwidth"></select></td>
+
+					</tr>
+
+					<tr>
+						<td align="right"><label for="startdate">StartDate :</label></td>
+						<td><input type="date" name="startdate" id="startDate"
+							class="tb fixedwidth" required /></td>
+					</tr>
+
+					<tr>
+						<td align="right"><label for="enddate">EndDate :</label></td>
+						<td><input type="date" name="enddate" id="endDate"
+							class="tb fixedwidth" required /></td>
+					</tr>
+
+					<tr class="vendorTeam">
+						<td align="right"><label for="vendorname">Vendor
+								Project Team :</label></td>
+						<td><label for="vendor-dropdown"></label> <select
+							id="vendor-dropdown" class="vendorIdList fixedwidth">
+								<option value="" selected>Select Associate</option>
+						</select></td>
+
+
+						<td><a href="#" id="add_more_vendor_fields"
+							onclick="addMorevendorFields()"><i
+								class="fas fa-plus fixedwidth"></i>+Add</a></td>
+						<td><a href="#" id="remove_vendor_fields"
+							onclick="removevendorFields()"><i
+								class="fas fa-plus fixedwidth"></i>-Remove</a></td>
+
+
+					</tr>
+
+					<tr class="cvsTeam">
+						<td align="right"><label for="cvsname">CVS Project
+								Team :</label></td>
+						<td><label for="cvs-dropdown"></label> <select
+							id="cvs-dropdown" class="cvsIdList fixedwidth">
+								<option value="" selected>Select Associate</option>
+						</select></td>
+
+
+						<td><a href="#" id="add_more_cvs_fields"
+							onclick="addMorecvsFields()"><i
+								class="fas fa-plus fixedwidth"></i>+Add</a></td>
+						<td><a href="#" id="remove_cvs_fields"
+							onclick="removecvsFields()"><i class="fas fa-plus fixedwidth"></i>-Remove</a></td>
+
+
+					</tr>
+
+
+					<tr>
+						<td align="right"><label for="sowName">SOW Document
+								Name :</label></td>
+						<td><input type="text" name="sowName" id="sowName"
+							class="tb fixedwidth" value="SOW_.01-CC-v1-3-feb2011" required /></td>
+					</tr>
+
+					<!--  <tr>
                         <td align="right"><label for="submitName">Submit Form Name :</label></td>
                         <td><input type="text" name="submitName" id="submitName" class="tb" required /></td>
                     </tr>
                     -->
-                    
 					<tr>
-                        <td align="right"><label for="empid">Submitted by (EmpId) :</label></td>
-                        <td><input type="number" name="empid" id="empId" class="tb" required /></td>
-                    </tr>
-                    
-                    <tr>
-                        <td></td>
-                        <td>
-                            <button type="button" onclick="submitForm()">Download SOW</button>
+						<td align="right">Select file to upload :</td>
+						<td><input id="upload_file" accept=".xls,.xlsx,.csv,"
+							name="forecastFile" type="file" required /></td>
+					</tr>
 
-                        </td>
-                    </tr>
+					<tr>
+						<td align="right"><label for="empid">Submitted by
+								(EmpId) :</label></td>
+						<td><input type="number" name="empid" id="empId"
+							class="tb fixedwidth" required /></td>
+					</tr>
+
+
+					<tr>
+						<td></td>
+						<td>
+							<button type="button" onclick="submitForm()" class="btn">Submit</button>
+
+						</td>
+					</tr>
 
 
 
-                </table>
-            </div>
-        </div>
-    </form>
+				</table>
+			</div>
+		</div>
+	</form>
 </body>
 
 </html>

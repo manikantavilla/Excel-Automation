@@ -82,6 +82,7 @@ public class ExcelService {
 		Workbook workbook = new XSSFWorkbook(file.getInputStream());
 //		Sheet sheet = workbook.getSheetAt(1);
 		Sheet sheet = workbook.getSheet(user.getSheetName());
+		if(sheet != null) {
 		String columnName = "Cost Center";
 		int columnIndex = -1;
 		Row headerRow = sheet.getRow(10);
@@ -100,6 +101,7 @@ public class ExcelService {
 		}
 
 		List<Row> rows = new ArrayList<Row>();
+		int dt = 0;
 //		for(Row row : sheet) {
 		for (int i = 11; i < sheet.getPhysicalNumberOfRows(); i++) {
 			Row row = sheet.getRow(i);
@@ -124,10 +126,18 @@ public class ExcelService {
 							rows.add(row);
 						}
 					}
+					else {
+						dt = 1;
+						log.info("No Date Found!!!!!");
+						break;
+					}
 				}
 			} else {
 				break;
 			}
+		}
+		if(rows.size() <= 0 && dt < 1) {
+			log.info("No Data Found for this Cost Center");
 		}
 
 		List<Map<String, Object>> rowsData = new ArrayList<Map<String, Object>>();
@@ -202,6 +212,12 @@ public class ExcelService {
 //		}
 
 		return rowsData;
+	}
+		else {
+			List<Map<String, Object>> rowsData = new ArrayList<Map<String, Object>>();
+			log.info("Sheet Not Found!!!!!");
+			return rowsData;
+		}
 	}
 
 	public ResponseEntity<byte[]> insertDataIntoWord(MultipartFile file, User user) throws Exception {
@@ -645,6 +661,7 @@ public class ExcelService {
 			byteArrayOutputStream.close();
 			return response;
 		} else {
+//			log.info("Application Failed to download the files, Kindly Please check the Date,Sheet Name and Cost Center values!!!!! ");
 			return new ResponseEntity("Enter proper date", HttpStatus.BAD_REQUEST);
 
 		}
@@ -665,7 +682,6 @@ public class ExcelService {
 			}
 		}
 		NewSowName += ".docx";
-		log.info(NewSowName);
 
 		for (int i = 0; i < ExcelService.defaultName.length(); i++) {
 			NewSFName += ExcelService.defaultName.charAt(i);
@@ -683,7 +699,6 @@ public class ExcelService {
 			}
 		}
 		NeWSFName += ".xlsx";
-		log.info(NeWSFName);
 
 		List fileNames = new ArrayList<>();
 		fileNames.add(NewSowName);

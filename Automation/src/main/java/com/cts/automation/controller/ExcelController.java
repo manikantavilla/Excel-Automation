@@ -71,14 +71,12 @@ public class ExcelController {
 
 	@PostMapping("/createWordFile")
     public ResponseEntity<byte[]> createWordFile(@RequestPart("forecast_file") MultipartFile file,@RequestPart("filters") String filters) throws Exception {
-        log.info("Word");
     	User user = new ObjectMapper().readValue(filters, User.class);
         return excelService.insertDataIntoWord(file,user);
     }
     
     @PostMapping("/createExcelFile")
     public ResponseEntity<byte[]> createExcelFile(@RequestPart("forecast_file") MultipartFile file, @RequestPart("filters") String filters) throws Exception {
-    	log.info("excel");
     	User user = new ObjectMapper().readValue(filters, User.class);
     return excelService.insertDataIntoExcel(user);
     }
@@ -113,7 +111,6 @@ public class ExcelController {
     
     @GetMapping("/sowName")
     public List getSOWName() {
-    	log.info("file");
     	return excelService.FileNames();
     }
     
