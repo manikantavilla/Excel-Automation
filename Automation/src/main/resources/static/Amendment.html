@@ -1,23 +1,25 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<title>Forecast Form</title>
-<style type="text/css">
-@import
-	url('https://fonts.googleapis.com/css2?family=Jost:wght@100;300;400;700&display=swap')
-	;
+    <title>Forecast Form</title>
+    <style type="text/css">
+        @import url('https://fonts.googleapis.com/css2?family=Jost:wght@100;300;400;700&display=swap');
 
-body {
-	margin: 0px;
-	background-color: #f26724;
-	color: #f9fcf5;
-	font-family: Arial, Helvetica, sans-serif;
-}
 
+ * {
+            font-family:  "Comic Sans MS", cursive;
+            
+        }
+     
+       
 a {
 	color: rgb(247, 242, 242);
 	text-decoration: none;
 	font-size: 18px;
+}
+label{
+font-size: 15px;
 }
 
 body {
@@ -28,6 +30,7 @@ body {
 }
 
 #main {
+	font-family: Arial, Helvetica, sans-serif;
 	width: 800px;
 	height: auto;
 	overflow: hidden;
@@ -54,6 +57,11 @@ body {
 	font-weight: bold;
 	border-left: 5px solid #f7f7f7;
 	opacity: 0.9;
+}
+
+.fixedwidth{
+width: 256px;
+font-size: 13px;
 }
 
 #main .tb:focus, .vendorname:focus, .cvsname:focus {
@@ -111,75 +119,441 @@ input[type="range"] {
 	top: -9999px;
 	left: -9999px;
 }
-</style>
-<script
-	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script>
-		function redirectToPage() {
-			var rangeInput = document.getElementById('choice');
-			if (rangeInput.value == 0) {
-				window.location.href = 'sowForecast.html';
-			} else if (rangeInput.value == 1) {
-				window.location.href = 'Amendment.html';
-			}
-		}
-	</script>
- <form id="myForm">
-	<div id="main">
-		<h2>
-			<center>Forecast Details Form</center>
-		</h2>
-		<div class="login">
-			<table cellspacing="2" align="center" cellpadding="8" border="0">
 
-				<tr>
-					<td></td>
-					<td>
-						<div>
-							<label class="screen-reader-only" for="choice">SOW or
-								Amendment?</label> <span aria-hidden="true">SOW</span> <input
-								type="range" max="1" id="choice" name="choice"
-								onchange="redirectToPage();"> <span aria-hidden="true">Amendment</span>
-						</div>
-					</td>
-				</tr>
+ .error-message {
+      color: #a10000;
+      
+      font-size: 18px;
+      text-align: right;
+    }
+    
+  .header{
+  	font-weight: bold;
+      font-size: 28px;
+  }
+  
+  .required{
+color:#a10000;
+}
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+        function redirectToPage() {
+            var rangeInput = document.getElementById('choice');
+            if (rangeInput.value == 0) {
+                window.location.href = 'sowForecast.html';
+            } else if (rangeInput.value == 1) {
+                window.location.href = 'amendment.html';
+            }
+        }
+
+
+        function loadCostCenters() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://localhost:8080/api/v1.0/cost-centers');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var costCenters = JSON.parse(xhr.responseText);
+                    var dropdown = document.getElementById('costCenter');
+                    console.log(costCenters);
+                    for (var i = 0; i < costCenters.length; i++) {
+                        var option = document.createElement("option");
+                        option.value = costCenters[i].code;
+                        option.text = costCenters[i].code;
+                        dropdown.appendChild(option);
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+        function loadSheetNames() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://localhost:8080/api/v1.0/sheetNames');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var sheetNames = JSON.parse(xhr.responseText);
+                    var dropdown = document.getElementById('sheetName');
+                    console.log(sheetNames);
+                    for (var i = 0; i < sheetNames.length; i++) {
+                        var option = document.createElement("option");
+                        option.value = sheetNames[i].sheetN;
+                        option.text = sheetNames[i].sheetN;
+                        dropdown.appendChild(option);
+                    }
+                }
+            };
+            xhr.send();
+        }
+
+        
+        
+        var selectedRoles=[];
+            function addMorevendorFields() {
+                var vendorTeam = Array.from(document.getElementsByClassName('vendorTeam'));
+                var tr = document.createElement('tr');
+                tr.setAttribute('class', 'vendorTeam');
+                var td1 = document.createElement('td');
+                tr.appendChild(td1);
+                var td2 = document.createElement('td');
+                var dropdown = document.createElement('select');
+                dropdown.setAttribute('class', 'vendorIdList fixedwidth');
+                
+                td2.appendChild(dropdown);
+                tr.appendChild(td2);
+                var option = document.createElement('option');
+                option.text = "Select Associate";
+                option.value = "";
+                dropdown.add(option);
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'http://localhost:8080/api/v1.0/vendors');
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        var vendors = JSON.parse(xhr.responseText);
+                        console.log(vendors);
+                        
+                        for (var vendorId in vendors) {
+                        	  if (vendors.hasOwnProperty(vendorId)) {
+                        	    var vendor = vendors[vendorId];
+                        	    var name = vendor.name;
+                        	    var option = document.createElement('option');
+                        	    option.text = name;
+                        	    option.value = vendorId;
+                        	    option.dataset.role = vendor.role; // set data-role attribute with vendor role
+                        	    dropdown.add(option);
+                        	  }
+                        	}
+
+                          dropdown.addEventListener('change', function() {
+                          	  var selectedVendorRole = dropdown.selectedOptions[0].dataset.role;                     
+                          	  if (selectedVendorRole) {
+                          	    selectedRoles.push(selectedVendorRole);
+                          	  }
+                          	  checkVendorRoles(); // check the roles every time a selection is made
+                          	});
+
+
+
+                          
+                      } else {
+                          console.log('Request failed.  Returned status of vendor details ' + xhr.status);
+                      }
+                  };
+                  xhr.send();
+                
+                
+                
+                var td3 = document.createElement('td');
+                tr.appendChild(td3);
+                var td4 = document.createElement('td');
+                tr.appendChild(td4);
+                vendorTeam[vendorTeam.length - 1].insertAdjacentElement('afterend', tr);
+            }
+    		
+            
+            function loadVendors() {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', 'http://localhost:8080/api/v1.0/vendors');
+                xhr.onload = function () {
+                    if (xhr.status === 200) {
+                        vendors = JSON.parse(xhr.responseText);
+                        console.log(vendors);
+                        var dropdown = document.getElementById('vendor-dropdown');
+                        
+                        for (var vendorId in vendors) {
+                        	  if (vendors.hasOwnProperty(vendorId)) {
+                        	    var vendor = vendors[vendorId];
+                        	    var name = vendor.name;
+                        	    var option = document.createElement('option');
+                        	    option.text = name;
+                        	    option.value = vendorId;
+                        	    option.dataset.role = vendor.role; // set data-role attribute with vendor role
+                        	    dropdown.add(option);
+                        	  }
+                        	}
+
+
+                        	} else {
+                        	  console.log('Request failed.  Returned status of vendor' + xhr.status);
+                        	}
+                        	};
+                        	xhr.send();
+
+                        	var dropdown = document.getElementById('vendor-dropdown');
+                        	dropdown.addEventListener('change', function() {
+                        		  var selectedVendorRole = dropdown.selectedOptions[0].dataset.role;                     
+                        		  if (selectedVendorRole) {
+                        		    selectedRoles.push(selectedVendorRole);
+                        		  }
+                        		  checkVendorRoles(); // check the roles every time a selection is made
+                        		});
+
+
+            }
+
+
+
+        function removevendorFields() {
+            var vendorTeam = document.getElementsByClassName('vendorTeam');
+            if (vendorTeam.length > 1) {
+                vendorTeam[vendorTeam.length - 1].remove();
+            }
+        }
+
+        function checkVendorRoles() {
+      	  var requiredRoles = ['Client Relationship Manager', 'Engagement Manager'];
+      	  var presentRoles = [];
+
+      	  var dropdowns = document.querySelectorAll('.vendorIdList');
+      	  dropdowns.forEach(function(dropdown) {
+      	    var selectedOption = dropdown.selectedOptions[0];
+      	    if (selectedOption && (selectedOption.dataset.role === requiredRoles[0] || selectedOption.dataset.role === requiredRoles[1])) {
+      	      presentRoles.push(selectedOption.dataset.role);
+      	    }
+      	  });
+
+      	  for (var i = 0; i < requiredRoles.length; i++) {
+      	    if (!presentRoles.includes(requiredRoles[i])) {
+      	      selectedRoles = []; // clear the array
+      	      return false;
+      	    }
+      	  }
+
+      	  return true;
+      	}
+        
+        
+        function checkFile(sender, validExts) {
+            var fileExt = sender.value;
+            fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
+            if (validExts.indexOf(fileExt) < 0 && fileExt != "") {
+                alert("Invalid file selected, valid files are of " + validExts.toString() + " types.");
+                $(sender).val("");
+                return false;
+            }
+            else return true;
+        }
+
+        function submitForm() {
+            const sheetName = document.getElementById("sheetName").value;
+            const costCenter = document.getElementById("costCenter").value;
+            const startDate = document.getElementById("startDate").value;
+            const endDate = document.getElementById("endDate").value;
+            const resourceDate = document.getElementById("resourceDate").value;
+            const sowAmount = document.getElementById("sowAmount").value;
+            const additionResource = document.getElementById("additionResource").value;
+            const empId = document.getElementById("empId").value;
+            const amendmentName = document.getElementById("amendmentName").value;
+			
+            const vendorTeam = [];
+            const vendorTeamInputs = document.getElementsByClassName("vendorIdList");
+            for (let i = 0; i < vendorTeamInputs.length; i++) {
+                vendorTeam.push(vendorTeamInputs[i].value);
+            }
+            console.log(vendorTeam)
+           
+
+            if (sheetName === "") {
+                alert("Please select a sheet name.");
+                return;
+            }
+
+            if (costCenter === "") {
+                alert("Please select a cost center.");
+                return;
+            }
+
+            if (startDate === "") {
+                alert("Please select a start date.");
+                return;
+            }
+
+            if (endDate === "") {
+                alert("Please select an end date.");
+                return;
+            } 
+			
+            if (resourceDate === "") {
+                alert("Please select an Amendment Date.");
+                return;
+            }
+            
+            if (sowAmount === "") {
+                alert("Please enter sowAmount.");
+                return;
+            }
+            
+            if (additionResource === "") {
+                alert("Please enter an Resource data.");
+                return;
+            }
+            
+            if (vendorTeam.filter(x => x !== '').length ===0) {            	  
+                alert("Please select at least two Vendor team details.");
+                return;
+              }
+            
+            if (!checkVendorRoles()) {
+                alert('Please select both Client Relationship Manager and Engagement Manager in Vendor team.');
+                return;
+              }
+
+         
+
+      	  
+            var em = empId.toString();
+            if (empId === "" || em.length >= 7) {
+                alert("Please enter a valid empId.");
+                return;
+            }
+
+
+
+
+            const filters = {
+                sheetName,
+                costCenter,
+                startDate,
+                endDate,
+                resourceDate,
+                sowAmount,
+                additionResource,
+                vendorTeam,               
+                empId,
+                amendmentName
+            };
+
+            const formData = new FormData();
+            formData.append("forecast_file", document.getElementById("upload_file").files[0]);
+            formData.append("filters", JSON.stringify(filters));
+            
+            
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "http://localhost:8080/api/v1.0/createAmendmentWordFile", true);
+            xhr.responseType = "blob";  
+            console.log("Hi")
+            xhr.onload = function (event) {
+              if (xhr.status === 200) {
+                const xhrSF = new XMLHttpRequest();
+                xhrSF.open('GET', 'http://localhost:8080/api/v1.0/sowName');
+                xhrSF.onload = function (event) {
+                  if (xhrSF.status === 200) {
+                	  alert("Submitted Successfully");
+                    var amendmentName = JSON.parse(xhrSF.responseText);
+                    console.log("Hiiiiiiii")
+                    console.log(amendmentName);
+                    
+                    const xhr00 = new XMLHttpRequest();
+                    xhr00.open("POST", "http://localhost:8080/api/v1.0/createAmendmentWordFile", true);
+                    xhr00.responseType = "blob";  
+                    console.log("Hiiiii")
+                    xhr00.onload = function (event) {
+                      if (xhr00.status === 200) {
+                        const blob = xhr00.response;
+                        const link = document.createElement("a");
+                        link.href = URL.createObjectURL(blob);
+                        console.log("Hiiii")
+                        link.download = amendmentName[0];
+                        console.log("Hiii")
+                        link.click();
+                        console.log("Hii")
+                        
+                        const xhr01 = new XMLHttpRequest();
+                        xhr01.open("POST", "http://localhost:8080/api/v1.0/createAmendmentExcelFile", true);
+                        xhr01.responseType = "blob";
+
+                        xhr01.onload = function (event) {
+                          if (xhr01.status === 200) {
+                            const blob = xhr01.response;
+                            const link1 = document.createElement("a");
+                            link1.href = URL.createObjectURL(blob);
+                            link1.download = amendmentName[1];
+                            link1.click();
+                            
+							/* document.getElementById("myForm").reset(); */
+                            alert("Downloaded Successfully");
+                          }
+                        };
+
+                        xhr01.send(formData);
+                      }
+                    };
+
+                    xhr00.send(formData);
+                  }
+                }
+
+                xhrSF.send();
+              }
+            };
+
+             xhr.send(formData); 
+           
+        }
+
+
+    </script>
+</head>
+
+<body onload="loadVendors(); loadCostCenters(); loadSheetNames()">
+
+    <form id="myForm">
+        <div id="main">
+            <h1 class="header">
+                <center >Forecast Details Form</center>
+            </h1>
+             <div class="error-message"><span class="required">*</span>All fields are required</div>
+            		 <div class="login">
+                <table cellspacing="2" align="center" cellpadding="8" border="0">
 
                     <tr>
-                        <td align="right"><label for="sheetName">Sheet Name :</label></td>
+                        <td></td>
+                        <td>
+                            <div>
+                                <label class="screen-reader-only" for="choice">SOW or
+                                    Amendment?</label> <span aria-hidden="true">SOW</span> <input type="range" max="1"
+                                    id="choice" name="choice" onchange="redirectToPage();"> <span
+                                    aria-hidden="true">Amendment</span>
+                            </div>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td align="right"><label for="sheetName">Sheet Name<span class="required">*</span>:</label></td>
                        <!-- <td><input type="text" name="sheetName" id="sheetName" class="tb" required /></td> -->
                         <td><select id="sheetName" class="fixedwidth"></select></td>
                     </tr>
 
                     <tr>
-                        <td align="right"><label for="costcenter">Cost center :</label></td>
+                        <td align="right"><label for="costcenter">Cost center<span class="required">*</span>:</label></td>
                         <!-- <td><input type="text" name="costcenter" id="costCenter" class="tb" required /></td> -->
                         <td><select id="costCenter" class="fixedwidth"></select></td>
                         
                     </tr>
 
                     <tr>
-                        <td align="right"><label for="startdate">StartDate :</label></td>
+                        <td align="right"><label for="startdate">StartDate<span class="required">*</span>:</label></td>
                         <td><input type="date" name="startdate" id="startDate" class="tb fixedwidth" required /></td>
                     </tr>
 
                     <tr>
-                        <td align="right"><label for="enddate">EndDate :</label></td>
+                        <td align="right"><label for="enddate">EndDate<span class="required">*</span>:</label></td>
                         <td><input type="date" name="enddate" id="endDate" class="tb fixedwidth" required /></td>
                     </tr>
 
                     <tr>
-                        <td align="right"><label for="resourcedate">Amendment Date :</label></td>
+                        <td align="right"><label for="resourcedate">Amendment Date<span class="required">*</span>:</label></td>
                         <td><input type="date" name="resourcedate" id="resourceDate" class="tb fixedwidth" required /></td>
                     </tr>
                     
                     <tr>
-                        <td align="right"><label for="sowAmount">Amount submitted in SOW :</label></td>
+                        <td align="right"><label for="sowAmount">Amount submitted in SOW<span class="required">*</span>:</label></td>
                         <td><input type="number" name="sowAmount" id="sowAmount" class="tb fixedwidth" required /></td>
                     </tr>
 
                     <tr>
-  <td align="right"><label for="additionResource">Resources data:</label></td>
+  <td align="right"><label for="additionResource">Resources data<span class="required">*</span>:</label></td>
   <td>
     <textarea name="additionResource" id="additionResource" class="tb fixedwidth" rows="5" cols="50" maxlength="150" required></textarea>
   </td>
@@ -187,7 +561,7 @@ input[type="range"] {
 
 
                     <tr class="vendorTeam">
-                        <td align="right"><label for="vendorname">Vendor Project Team :</label></td>
+                        <td align="right"><label for="vendorname">Vendor Project Team<span class="required">*</span>:</label></td>
                         <td>
                             <label for="vendor-dropdown"></label>
                             <select id="vendor-dropdown" class="vendorIdList fixedwidth">
@@ -197,47 +571,31 @@ input[type="range"] {
 
 
                         <td><a href="#" id="add_more_vendor_fields" onclick="addMorevendorFields()"><i
-                                    class="fas fa-plus"></i>+Add</a></td>
+                                    class="fas fa-plus fixedwidth"></i>+Add</a></td>
                         <td><a href="#" id="remove_vendor_fields" onclick="removevendorFields()"><i
-                                    class="fas fa-plus"></i>-Remove</a></td>
+                                    class="fas fa-plus fixedwidth"></i>-Remove</a></td>
 
 
                     </tr>
 
-                    <tr class="cvsTeam">
-                        <td align="right"><label for="cvsname">CVS Project Team :</label></td>
-                        <td>
-                            <label for="cvs-dropdown"></label>
-                            <select id="cvs-dropdown" class="cvsIdList fixedwidth">
-                                <option value="" selected>Select CVS</option>
-                            </select>
-                        </td>
-						
-
-                        <td><a href="#" id="add_more_cvs_fields" onclick="addMorecvsFields()"><i
-                                    class="fas fa-plus"></i>+Add</a></td>
-                        <td><a href="#" id="remove_cvs_fields" onclick="removecvsFields()"><i
-                                    class="fas fa-plus"></i>-Remove</a></td>
-
-
-                    </tr>
+                   
 
                     <tr>
-                        <td align="right">Select file to upload :</td>
+                        <td align="right">Select file to upload<span class="required">*</span>:</td>
                         <td><input id="upload_file" accept=".xls,.xlsx,.csv," name="forecastFile" type="file" class="fixedwidth"
                                 required />
                         </td>
                     </tr>
 
 					<tr>
-                        <td align="right"><label for="amendmentName">Amendment Document Name :</label></td>
-                        <td><input type="text" name="amendmentName" id="amendmentName" class="tb fixedwidth" value="SOW_.01-CC-v1-3-feb2011" required /></td>
+                        <td align="right"><label for="amendmentName">Amendment Document Name<span class="required">*</span>:</label></td>
+                        <td><input type="text" name="amendmentName" id="amendmentName" class="tb fixedwidth" value="SOW_.01-CC-v1-3-feb2011-ChangeOrderForm" required /></td>
                     </tr>
                     
                   
                     
 					<tr>
-                        <td align="right"><label for="empid">Submitted by (EmpId) :</label></td>
+                        <td align="right"><label for="empid">Submitted by (EmpId)<span class="required">*</span>:</label></td>
                         <td><input type="number" name="empid" id="empId" class="tb fixedwidth" required /></td>
                     </tr>
                     
@@ -253,6 +611,6 @@ input[type="range"] {
             </div>
         </div>
     </form>
-
 </body>
+
 </html>

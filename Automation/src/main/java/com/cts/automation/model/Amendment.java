@@ -14,7 +14,7 @@ import lombok.*;
 @Setter
 public class Amendment {
 	
-	private String sheetName;
+private String sheetName;
 	
 	private String costCenter;
 	
@@ -22,16 +22,19 @@ public class Amendment {
 	
 	private Date endDate;
 	
-	private Date resourseDate;
-	
+	private Date resourceDate;
+			
 	private String sowAmount;
 	
-	private String textArea;
+	private String additionResource;
+	
+	@JsonProperty("vendorTeam")
+	private List<String> vendorTeam;
 	
 	private String empId;
 	
 	private boolean sow;
 	
-	private String sowName;
+	private String amendmentName;
 	
 }

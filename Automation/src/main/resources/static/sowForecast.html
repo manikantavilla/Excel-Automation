@@ -8,10 +8,20 @@
 	url('https://fonts.googleapis.com/css2?family=Jost:wght@100;300;400;700&display=swap')
 	;
 
+
+   * {
+            font-family:  "Comic Sans MS", cursive;
+            
+        }
+     
+       
 a {
 	color: rgb(247, 242, 242);
 	text-decoration: none;
 	font-size: 18px;
+}
+label{
+font-size: 15px;
 }
 
 body {
@@ -22,6 +32,7 @@ body {
 }
 
 #main {
+	font-family: Arial, Helvetica, sans-serif;
 	width: 800px;
 	height: auto;
 	overflow: hidden;
@@ -50,8 +61,13 @@ body {
 	opacity: 0.9;
 }
 
-.fixedwidth {
-	width: 256px;
+.fixedwidth{
+width: 256px;
+font-size: 13px;
+}
+
+.required{
+color:#a10000;
 }
 
 #main .tb:focus, .vendorname:focus, .cvsname:focus {
@@ -109,12 +125,26 @@ input[type="range"] {
 	top: -9999px;
 	left: -9999px;
 }
+
+ .error-message {
+      color: #a10000;
+      
+      font-size: 18px;
+      text-align: right;
+    }
+    
+  .header{
+  	font-weight: bold;
+      font-size: 28px;
+  }
+
 </style>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
 <script>
+
     
     function redirectToPage() {
 		var rangeInput = document.getElementById('choice');
@@ -124,6 +154,7 @@ input[type="range"] {
 			window.location.href = 'sowForecast.html';
 		}
 	}
+    
     
     function loadCostCenters() {
         var xhr = new XMLHttpRequest();
@@ -162,75 +193,107 @@ input[type="range"] {
         };
         xhr.send();
     }
-		var vendorRole = [];
-		var vendorName = [];
-        function addMorevendorFields() {
-            var vendorTeam = Array.from(document.getElementsByClassName('vendorTeam'));
-            var tr = document.createElement('tr');
-            tr.setAttribute('class', 'vendorTeam');
-            var td1 = document.createElement('td');
-            tr.appendChild(td1);
-            var td2 = document.createElement('td');
-            var dropdown = document.createElement('select');
-            dropdown.setAttribute('class', 'vendorIdList fixedwidth');
-            
-            td2.appendChild(dropdown);
-            tr.appendChild(td2);
-            var option = document.createElement('option');
-            option.text = "Select Associate";
-            option.value = "";
-            dropdown.add(option);
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'http://localhost:8080/api/v1.0/vendors');
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    var vendors = JSON.parse(xhr.responseText);
-                    for (var vendorId in vendors) {
-                        if (vendors.hasOwnProperty(vendorId)) {
-                            var name = vendors[vendorId].name;
-                            var option = document.createElement('option');
-                            option.text = name;
-                            option.value = vendorId;
-                            dropdown.add(option);
-                        }
-                    }
-                } else {
-                    console.log('Request failed.  Returned status of ' + xhr.status);
-                }
-            };
-            xhr.send();
-            var td3 = document.createElement('td');
-            tr.appendChild(td3);
-            var td4 = document.createElement('td');
-            tr.appendChild(td4);
-            vendorTeam[vendorTeam.length - 1].insertAdjacentElement('afterend', tr);
-        }
+    var selectedRoles=[];
+    function addMorevendorFields() {
+        var vendorTeam = Array.from(document.getElementsByClassName('vendorTeam'));
+        var tr = document.createElement('tr');
+        tr.setAttribute('class', 'vendorTeam');
+        var td1 = document.createElement('td');
+        tr.appendChild(td1);
+        var td2 = document.createElement('td');
+        var dropdown = document.createElement('select');
+        dropdown.setAttribute('class', 'vendorIdList fixedwidth');
+        
+        td2.appendChild(dropdown);
+        tr.appendChild(td2);
+        var option = document.createElement('option');
+        option.text = "Select Associate";
+        option.value = "";
+        dropdown.add(option);
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:8080/api/v1.0/vendors');
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                var vendors = JSON.parse(xhr.responseText);
+                console.log(vendors);
+                
+                for (var vendorId in vendors) {
+              	  if (vendors.hasOwnProperty(vendorId)) {
+              	    var vendor = vendors[vendorId];
+              	    var name = vendor.name;
+              	    var option = document.createElement('option');
+              	    option.text = name;
+              	    option.value = vendorId;
+              	    option.dataset.role = vendor.role; // set data-role attribute with vendor role
+              	    dropdown.add(option);
+              	  }
+              	}
 
-        function loadVendors() {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', 'http://localhost:8080/api/v1.0/vendors');
-            xhr.onload = function () {
-                if (xhr.status === 200) {
-                    var vendors = JSON.parse(xhr.responseText);
-                    console.log(vendors);
-                    var dropdown = document.getElementById('vendor-dropdown');
-                    for (var vendorId in vendors) {
-                        if (vendors.hasOwnProperty(vendorId)) {
-                            var name = vendors[vendorId].name;
-                            vendorName.push(vendors[vendorId].name);
-                            vendorRole.push(vendors[vendorId].role);
-                            var option = document.createElement('option');
-                            option.text = name;
-                            option.value = vendorId;
-                            dropdown.add(option);
-                        }
-                    }
-                } else {
-                    console.log('Request failed.  Returned status of ' + xhr.status);
-                }
-            };
-            xhr.send();
-        }
+                dropdown.addEventListener('change', function() {
+                	  var selectedVendorRole = dropdown.selectedOptions[0].dataset.role;                     
+                	  if (selectedVendorRole) {
+                	    selectedRoles.push(selectedVendorRole);
+                	  }
+                	  checkVendorRoles(); // check the roles every time a selection is made
+                	});
+
+
+
+                
+            } else {
+                console.log('Request failed.  Returned status of ' + xhr.status);
+            }
+        };
+        xhr.send();
+        
+        
+        
+        var td3 = document.createElement('td');
+        tr.appendChild(td3);
+        var td4 = document.createElement('td');
+        tr.appendChild(td4);
+        vendorTeam[vendorTeam.length - 1].insertAdjacentElement('afterend', tr);
+    }
+	
+    
+    function loadVendors() {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://localhost:8080/api/v1.0/vendors');
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                vendors = JSON.parse(xhr.responseText);
+                console.log(vendors);
+                var dropdown = document.getElementById('vendor-dropdown');
+                        
+                for (var vendorId in vendors) {
+                	  if (vendors.hasOwnProperty(vendorId)) {
+                	    var vendor = vendors[vendorId];
+                	    var name = vendor.name;
+                	    var option = document.createElement('option');
+                	    option.text = name;
+                	    option.value = vendorId;
+                	    option.dataset.role = vendor.role; // set data-role attribute with vendor role
+                	    dropdown.add(option);
+                	  }
+                	}
+
+                	} else {
+                	  console.log('Request failed.  Returned status of ' + xhr.status);
+                	}
+                	};
+                	xhr.send();
+
+                	var dropdown = document.getElementById('vendor-dropdown');
+                	dropdown.addEventListener('change', function() {
+                		  var selectedVendorRole = dropdown.selectedOptions[0].dataset.role;                     
+                		  if (selectedVendorRole) {
+                		    selectedRoles.push(selectedVendorRole);
+                		  }
+                		  checkVendorRoles(); // check the roles every time a selection is made
+                		});
+
+                	
+    }
 
 
         function removevendorFields() {
@@ -316,7 +379,30 @@ input[type="range"] {
             }
         }
         
+        
+        function checkVendorRoles() {
+      	  var requiredRoles = ['Client Relationship Manager', 'Engagement Manager'];
+      	  var presentRoles = [];
 
+      	  var dropdowns = document.querySelectorAll('.vendorIdList');
+      	  dropdowns.forEach(function(dropdown) {
+      	    var selectedOption = dropdown.selectedOptions[0];
+      	    if (selectedOption && (selectedOption.dataset.role === requiredRoles[0] || selectedOption.dataset.role === requiredRoles[1])) {
+      	      presentRoles.push(selectedOption.dataset.role);
+      	    }
+      	  });
+
+      	  for (var i = 0; i < requiredRoles.length; i++) {
+      	    if (!presentRoles.includes(requiredRoles[i])) {
+      	      selectedRoles = []; // clear the array
+      	      return false;
+      	    }
+      	  }
+
+      	  return true;
+      	}
+        
+        
         function checkFile(sender, validExts) {
             var fileExt = sender.value;
             fileExt = fileExt.substring(fileExt.lastIndexOf('.'));
@@ -327,6 +413,7 @@ input[type="range"] {
             }
             else return true;
         }
+        
 
         function submitForm() {
             const sheetName = document.getElementById("sheetName").value;
@@ -353,34 +440,39 @@ input[type="range"] {
             console.log(cvsTeam)
 
             if (sheetName === "") {
-                alert("Please enter a sheet name.");
+                alert("Please select a sheet name.");
                 return;
             }
 
             if (costCenter === "") {
-                alert("Please enter a cost center.");
+                alert("Please select a cost center.");
                 return;
             }
 
             if (startDate === "") {
-                alert("Please enter a start date.");
+                alert("Please select a start date.");
                 return;
             }
 
             if (endDate === "") {
-                alert("Please enter an end date.");
+                alert("Please select an end date.");
                 return;
             }
 			
             
       
             if (vendorTeam.filter(x => x !== '').length === 0) {
-            	  alert("Please enter at least one vendor team detail.");
+            	  alert("Please select at least two vendor team details.");
             	  return;
             	}
 
+            if (!checkVendorRoles()) {
+                alert('Please select both Client Relationship Manager and Engagement Manager in vendor team.');
+                return;
+              }
+            
             	if (cvsTeam.filter(x => x !== '').length === 0) {
-            	  alert("Please enter at least one CVS team detail.");
+            	  alert("Please select at least one CVS team detail.");
             	  return;
             	}
             	
@@ -394,9 +486,9 @@ input[type="range"] {
             	    return;
             	  }
 
-            
-            if (empId === "") {
-                alert("Please enter an empId.");
+            var em = empId.toString();
+            if (empId === "" || em.length >= 7) {
+                alert("Please enter a valid empId.");
                 return;
             }
            
@@ -442,6 +534,7 @@ input[type="range"] {
 
                     xhr00.onload = function (event) {
                       if (xhr00.status === 200) {
+                    	  alert("Submitted Successfully");
                         const blob = xhr00.response;
                         const link = document.createElement("a");
                         link.href = URL.createObjectURL(blob);
@@ -459,8 +552,8 @@ input[type="range"] {
                             link1.href = URL.createObjectURL(blob);
                             link1.download = SOWName[1];
                             link1.click();
-                            
-                            alert("Submitted Successfully");
+                            document.getElementById("myForm").reset();
+                            alert("Downloaded Successfully");
                             
                           }
                         };
@@ -483,7 +576,6 @@ input[type="range"] {
             };
             
             xhr.send(formData);
-            document.getElementById("myForm").reset();
 
         }
        
@@ -500,9 +592,10 @@ input[type="range"] {
 			<h2>
 				<center>Forecast Details Form</center>
 			</h2>
+			<div class=error-message>*All Fields are mandatory</div>
 			<div class="login">
 				<table cellspacing="2" align="center" cellpadding="8" border="0">
-
+					
 					<tr>
 						<td></td>
 						<td>
@@ -516,34 +609,33 @@ input[type="range"] {
 					</tr>
 
 					<tr>
-						<td align="right"><label for="sheetName">Sheet Name :</label></td>
+						<td align="right"><label for="sheetName">Sheet Name<label style="color:#a10000">*</label>:</label></td>
 						<!-- <td><input type="text" name="sheetName" id="sheetName" class="tb" required /></td> -->
 						<td><select id="sheetName" class="fixedwidth"></select></td>
 					</tr>
 
 					<tr>
-						<td align="right"><label for="costcenter">Cost center
-								:</label></td>
+						<td align="right"><label for="costcenter">Cost center<label style="color:#a10000">*</label>:</label></td>
 						<!-- <td><input type="text" name="costcenter" id="costCenter" class="tb" required /></td> -->
 						<td><select id="costCenter" class="fixedwidth"></select></td>
 
 					</tr>
 
 					<tr>
-						<td align="right"><label for="startdate">StartDate :</label></td>
+						<td align="right"><label for="startdate">StartDate<label style="color:#a10000">*</label>:</label></td>
 						<td><input type="date" name="startdate" id="startDate"
 							class="tb fixedwidth" required /></td>
 					</tr>
 
 					<tr>
-						<td align="right"><label for="enddate">EndDate :</label></td>
+						<td align="right"><label for="enddate">EndDate<label style="color:#a10000">*</label>:</label></td>
 						<td><input type="date" name="enddate" id="endDate"
 							class="tb fixedwidth" required /></td>
 					</tr>
 
 					<tr class="vendorTeam">
 						<td align="right"><label for="vendorname">Vendor
-								Project Team :</label></td>
+								Project Team<label style="color:#a10000">*</label>:</label></td>
 						<td><label for="vendor-dropdown"></label> <select
 							id="vendor-dropdown" class="vendorIdList fixedwidth">
 								<option value="" selected>Select Associate</option>
@@ -562,7 +654,7 @@ input[type="range"] {
 
 					<tr class="cvsTeam">
 						<td align="right"><label for="cvsname">CVS Project
-								Team :</label></td>
+								Team<label style="color:#a10000">*</label>:</label></td>
 						<td><label for="cvs-dropdown"></label> <select
 							id="cvs-dropdown" class="cvsIdList fixedwidth">
 								<option value="" selected>Select Associate</option>
@@ -581,7 +673,7 @@ input[type="range"] {
 
 					<tr>
 						<td align="right"><label for="sowName">SOW Document
-								Name :</label></td>
+								Name<label style="color:#a10000">*</label>:</label></td>
 						<td><input type="text" name="sowName" id="sowName"
 							class="tb fixedwidth" value="SOW_.01-CC-v1-3-feb2011" required /></td>
 					</tr>
@@ -592,14 +684,14 @@ input[type="range"] {
                     </tr>
                     -->
 					<tr>
-						<td align="right">Select file to upload :</td>
+						<td align="right">Select file to upload<label style="color:#a10000">*</label>:</td>
 						<td><input id="upload_file" accept=".xls,.xlsx,.csv,"
 							name="forecastFile" type="file" required /></td>
 					</tr>
 
 					<tr>
 						<td align="right"><label for="empid">Submitted by
-								(EmpId) :</label></td>
+								(EmpId)<label style="color:#a10000">*</label>:</label></td>
 						<td><input type="number" name="empid" id="empId"
 							class="tb fixedwidth" required /></td>
 					</tr>

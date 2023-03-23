@@ -115,12 +115,6 @@ public class ExcelController {
     }
     
     
-    
-    @PostMapping("/getTempExcelData")
-    public List<Map<String, Object>> readAmendmentData(@RequestPart("forecast_file") MultipartFile file,@RequestPart("filters") Amendment user) throws Exception {
-        return excelService.ReadAmendmentData(file,user);
-    }
-    
     @GetMapping("/getSowPath")
     public String getsowPath() {
     	return SowPath.getSowPath();
@@ -129,6 +123,28 @@ public class ExcelController {
     @GetMapping("/getSubmitPath")
     public String getsubmitPath() {
     	return submiTPath.getSubmitPath();
+    }
+    
+ 
+    
+    
+    @PostMapping("/getTempExcelData")
+    public List<Map<String, Object>> readAmendmentData(@RequestPart("forecast_file") MultipartFile file,@RequestPart("filters") Amendment user) throws Exception {
+        return excelService.ReadAmendmentData(file,user);
+    }
+    
+    @PostMapping("/createAmendmentWordFile")
+    public ResponseEntity<byte[]> createAmendmentWordFile(@RequestPart("forecast_file") MultipartFile file,@RequestPart("filters") String filters) throws Exception {
+        log.info("AmendmentWord");
+    	Amendment user = new ObjectMapper().readValue(filters, Amendment.class);
+        return excelService.insertDataIntoAmendmentWord(file,user);
+    }
+    
+    @PostMapping("/createAmendmentExcelFile")
+    public ResponseEntity<byte[]> createAmendmentExcelFile(@RequestPart("forecast_file") MultipartFile file, @RequestPart("filters") String filters) throws Exception {
+    	log.info("Amendmentexcel");
+    	Amendment user = new ObjectMapper().readValue(filters, Amendment.class);
+    return excelService.insertDataIntoAmendmentExcel(user);
     }
 }
 
