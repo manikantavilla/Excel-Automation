@@ -135,14 +135,12 @@ public class ExcelController {
     
     @PostMapping("/createAmendmentWordFile")
     public ResponseEntity<byte[]> createAmendmentWordFile(@RequestPart("forecast_file") MultipartFile file,@RequestPart("filters") String filters) throws Exception {
-        log.info("AmendmentWord");
     	Amendment user = new ObjectMapper().readValue(filters, Amendment.class);
         return excelService.insertDataIntoAmendmentWord(file,user);
     }
     
     @PostMapping("/createAmendmentExcelFile")
     public ResponseEntity<byte[]> createAmendmentExcelFile(@RequestPart("forecast_file") MultipartFile file, @RequestPart("filters") String filters) throws Exception {
-    	log.info("Amendmentexcel");
     	Amendment user = new ObjectMapper().readValue(filters, Amendment.class);
     return excelService.insertDataIntoAmendmentExcel(user);
     }

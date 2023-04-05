@@ -3,7 +3,6 @@ package com.cts.automation.service;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -14,6 +13,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.apache.poi.hssf.usermodel.HSSFDataFormat;
 import org.apache.poi.ss.usermodel.Cell;
@@ -32,10 +33,12 @@ import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.apache.poi.xwpf.usermodel.XWPFTable;
 import org.apache.poi.xwpf.usermodel.XWPFTableCell;
 import org.apache.poi.xwpf.usermodel.XWPFTableRow;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTblWidth;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTTcPr;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTVMerge;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.CTVerticalJc;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STMerge;
+import org.openxmlformats.schemas.wordprocessingml.x2006.main.STTblWidth;
 import org.openxmlformats.schemas.wordprocessingml.x2006.main.STVerticalJc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -348,6 +351,7 @@ public class ExcelService {
 			List<String> AllRoles = new ArrayList<String>();
 			List<String> RoleLocations = new ArrayList<String>();
 			List<Number> RoleRate = new ArrayList<Number>();
+			HashMap<String, Integer> resourceCount = new HashMap<String, Integer>();
 			List[][] RoleTotal = new List[100][100];
 			int monthStartIndex = months.indexOf(startDate);
 			int monthEndIndex = months.indexOf(endDate);
@@ -365,6 +369,19 @@ public class ExcelService {
 			Date year = user.getStartDate();
 			SimpleDateFormat opFormat = new SimpleDateFormat("yyyy");
 			String yearString = opFormat.format(year);
+			
+			for (Map<String, Object> RoleIterator : rowsData) {
+			    String role = (String) RoleIterator.get("CVS Role");
+			    String location = (String) RoleIterator.get("On/Off");
+			    Double rate = (Double) RoleIterator.get("Grandfathered /CVS Rate");
+			    String key = role + "," + location + "," + rate.toString();
+			    if (resourceCount.containsKey(key)) {
+			        int count = resourceCount.get(key);
+			        resourceCount.put(key, count + 1);
+			    } else {
+			        resourceCount.put(key, 1);
+			    }
+			}
 
 			for (int i = 0; i < RoleMonths.size(); i++) {
 				for (int j = 0; j < AllRoles.size(); j++) {
@@ -376,9 +393,33 @@ public class ExcelService {
 						Date date = inputFormat.parse(dateString + " " + yearString);
 						String outputDateString = outputFormat.format(date);
 						RoleTotal[i][j].add(RoleIterator.get(outputDateString));
-					}
+					}					
 				}
 			}
+			int dupRoleCount=0;
+			
+			Set<String> uniqueInputRows = new TreeSet<String>();
+			
+			for (int i = 0; i < RoleMonths.size(); i++) {
+				for (int j = 0; j < AllRoles.size(); j++) {
+					 String[] values = {AllRoles.get(j), RoleLocations.get(j), RoleRate.get(j).toString()};
+			         String resourceKey = String.join(",", values);
+			         
+			         if (RoleTotal[i][j].get(j) != null 
+			        		 && resourceCount.get(resourceKey) != null) {
+			        	 String key = RoleMonths.get(i) + "," + AllRoles.get(j) + "," + 
+						         RoleLocations.get(j) + "," + RoleRate.get(j).toString();
+			             dupRoleCount+=1;   
+				
+			         if (!uniqueInputRows.contains(key) )  {
+			        	 uniqueInputRows.add(key);
+				            
+			         	}
+			         }
+				}
+			}
+			
+			
 			ExcelService.budgetAmount = 0.0;
 
 			// Deliverables Table Creation
@@ -472,7 +513,7 @@ public class ExcelService {
 			}
 
 			// Months and Roll Table Creation
-			XWPFTable Trail = doc.createTable((RoleMonths.size() * AllRoles.size()) + 1, 5);
+			XWPFTable Trail = doc.createTable(uniqueInputRows.size() +1, 6);
 
 			// Set the width of each column to be equal
 			Trail.getCTTbl().addNewTblPr().addNewTblW().setW(BigInteger.valueOf(width));
@@ -484,9 +525,10 @@ public class ExcelService {
 			hRow.getCell(2).setColor("CCE1FD");
 			hRow.getCell(3).setColor("CCE1FD");
 			hRow.getCell(4).setColor("CCE1FD");
+			hRow.getCell(5).setColor("CCE1FD");
 
-			XWPFParagraph ParaFoeMonths = hRow.getCell(0).getParagraphs().get(0);
-			XWPFRun hRun = ParaFoeMonths.createRun();
+			XWPFParagraph paraForMonths = hRow.getCell(0).getParagraphs().get(0);
+			XWPFRun hRun = paraForMonths.createRun();
 			hRun.setBold(true);
 			hRun.setText("Months");
 			hRun.setFontFamily("Arial");
@@ -512,57 +554,83 @@ public class ExcelService {
 			hRowRun4.setBold(true);
 			hRowRun4.setFontFamily("Arial");
 			hRowRun4.setFontSize(10);
-
-			XWPFParagraph paraForTotal = hRow.getCell(4).getParagraphs().get(0);
-			XWPFRun hRowRun5 = paraForTotal.createRun();
-			hRowRun5.setText("Total");
+			
+			XWPFParagraph paraForCount = hRow.getCell(4).getParagraphs().get(0);
+			XWPFRun hRowRun5 = paraForCount.createRun();
+			hRowRun5.setText("Resource count");
 			hRowRun5.setBold(true);
 			hRowRun5.setFontFamily("Arial");
 			hRowRun5.setFontSize(10);
+			CTTblWidth width1 = hRow.getCell(4).getCTTc().addNewTcPr().addNewTcW();
+			width1.setType(STTblWidth.DXA);
+			width1.setW(BigInteger.valueOf(500));
 
-			int x = 1;
-			String prevMonth = "";
-			for (int i = 0; i < RoleMonths.size(); i++) {
-				for (int j = 0; j < AllRoles.size(); j++) {
-					XWPFTableRow nRow = Trail.getRow(x);
-					x += 1;
-					if (RoleMonths.get(i).equals(prevMonth)) {
-						// Skip setting the value for this cell and merge it with the previous cell
-						XWPFTableCell cell = nRow.getCell(0);
-						CTTcPr tcPr = cell.getCTTc().addNewTcPr();
-						tcPr.addNewVMerge().setVal(STMerge.CONTINUE);
-					} else {
-						// Check the number of cells to merge based on the length of AllRoles
-						int numCellsToMerge = AllRoles.size();
-						if (numCellsToMerge > 1) {
-							// Merge the cells
-							CTVMerge vMerge = CTVMerge.Factory.newInstance();
-							vMerge.setVal(STMerge.RESTART);
-							XWPFTableCell cell = nRow.getCell(0);
-							CTTcPr tcPr = cell.getCTTc().addNewTcPr();
-							tcPr.setVMerge(vMerge);
-							for (int k = 1; k < numCellsToMerge; k++) {
-								Trail.getRow(x + k - 1).getCell(0).getCTTc().addNewTcPr().addNewVMerge()
-										.setVal(STMerge.CONTINUE);
-							}
-						}
-						nRow.getCell(0).setText(RoleMonths.get(i));
-					}
-					prevMonth = RoleMonths.get(i);
-					nRow.getCell(1).setText(AllRoles.get(j));
-					nRow.getCell(2).setText(RoleLocations.get(j));
-					nRow.getCell(3).setText("$ " + String.valueOf(RoleRate.get(j)));
-					nRow.getCell(4).setText(RoleTotal[i][j].get(j) == null ? "--"
-							: "$ " + String.format("%.2f", RoleTotal[i][j].get(j)));
-				}
-			}
-			CTVerticalJc vAlign = CTVerticalJc.Factory.newInstance();
-			vAlign.setVal(STVerticalJc.CENTER);
-			for (int i = 1; i < Trail.getRows().size(); i++) {
-				Trail.getRow(i).getCell(0).getParagraphs().get(0).setAlignment(ParagraphAlignment.CENTER);
-				Trail.getRow(i).getCell(0).getCTTc().addNewTcPr().setVAlign(vAlign);
-			}
+			XWPFParagraph paraForTotal = hRow.getCell(5).getParagraphs().get(0);
+			XWPFRun hRowRun6 = paraForTotal.createRun();
+			hRowRun6.setText("Total");
+			hRowRun6.setBold(true);
+			hRowRun6.setFontFamily("Arial");
+			hRowRun6.setFontSize(10);
 
+			   int x = 1;
+				String prevMonth = "";
+				Set<String> uniqueRows = new TreeSet<String>();
+				
+				for (int i = 0; i < RoleMonths.size(); i++) {
+				    for (int j = 0; j < AllRoles.size(); j++) {
+				    	 String[] values = {AllRoles.get(j), RoleLocations.get(j), RoleRate.get(j).toString()};
+				         String resourceKey = String.join(",", values);
+				         if (RoleTotal[i][j].get(j) != null &&RoleTotal[i][j].get(j) !=" $- " && resourceCount.get(resourceKey) != null) {
+				             String key = RoleMonths.get(i) + "," + AllRoles.get(j) + "," + RoleLocations.get(j) + "," + RoleRate.get(j).toString();
+				             
+				             if (!uniqueRows.contains(key) )  {
+				            uniqueRows.add(key);
+				            // create a new row and add it to the table
+				            XWPFTableRow nRow = Trail.getRow(x);
+				            x += 1;
+				            
+				            if (RoleMonths.get(i).equals(prevMonth)) {
+				                // Skip setting the value for this cell and merge it with the previous cell
+				                XWPFTableCell cell = nRow.getCell(0);
+				                CTTcPr tcPr = cell.getCTTc().addNewTcPr();
+				                tcPr.addNewVMerge().setVal(STMerge.CONTINUE);
+				            } else {
+			                    // Check the number of cells to merge based on the length of AllRoles
+			                    int numCellsToMerge = values.length;
+			                    if (numCellsToMerge > 1) {
+			                        // Merge the cells
+			                        CTVMerge vMerge = CTVMerge.Factory.newInstance();
+			                        vMerge.setVal(STMerge.RESTART);
+			                        XWPFTableCell cell = nRow.getCell(0);
+			                        CTTcPr tcPr = cell.getCTTc().addNewTcPr();
+			                        tcPr.setVMerge(vMerge);
+			                        for (int k = 1; k < numCellsToMerge; k++) {
+			                            XWPFTableRow row = Trail.getRow(x + k - 1);
+			                            if (row != null && row.getCell(0) != null) {
+			                                row.getCell(0).getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
+			                            }
+			                        }
+			                    }
+			                    nRow.getCell(0).setText(RoleMonths.get(i));
+			                }
+
+			                nRow.getCell(1).setText(AllRoles.get(j));
+			                nRow.getCell(2).setText(RoleLocations.get(j));
+			                nRow.getCell(3).setText("$ " + String.valueOf(RoleRate.get(j)));
+			                nRow.getCell(4).setText(resourceCount.get(resourceKey) == null ? "0" : String.valueOf(resourceCount.get(resourceKey)));
+			                nRow.getCell(5).setText(RoleTotal[i][j].get(j) == null ? " $- "
+			                        : "$ " + String.format("%.2f", ((Double)RoleTotal[i][j].get(j)) * (resourceCount.get(resourceKey))));
+			                prevMonth = RoleMonths.get(i);
+			            }
+			        }
+			    }
+			}
+				CTVerticalJc vAlign = CTVerticalJc.Factory.newInstance();
+				vAlign.setVal(STVerticalJc.CENTER);
+				for (int i = 1; i < Trail.getRows().size(); i++) {
+				    Trail.getRow(i).getCell(0).getParagraphs().get(0).setAlignment(ParagraphAlignment.CENTER);
+				    Trail.getRow(i).getCell(0).getCTTc().addNewTcPr().setVAlign(vAlign);
+				}  
 			int targetFound = -1;
 			for (int i = 0; i < tables.size(); i++) {
 				XWPFTable Monthtable = tables.get(i);
@@ -969,7 +1037,19 @@ public class ExcelService {
 		XWPFDocument doc = new XWPFDocument(inputStream);
 		List<Map<String, Object>> rowsData = new ArrayList<Map<String, Object>>();
 		rowsData = ReadAmendmentData(file, user);
+		
+		List<String> CVSTeamList = user.getCvsTeam();
+		List<String> CVSNameList = new ArrayList<String>();
 
+		Map<String, Map<String, String>> cvsMap = cvsData.getCvs();
+		for (String cvsId : CVSTeamList) {
+			Map<String, String> cvsDetails = cvsMap.get(cvsId);
+			String cvsName = cvsDetails.get("name");
+			CVSNameList.add(cvsName);
+
+		}
+		
+		
 		if (rowsData.size() > 0) {
 
 			List<XWPFParagraph> paragraphs = doc.getParagraphs();
@@ -1002,6 +1082,12 @@ public class ExcelService {
 							text = text.replace("amendmentStartDate", outputStartDateString);
 							run.setText(text, 0);
 						}
+						
+						if (text != null && text.contains("Powell, Ed")) {
+							text = text.replace("Powell, Ed", CVSNameList.get(0));
+							run.setText(text, 0);
+						}
+
 					}
 				}
 			}
@@ -1022,7 +1108,6 @@ public class ExcelService {
 								SimpleDateFormat inputFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
 								SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM dd, yyyy");
 								String outputStartDateString = outputFormat.format(startDate);
-								System.out.println(outputStartDateString);
 								text = text.replace("amendmentStartDate", outputStartDateString);
 								r.setText(text, 0);
 							}
@@ -1033,16 +1118,40 @@ public class ExcelService {
 								SimpleDateFormat inputFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
 								SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM dd, yyyy");
 								String outputEndDateString = outputFormat.format(dateString);
-								System.out.println(outputEndDateString);
 								text = text.replace("amendmentEndDate", outputEndDateString);
 								r.setText(text, 0);
 
+							}
+
+							
+						}
+					}
+				}
+			}
+
+			List<XWPFTable> tables2 = doc.getTables();
+			XWPFTable tbl2 = tables2.get(2);
+			List<XWPFTableRow> rows2 = tbl2.getRows();
+
+			int tableCount2 = tables2.size();
+			for (XWPFTableRow row : tbl2.getRows()) {
+				for (XWPFTableCell cell : row.getTableCells()) {
+					for (XWPFParagraph p : cell.getParagraphs()) {
+						for (XWPFRun r : p.getRuns()) {
+							String text = r.getText(0);
+
+							if (text.contains("resourcesData")) {
+								text = text.replace("resourcesData", user.getAdditionResource());
+								r.setText(text, 0);
 							}
 
 						}
 					}
 				}
 			}
+
+			
+	
 
 			List<String> months = Arrays.asList("January", "February", "March", "April", "May", "June", "July",
 					"August", "September", "October", "November", "December");
@@ -1214,6 +1323,7 @@ public class ExcelService {
 					break;
 				}
 			}
+
 			// Remove the old table
 			if (targetFound != -1) {
 				doc.removeBodyElement(targetFound - 1);
@@ -1223,6 +1333,61 @@ public class ExcelService {
 			int tableCount1 = tables.size();
 			XWPFTable lastTable = tables.get(tableCount1 - 1);
 			doc.removeBodyElement(doc.getPosOfTable(lastTable));
+			
+			
+			XWPFTable table = doc.getTables().get(1);
+
+			for (XWPFTableRow row : table.getRows()) {
+			    for (XWPFTableCell cell : row.getTableCells()) {
+			        for (XWPFParagraph p : cell.getParagraphs()) {
+			            for (XWPFRun r : p.getRuns()) {
+			                String text = r.getText(0);
+		                if (text != null && text.contains("count")) {
+			                    text = text.replaceAll("count", String.format("%d", (int) user.getCcCount()));
+			                    r.setText(text, 0);
+			                }
+			                
+			                if (text != null && text.contains("amendmentStartdate")) {
+								Date startDate1 = user.getStartDate();
+								SimpleDateFormat inputFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+								SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM dd, yyyy");
+								String outputStartDateString = outputFormat.format(startDate1);
+								text = text.replace("amendmentStartdate", outputStartDateString);
+								r.setText(text, 0);
+							}
+
+							if (text != null && text.contains("amendmentEndDate")) {
+
+								Date dateString = user.getEndDate();
+							SimpleDateFormat inputFormat = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+								SimpleDateFormat outputFormat = new SimpleDateFormat("MMMM dd, yyyy");
+								String outputEndDateString = outputFormat.format(dateString);
+								text = text.replace("amendmentEndDate", outputEndDateString);
+								r.setText(text, 0);
+
+							}
+							
+							
+							if (text != null && text.contains("sowAmount")) {
+							    double sowAmount = user.getSowAmount();
+							    text = text.replace("sowAmount", "$ "+String.format("%.2f", sowAmount));
+							    r.setText(text, 0);
+							}
+
+							if (text != null && text.contains("amendmentAmount")) {
+							    text = text.replace("amendmentAmount", "$ "+String.format("%.2f", ExcelService.budgetAmount));
+							    r.setText(text, 0);
+							}
+							double amount = user.getSowAmount() + ExcelService.budgetAmount;
+							if (text != null && text.contains("totalBudgetAmount")) {
+							    text = text.replace("totalBudgetAmount", "$ "+String.format("%.2f", amount));
+							    r.setText(text, 0);
+							}
+
+			            }
+			        }
+			    }
+			}
 
 			defaultName = user.getAmendmentName();
 

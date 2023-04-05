@@ -2,35 +2,52 @@
 <html>
 
 <head>
-    <title>Forecast Form</title>
-    <style type="text/css">
-        @import url('https://fonts.googleapis.com/css2?family=Jost:wght@100;300;400;700&display=swap');
-
-
- * {
-            font-family:  "Comic Sans MS", cursive;
-            
-        }
-     
-       
-a {
-	color: rgb(247, 242, 242);
-	text-decoration: none;
-	font-size: 18px;
-}
-label{
-font-size: 15px;
-}
+<title>Forecast Form</title>
+<style type="text/css">
+@import
+	url('https://fonts.googleapis.com/css2?family=Jost:wght@100;300;400;700&display=swap')
+	;
 
 body {
 	margin: 0px;
-	background-color: #f26724;
-	color: #f9fcf5;
-	font-family: Arial, Helvetica, sans-serif;
+	background-color: #e6e3e3;
+	font-family: 'Open Sans', sans-serif;
+	color: #000048;
+	font-weight: 750;
+	letter-spacing: 0.1px;
+}
+
+header {
+	font-family: 'Open Sans', sans-serif;
+	font-weight: 750;
+	height: 70px;
+	background: #000048;
+	color: #e6e3e3;
+	overflow: hidden;
+	letter-spacing: 0.1px;
+}
+
+a {
+	color: #000048;
+	text-decoration: none;
+}
+
+label {
+	font-size: 15px;
+}
+
+.fixedwidth {
+	width: 256px;
+	font-size: 13px;
+}
+
+.fixedwidthf1 {
+	width: 256px;
+	font-size: 13px;
 }
 
 #main {
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: 'Open Sans', sans-serif;
 	width: 800px;
 	height: auto;
 	overflow: hidden;
@@ -39,36 +56,32 @@ body {
 	margin-right: auto;
 	border-radius: 5px;
 	padding-left: 10px;
-	margin-top: 100px;
-	border-top: 3px double #f1f1f1;
-	border-bottom: 3px double #f1f1f1;
 	padding-top: 20px;
 }
 
 #main table {
-	font-family: "Comic Sans MS", cursive;
+	font-family: 'Open Sans', sans-serif;
 }
 
-#main .tb, .vendorname, .cvsname {
+#main .tb, .fixedwidth, .vendorname, .cvsname, .sheetName {
 	height: 28px;
 	width: 250px;
-	border: 1px solid #f26724;
-	color: #fd7838;
+	border: 1px solid #000048;
+	border-radius: 3px;
+	color: #000048;
 	font-weight: bold;
-	border-left: 5px solid #f7f7f7;
 	opacity: 0.9;
 }
 
-.fixedwidth{
-width: 256px;
-font-size: 13px;
+.required {
+	color: #000048;
 }
 
-#main .tb:focus, .vendorname:focus, .cvsname:focus {
+#main .tb:focus, .fixedwidth, .vendorname:focus, .cvsname:focus {
 	height: 28px;
-	border: 1px solid #f26724;
+	border: 1px solid #000048;
+	border-radius: 3px;
 	outline: none;
-	border-left: 5px solid #f7f7f7;
 }
 
 #main .btn {
@@ -77,37 +90,33 @@ font-size: 13px;
 	outline: none;
 	color: #f7f7f7;
 	font-weight: bold;
-	border: 0px solid #f26724;
+	border: 0px solid #000048;
 	text-shadow: 0px 0.5px 0.5px #fff;
 	border-radius: 2px;
 	font-weight: 600;
-	color: #f26724;
-	letter-spacing: 1px;
+	color: #000048;
+	letter-spacing: 0.5px;
 	font-size: 14px;
 	background-color: #f1f1f1;
-	-webkit-transition: 1s;
-	-moz-transition: 1s;
-	transition: 1s;
+	-webkit-transition: 0.1s;
+	-moz-transition: 0.1s;
+	transition: 0.1s;
 }
 
 #main .btn:hover {
-	background-color: #f26724;
+	background-color: #000048;
 	outline: none;
 	border-radius: 2px;
 	color: #f1f1f1;
-	border: 1px solid #f1f1f1;
-	-webkit-transition: 1s;
-	-moz-transition: 1s;
-	transition: 1s;
+	border: 1px solid #000048;
+	-webkit-transition: 0.1s;
+	-moz-transition: 0.1s;
+	transition: 0.1s;
 }
 
 select {
 	width: 150px;
 	height: 30px;
-}
-
-a {
-	color: white;
 }
 
 input[type="range"] {
@@ -120,25 +129,16 @@ input[type="range"] {
 	left: -9999px;
 }
 
- .error-message {
-      color: #a10000;
-      
-      font-size: 18px;
-      text-align: right;
-    }
-    
-  .header{
-  	font-weight: bold;
-      font-size: 28px;
-  }
-  
-  .required{
-color:#a10000;
+.error-message, .required {
+	color: #fd0606;
+	font-size: 18px;
+	text-align: right;
 }
-    </style>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <script>
+</style>
+<script
+	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
         function redirectToPage() {
             var rangeInput = document.getElementById('choice');
             if (rangeInput.value == 0) {
@@ -300,6 +300,83 @@ color:#a10000;
                 vendorTeam[vendorTeam.length - 1].remove();
             }
         }
+        
+        function addMorecvsFields() {
+            var cvsTeam = Array.from(document.getElementsByClassName('cvsTeam'));
+            var tr = document.createElement('tr');
+            tr.setAttribute('class', 'cvsTeam');
+            var td1 = document.createElement('td');
+            tr.appendChild(td1);
+            var td2 = document.createElement('td');
+            var dropdown = document.createElement('select');
+            dropdown.setAttribute('class', 'cvsIdList fixedwidth');
+            td2.appendChild(dropdown);
+            tr.appendChild(td2);
+            var option = document.createElement('option');
+            option.text = "Select Associate";
+            option.value = "";
+            dropdown.add(option);
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://localhost:8080/api/v1.0/cvs');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var cvs = JSON.parse(xhr.responseText);
+                    for (var cvsId in cvs) {
+                        if (cvs.hasOwnProperty(cvsId)) {
+                            var name = cvs[cvsId].name;
+                            var option = document.createElement('option');
+                            option.text = name;
+                            option.value = cvsId;
+                            dropdown.add(option);
+                        }
+                    }
+                } else {
+                    console.log('Request failed.  Returned status of ' + xhr.status);
+                }
+            };
+            xhr.send();
+
+            var td3 = document.createElement('td');
+            tr.appendChild(td3);
+            var td4 = document.createElement('td');
+            tr.appendChild(td4);
+            cvsTeam[cvsTeam.length - 1].insertAdjacentElement('afterend', tr);
+        }
+
+
+
+        function loadCVS() {
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://localhost:8080/api/v1.0/cvs');
+            xhr.onload = function () {
+                if (xhr.status === 200) {
+                    var cvs = JSON.parse(xhr.responseText);
+                    var dropdown = document.getElementById('cvs-dropdown');
+                    for (var cvsId in cvs) {
+                        if (cvs.hasOwnProperty(cvsId)) {
+                            var name = cvs[cvsId].name;
+                            var option = document.createElement('option');
+                            option.text = name;
+                            option.value = cvsId;
+                            dropdown.add(option);
+                        }
+                    }
+                } else {
+                    console.log('Request failed.  Returned status of ' + xhr.status);
+                }
+            };
+            xhr.send();
+        }
+
+
+
+        function removecvsFields() {
+            var cvsTeam = document.getElementsByClassName('cvsTeam');
+            if (cvsTeam.length > 1) {
+                cvsTeam[cvsTeam.length - 1].remove();
+            }
+        }
+        
 
         function checkVendorRoles() {
       	  var requiredRoles = ['Client Relationship Manager', 'Engagement Manager'];
@@ -334,6 +411,9 @@ color:#a10000;
             }
             else return true;
         }
+        
+        
+        
 
         function submitForm() {
             const sheetName = document.getElementById("sheetName").value;
@@ -342,16 +422,45 @@ color:#a10000;
             const endDate = document.getElementById("endDate").value;
             const resourceDate = document.getElementById("resourceDate").value;
             const sowAmount = document.getElementById("sowAmount").value;
-            const additionResource = document.getElementById("additionResource").value;
+            const ccCount = document.getElementById("ccCount").value;
             const empId = document.getElementById("empId").value;
             const amendmentName = document.getElementById("amendmentName").value;
-			
+            const fileInput = document.getElementById("upload_file").value;
+            const additionResource = document.getElementById('additionResource').value;
+         // Get a reference to the button element
+            // Get the textarea element
+
+         
+//const additionResource = document.getElementById('additionResource').value.trim();
+
+// Split the textarea value into an array of strings
+//const inputs = additionResource.split('\n');
+
+// Format the inputs into paragraphs
+//let formattedString = '';
+//inputs.forEach(input => {
+//  formattedString += `<p>${input}</p>`;
+//});
+
+// Set the value of the textarea to the formatted string
+//additionResource.value = formattedString;
+
+
+				
             const vendorTeam = [];
             const vendorTeamInputs = document.getElementsByClassName("vendorIdList");
             for (let i = 0; i < vendorTeamInputs.length; i++) {
                 vendorTeam.push(vendorTeamInputs[i].value);
             }
             console.log(vendorTeam)
+            
+             const cvsTeam = [];
+            const cvsTeamInputs = document.getElementsByClassName("cvsIdList");
+            for (let i = 0; i < cvsTeamInputs.length; i++) {
+                cvsTeam.push(cvsTeamInputs[i].value);
+            }
+
+            console.log(cvsTeam)
            
 
             if (sheetName === "") {
@@ -398,10 +507,28 @@ color:#a10000;
                 alert('Please select both Client Relationship Manager and Engagement Manager in Vendor team.');
                 return;
               }
-
+            
+            if (cvsTeam.filter(x => x !== '').length === 0) {
+          	  alert("Please select at least one CVS team detail.");
+          	  return;
+          	}
+            
+            if (cvsTeam.filter(x => x !== '').length >1) {
+            	  alert("Please select only one CVS team detail.");
+            	  return;
+            	}
+          	
+            if (ccCount === "") {
+            	  alert("Please enter cost center count.");
+            	  return;
+            	}
          
 
-      	  
+            if (fileInput === '') {
+        	    alert("Please select a file to upload.");
+        	    return;
+        	  }
+            
             var em = empId.toString();
             if (empId === "" || em.length >= 7) {
                 alert("Please enter a valid empId.");
@@ -410,7 +537,7 @@ color:#a10000;
 
 
 
-
+			console.log(additionResource);
             const filters = {
                 sheetName,
                 costCenter,
@@ -419,7 +546,9 @@ color:#a10000;
                 resourceDate,
                 sowAmount,
                 additionResource,
-                vendorTeam,               
+                vendorTeam, 
+                cvsTeam,
+                ccCount,
                 empId,
                 amendmentName
             };
@@ -432,8 +561,13 @@ color:#a10000;
             const xhr = new XMLHttpRequest();
             xhr.open("POST", "http://localhost:8080/api/v1.0/createAmendmentWordFile", true);
             xhr.responseType = "blob";  
-            console.log("Hi")
+			
             xhr.onload = function (event) {
+            	  if (xhr.status === 400) {
+            	    alert("No data found for your input.Please try with different inputs.");
+            	    return;
+            	  }
+
               if (xhr.status === 200) {
                 const xhrSF = new XMLHttpRequest();
                 xhrSF.open('GET', 'http://localhost:8080/api/v1.0/sowName');
@@ -441,23 +575,18 @@ color:#a10000;
                   if (xhrSF.status === 200) {
                 	  alert("Submitted Successfully");
                     var amendmentName = JSON.parse(xhrSF.responseText);
-                    console.log("Hiiiiiiii")
                     console.log(amendmentName);
                     
                     const xhr00 = new XMLHttpRequest();
                     xhr00.open("POST", "http://localhost:8080/api/v1.0/createAmendmentWordFile", true);
                     xhr00.responseType = "blob";  
-                    console.log("Hiiiii")
                     xhr00.onload = function (event) {
                       if (xhr00.status === 200) {
                         const blob = xhr00.response;
                         const link = document.createElement("a");
                         link.href = URL.createObjectURL(blob);
-                        console.log("Hiiii")
                         link.download = amendmentName[0];
-                        console.log("Hiii")
                         link.click();
-                        console.log("Hii")
                         
                         const xhr01 = new XMLHttpRequest();
                         xhr01.open("POST", "http://localhost:8080/api/v1.0/createAmendmentExcelFile", true);
@@ -471,7 +600,7 @@ color:#a10000;
                             link1.download = amendmentName[1];
                             link1.click();
                             
-							/* document.getElementById("myForm").reset(); */
+							/* document.getElementById("myForm").reset(); */ 
                             alert("Downloaded Successfully");
                           }
                         };
@@ -496,121 +625,176 @@ color:#a10000;
     </script>
 </head>
 
-<body onload="loadVendors(); loadCostCenters(); loadSheetNames()">
+<body
+	onload="loadCVS();loadVendors(); loadCostCenters(); loadSheetNames()">
+	<header style="display: flex; align-items: center;">
+		<img src="CTS.png" height="40" width="200"
+			style="margin-left: 10px;">
+		<h2 style="flex: 0.8; text-align: center;">Forecast Details Form</h2>
+	</header>
+	<form id="myForm">
+		<div id="main">
+			<div class=error-message>*All Fields are mandatory</div>
+			<table cellspacing="2" align="center" cellpadding="8" border="0">
+				<tr>
+					<td></td>
+					<td>
+						<div>
+							<label class="screen-reader-only" for="choice">SOW or
+								Amendment?</label> <span aria-hidden="true">SOW</span> <input
+								type="range" max="1" id="choice" name="choice"
+								onchange="redirectToPage();"> <span aria-hidden="true">Amendment</span>
+						</div>
+					</td>
+				</tr>
 
-    <form id="myForm">
-        <div id="main">
-            <h1 class="header">
-                <center >Forecast Details Form</center>
-            </h1>
-             <div class="error-message"><span class="required">*</span>All fields are required</div>
-            		 <div class="login">
-                <table cellspacing="2" align="center" cellpadding="8" border="0">
+				<tr>
+					<td align="right"><label for="sheetName">Sheet Name<span
+							class="required">*</span>:
+					</label></td>
+					<!-- <td><input type="text" name="sheetName" id="sheetName" class="tb" required /></td> -->
+					<td><select id="sheetName" class="fixedwidth"></select></td>
+				</tr>
 
-                    <tr>
-                        <td></td>
-                        <td>
-                            <div>
-                                <label class="screen-reader-only" for="choice">SOW or
-                                    Amendment?</label> <span aria-hidden="true">SOW</span> <input type="range" max="1"
-                                    id="choice" name="choice" onchange="redirectToPage();"> <span
-                                    aria-hidden="true">Amendment</span>
-                            </div>
-                        </td>
-                    </tr>
+				<tr>
+					<td align="right"><label for="costcenter">Cost center<span
+							class="required">*</span>:
+					</label></td>
+					<!-- <td><input type="text" name="costcenter" id="costCenter" class="tb" required /></td> -->
+					<td><select id="costCenter" class="fixedwidth"></select></td>
 
-                    <tr>
-                        <td align="right"><label for="sheetName">Sheet Name<span class="required">*</span>:</label></td>
-                       <!-- <td><input type="text" name="sheetName" id="sheetName" class="tb" required /></td> -->
-                        <td><select id="sheetName" class="fixedwidth"></select></td>
-                    </tr>
+				</tr>
 
-                    <tr>
-                        <td align="right"><label for="costcenter">Cost center<span class="required">*</span>:</label></td>
-                        <!-- <td><input type="text" name="costcenter" id="costCenter" class="tb" required /></td> -->
-                        <td><select id="costCenter" class="fixedwidth"></select></td>
-                        
-                    </tr>
+				<tr>
+					<td align="right"><label for="startdate">StartDate<span
+							class="required">*</span>:
+					</label></td>
+					<td><input type="date" name="startdate" id="startDate"
+						class="tb fixedwidth" required /></td>
+				</tr>
 
-                    <tr>
-                        <td align="right"><label for="startdate">StartDate<span class="required">*</span>:</label></td>
-                        <td><input type="date" name="startdate" id="startDate" class="tb fixedwidth" required /></td>
-                    </tr>
+				<tr>
+					<td align="right"><label for="enddate">EndDate<span
+							class="required">*</span>:
+					</label></td>
+					<td><input type="date" name="enddate" id="endDate"
+						class="tb fixedwidth" required /></td>
+				</tr>
 
-                    <tr>
-                        <td align="right"><label for="enddate">EndDate<span class="required">*</span>:</label></td>
-                        <td><input type="date" name="enddate" id="endDate" class="tb fixedwidth" required /></td>
-                    </tr>
+				<tr>
+					<td align="right"><label for="resourcedate">Amendment
+							Date<span class="required">*</span>:
+					</label></td>
+					<td><input type="date" name="resourcedate" id="resourceDate"
+						class="tb fixedwidth" required /></td>
+				</tr>
 
-                    <tr>
-                        <td align="right"><label for="resourcedate">Amendment Date<span class="required">*</span>:</label></td>
-                        <td><input type="date" name="resourcedate" id="resourceDate" class="tb fixedwidth" required /></td>
-                    </tr>
-                    
-                    <tr>
-                        <td align="right"><label for="sowAmount">Amount submitted in SOW<span class="required">*</span>:</label></td>
-                        <td><input type="number" name="sowAmount" id="sowAmount" class="tb fixedwidth" required /></td>
-                    </tr>
+				<tr>
+					<td align="right"><label for="sowAmount">Amount
+							submitted in SOW<span class="required">*</span>:
+					</label></td>
+					<td><input type="number" name="sowAmount" id="sowAmount"
+						class="tb fixedwidth" required /></td>
+				</tr>
 
-                    <tr>
-  <td align="right"><label for="additionResource">Resources data<span class="required">*</span>:</label></td>
-  <td>
-    <textarea name="additionResource" id="additionResource" class="tb fixedwidth" rows="5" cols="50" maxlength="150" required></textarea>
-  </td>
-</tr>
+				<tr>
+					<td align="right"><label for="additionResource">Resources
+							data:</label><span class="required">*</span>:</td>
+					<td><textarea name="additionResource" id="additionResource"
+							class="tb fixedwidth" rows="5" cols="50" maxlength="50000"
+							required></textarea>
+						<div id="output"></div></td>
+				</tr>
 
 
-                    <tr class="vendorTeam">
-                        <td align="right"><label for="vendorname">Vendor Project Team<span class="required">*</span>:</label></td>
-                        <td>
-                            <label for="vendor-dropdown"></label>
-                            <select id="vendor-dropdown" class="vendorIdList fixedwidth">
-                                <option value="" selected>Select Vendor</option>
-                            </select>
-                        </td>
+
+				<tr class="vendorTeam">
+					<td align="right"><label for="vendorname">Vendor
+							Project Team<span class="required">*</span>:
+					</label></td>
+					<td><label for="vendor-dropdown"></label> <select
+						id="vendor-dropdown" class="vendorIdList fixedwidth">
+							<option value="" selected>Select Vendor</option>
+					</select></td>
 
 
-                        <td><a href="#" id="add_more_vendor_fields" onclick="addMorevendorFields()"><i
-                                    class="fas fa-plus fixedwidth"></i>+Add</a></td>
-                        <td><a href="#" id="remove_vendor_fields" onclick="removevendorFields()"><i
-                                    class="fas fa-plus fixedwidth"></i>-Remove</a></td>
+					<td><a href="#" id="add_more_vendor_fields"
+						onclick="addMorevendorFields()"><i
+							class="fas fa-plus fixedwidthf1"></i>+Add</a></td>
+					<td><a href="#" id="remove_vendor_fields"
+						onclick="removevendorFields()"><i
+							class="fas fa-plus fixedwidthf1"></i>-Remove</a></td>
 
 
-                    </tr>
+				</tr>
 
-                   
+				<tr class="cvsTeam">
+					<td align="right"><label for="cvsname">CVS Project
+							Team<span class="required">*</span>:
+					</label></td>
+					<td><label for="cvs-dropdown"></label> <select
+						id="cvs-dropdown" class="cvsIdList fixedwidth">
+							<option value="" selected>Select Associate</option>
+					</select></td>
 
-                    <tr>
-                        <td align="right">Select file to upload<span class="required">*</span>:</td>
-                        <td><input id="upload_file" accept=".xls,.xlsx,.csv," name="forecastFile" type="file" class="fixedwidth"
-                                required />
-                        </td>
-                    </tr>
 
-					<tr>
-                        <td align="right"><label for="amendmentName">Amendment Document Name<span class="required">*</span>:</label></td>
-                        <td><input type="text" name="amendmentName" id="amendmentName" class="tb fixedwidth" value="SOW_.01-CC-v1-3-feb2011-ChangeOrderForm" required /></td>
-                    </tr>
-                    
-                  
-                    
-					<tr>
-                        <td align="right"><label for="empid">Submitted by (EmpId)<span class="required">*</span>:</label></td>
-                        <td><input type="number" name="empid" id="empId" class="tb fixedwidth" required /></td>
-                    </tr>
-                    
-                    <tr>
-                        <td></td>
-                        <td>
-                            <button type="button" onclick="submitForm()" class="btn">Submit</button>
+					<td><a href="#" id="add_more_cvs_fields"
+						onclick="addMorecvsFields()"><i
+							class="fas fa-plus fixedwidthf1"></i>+Add</a></td>
+					<td><a href="#" id="remove_cvs_fields"
+						onclick="removecvsFields()"><i
+							class="fas fa-plus fixedwidthf1"></i>-Remove</a></td>
 
-                        </td>
-                    </tr>
 
-                </table>
-            </div>
-        </div>
-    </form>
+				</tr>
+
+				<tr>
+					<td align="right"><label for="ccCount">Cost Center
+							Count<span class="required">*</span>:
+					</label></td>
+					<td><input type="number" name="ccCount" id="ccCount"
+						class="tb fixedwidth" required /></td>
+				</tr>
+
+
+
+				<tr>
+					<td align="right">Select file to upload<span class="required">*</span>:
+					</td>
+					<td><input id="upload_file" accept=".xls,.xlsx,.csv,"
+						name="forecastFile" type="file" required /></td>
+				</tr>
+
+				<tr>
+					<td align="right"><label for="amendmentName">Amendment
+							Document Name<span class="required">*</span>:
+					</label></td>
+					<td><input type="text" name="amendmentName" id="amendmentName"
+						class="tb fixedwidth"
+						value="SOW_.01-CC-v1-3-feb2011-ChangeOrderForm" required /></td>
+				</tr>
+
+
+
+				<tr>
+					<td align="right"><label for="empid">Submitted by
+							(EmpId)<span class="required">*</span>:
+					</label></td>
+					<td><input type="number" name="empid" id="empId"
+						class="tb fixedwidth" required /></td>
+				</tr>
+
+				<tr>
+					<td></td>
+					<td>
+						<button type="button" onclick="submitForm()" class="btn">Submit</button>
+
+					</td>
+				</tr>
+
+			</table>
+		</div>
+	</form>
 </body>
 
 </html>

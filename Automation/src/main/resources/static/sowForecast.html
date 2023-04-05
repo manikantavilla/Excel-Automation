@@ -4,141 +4,148 @@
 <head>
 <title>Forecast Form</title>
 <style type="text/css">
-@import
-	url('https://fonts.googleapis.com/css2?family=Jost:wght@100;300;400;700&display=swap')
-	;
+        @import url('https://fonts.googleapis.com/css2?family=Lato:wght@700&display=swap');
 
-
-   * {
-            font-family:  "Comic Sans MS", cursive;
-            
+        body {
+            margin: 0px;
+            background-color: #e6e3e3;
+            font-family: 'Open Sans', sans-serif;
+            color: #000048;
+            font-weight: 750;
+            letter-spacing: 0.1px;
         }
-     
-       
-a {
-	color: rgb(247, 242, 242);
-	text-decoration: none;
-	font-size: 18px;
-}
-label{
-font-size: 15px;
-}
 
-body {
-	margin: 0px;
-	background-color: #f26724;
-	color: #f9fcf5;
-	font-family: Arial, Helvetica, sans-serif;
-}
+        header {
+        	display:flex;
+            font-family: 'Open Sans', sans-serif;
+            font-weight: 750;
+            height: 70px;
+            background: #000048;
+            color: #e6e3e3;
+            overflow: hidden;
+            letter-spacing: 0.1px;
+        }
+        
+        
+        a {
+            color: #000048;
+            text-decoration: none;
+        }
 
-#main {
-	font-family: Arial, Helvetica, sans-serif;
-	width: 800px;
-	height: auto;
-	overflow: hidden;
-	padding-bottom: 20px;
-	margin-left: auto;
-	margin-right: auto;
-	border-radius: 5px;
-	padding-left: 10px;
-	margin-top: 100px;
-	border-top: 3px double #f1f1f1;
-	border-bottom: 3px double #f1f1f1;
-	padding-top: 20px;
-}
+        label {
+            font-size: 15px;
+        }
 
-#main table {
-	font-family: "Comic Sans MS", cursive;
-}
+        .fixedwidth {
+            width: 256px;
+            font-size: 13px;
+        }
 
-#main .tb, .vendorname, .cvsname {
-	height: 28px;
-	width: 250px;
-	border: 1px solid #f26724;
-	color: #fd7838;
-	font-weight: bold;
-	border-left: 5px solid #f7f7f7;
-	opacity: 0.9;
-}
+        .fixedwidthf1 {
+            width: 256px;
+            font-size: 13px;
+        }
+        
+        #main {
+            font-family: 'Open Sans', sans-serif;
+            width: 800px;
+            height: auto;
+            overflow: hidden;
+            padding-bottom: 20px;
+            margin-left: auto;
+            margin-right: auto;
+            border-radius: 5px;
+            padding-left: 10px;
+            padding-top: 20px;
+        }
 
-.fixedwidth{
-width: 256px;
-font-size: 13px;
-}
+        #main table {
+            font-family: 'Open Sans', sans-serif;
+        }
 
-.required{
-color:#a10000;
-}
+        #main .tb,
+        .fixedwidth,
+        .vendorname,
+        .cvsname,
+        .sheetName {
+            height: 28px;
+            width: 250px;
+            border: 1px solid #000048;
+            border-radius: 3px;
+            color: #000048;
+            font-weight: bold;
+            opacity: 0.9;
+        }
 
-#main .tb:focus, .vendorname:focus, .cvsname:focus {
-	height: 28px;
-	border: 1px solid #f26724;
-	outline: none;
-	border-left: 5px solid #f7f7f7;
-}
 
-#main .btn {
-	width: 150px;
-	height: 32px;
-	outline: none;
-	color: #f7f7f7;
-	font-weight: bold;
-	border: 0px solid #f26724;
-	text-shadow: 0px 0.5px 0.5px #fff;
-	border-radius: 2px;
-	font-weight: 600;
-	color: #f26724;
-	letter-spacing: 1px;
-	font-size: 14px;
-	background-color: #f1f1f1;
-	-webkit-transition: 1s;
-	-moz-transition: 1s;
-	transition: 1s;
-}
 
-#main .btn:hover {
-	background-color: #f26724;
-	outline: none;
-	border-radius: 2px;
-	color: #f1f1f1;
-	border: 1px solid #f1f1f1;
-	-webkit-transition: 1s;
-	-moz-transition: 1s;
-	transition: 1s;
-}
+        .required {
+            color: #000048;
+        }
 
-select {
-	width: 150px;
-	height: 30px;
-}
+        #main .tb:focus,
+        .fixedwidth,
+        .vendorname:focus,
+        .cvsname:focus {
+            height: 28px;
+            border: 1px solid #000048;
+            border-radius: 3px;
+            outline: none;
+        }
 
-a {
-	color: white;
-}
+        #main .btn {
+            width: 150px;
+            height: 32px;
+            outline: none;
+            color: #f7f7f7;
+            font-weight: bold;
+            border: 0px solid #000048;
+            text-shadow: 0px 0.5px 0.5px #fff;
+            border-radius: 2px;
+            font-weight: 600;
+            color: #000048;
+            letter-spacing: 0.5px;
+            font-size: 14px;
+            background-color: #f1f1f1;
+            -webkit-transition: 0.1s;
+            -moz-transition: 0.1s;
+            transition: 0.1s;
+        }
 
-input[type="range"] {
-	width: 30px;
-}
+        #main .btn:hover {
+            background-color: #000048;
+            outline: none;
+            border-radius: 2px;
+            color: #f1f1f1;
+            border: 1px solid #000048;
+            -webkit-transition: 0.1s;
+            -moz-transition: 0.1s;
+            transition: 0.1s;
+        }
 
-.screen-reader-only {
-	position: absolute;
-	top: -9999px;
-	left: -9999px;
-}
+        select {
+            width: 150px;
+            height: 30px;
+        }
 
- .error-message {
-      color: #a10000;
-      
-      font-size: 18px;
-      text-align: right;
-    }
-    
-  .header{
-  	font-weight: bold;
-      font-size: 28px;
-  }
 
-</style>
+
+        input[type="range"] {
+            width: 30px;
+        }
+
+        .screen-reader-only {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+        }
+
+        .error-message {
+            color: #fd0606;
+            font-size: 18px;
+            text-align: right;
+        }
+    </style>
 <script
 	src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -584,133 +591,128 @@ input[type="range"] {
 
 </head>
 
-<body
-	onload="loadCVS(); loadVendors(); loadCostCenters(); loadSheetNames()">
+<body onload="loadCVS(); loadVendors(); loadCostCenters(); loadSheetNames()">
 
-	<form id="myForm">
-		<div id="main">
-			<h2>
-				<center>Forecast Details Form</center>
-			</h2>
-			<div class=error-message>*All Fields are mandatory</div>
-			<div class="login">
-				<table cellspacing="2" align="center" cellpadding="8" border="0">
-					
-					<tr>
-						<td></td>
-						<td>
-							<div>
-								<label class="screen-reader-only" for="choice">SOW or
-									Amendment?</label> <span aria-hidden="true">Amendment</span> <input
-									type="range" max="1" id="choice" name="choice"
-									onchange="redirectToPage();"> <span aria-hidden="true">SOW</span>
-							</div>
-						</td>
-					</tr>
-
-					<tr>
-						<td align="right"><label for="sheetName">Sheet Name<label style="color:#a10000">*</label>:</label></td>
-						<!-- <td><input type="text" name="sheetName" id="sheetName" class="tb" required /></td> -->
-						<td><select id="sheetName" class="fixedwidth"></select></td>
-					</tr>
-
-					<tr>
-						<td align="right"><label for="costcenter">Cost center<label style="color:#a10000">*</label>:</label></td>
-						<!-- <td><input type="text" name="costcenter" id="costCenter" class="tb" required /></td> -->
-						<td><select id="costCenter" class="fixedwidth"></select></td>
-
-					</tr>
-
-					<tr>
-						<td align="right"><label for="startdate">StartDate<label style="color:#a10000">*</label>:</label></td>
-						<td><input type="date" name="startdate" id="startDate"
-							class="tb fixedwidth" required /></td>
-					</tr>
-
-					<tr>
-						<td align="right"><label for="enddate">EndDate<label style="color:#a10000">*</label>:</label></td>
-						<td><input type="date" name="enddate" id="endDate"
-							class="tb fixedwidth" required /></td>
-					</tr>
-
-					<tr class="vendorTeam">
-						<td align="right"><label for="vendorname">Vendor
-								Project Team<label style="color:#a10000">*</label>:</label></td>
-						<td><label for="vendor-dropdown"></label> <select
-							id="vendor-dropdown" class="vendorIdList fixedwidth">
-								<option value="" selected>Select Associate</option>
-						</select></td>
+   <header style="display: flex; align-items: center;">
+    <img src="CTS.png" height="40" width="200" style="margin-left:10px;" >
+    <h2 style="flex: 0.8; text-align: center;">Forecast Details Form</h2>
+</header>
 
 
-						<td><a href="#" id="add_more_vendor_fields"
-							onclick="addMorevendorFields()"><i
-								class="fas fa-plus fixedwidth"></i>+Add</a></td>
-						<td><a href="#" id="remove_vendor_fields"
-							onclick="removevendorFields()"><i
-								class="fas fa-plus fixedwidth"></i>-Remove</a></td>
+    <form id="myForm">
+        <div id="main">
+            <div class=error-message>*All Fields are mandatory</div>
+            <table cellspacing="2" align="center" cellpadding="8" border="0">
+                <tr>
+                    <td></td>
+                    <td>
+                        <div>
+                            <label class="screen-reader-only" for="choice">SOW or
+                                Amendment?</label> <span aria-hidden="true">Amendment</span> <input type="range" max="1"
+                                id="choice" name="choice" onchange="redirectToPage();"> <span
+                                aria-hidden="true">SOW</span>
+                        </div>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td align="right"><label for="sheetName">Sheet Name<label style="color:#fd0606">*</label>:</label>
+                    </td>
+                    <!-- <td><input type="text" name="sheetName" id="sheetName" class="tb" required /></td> -->
+                    <td><select id="sheetName" class="fixedwidth"></select></td>
+                </tr>
+
+                <tr>
+                    <td align="right"><label for="costcenter">Cost center<label style="color:#fd0606">*</label>:</label>
+                    </td>
+                    <!-- <td><input type="text" name="costcenter" id="costCenter" class="tb" required /></td> -->
+                    <td><select id="costCenter" class="fixedwidth"></select></td>
+
+                </tr>
+
+                <tr>
+                    <td align="right"><label for="startdate">StartDate<label style="color:#fd0606">*</label>:</label>
+                    </td>
+                    <td><input type="date" name="startdate" id="startDate" class="tb fixedwidth" required /></td>
+                </tr>
+
+                <tr>
+                    <td align="right"><label for="enddate">EndDate<label style="color:#fd0606">*</label>:</label></td>
+                    <td><input type="date" name="enddate" id="endDate" class="tb fixedwidth" required /></td>
+                </tr>
+
+                <tr class="vendorTeam">
+                    <td align="right"><label for="vendorname">Vendor
+                            Project Team<label style="color:#fd0606">*</label>:</label></td>
+                    <td><label for="vendor-dropdown"></label> <select id="vendor-dropdown"
+                            class="vendorIdList fixedwidth">
+                            <option value="" selected>Select Associate</option>
+                        </select></td>
 
 
-					</tr>
-
-					<tr class="cvsTeam">
-						<td align="right"><label for="cvsname">CVS Project
-								Team<label style="color:#a10000">*</label>:</label></td>
-						<td><label for="cvs-dropdown"></label> <select
-							id="cvs-dropdown" class="cvsIdList fixedwidth">
-								<option value="" selected>Select Associate</option>
-						</select></td>
+                    <td><a href="#" id="add_more_vendor_fields" onclick="addMorevendorFields()"><i
+                                class="fas fa-plus fixedwidthf1"></i>+Add</a></td>
+                    <td><a href="#" id="remove_vendor_fields" onclick="removevendorFields()"><i
+                                class="fas fa-plus fixedwidthf1"></i>-Remove</a></td>
 
 
-						<td><a href="#" id="add_more_cvs_fields"
-							onclick="addMorecvsFields()"><i
-								class="fas fa-plus fixedwidth"></i>+Add</a></td>
-						<td><a href="#" id="remove_cvs_fields"
-							onclick="removecvsFields()"><i class="fas fa-plus fixedwidth"></i>-Remove</a></td>
+                </tr>
+
+                <tr class="cvsTeam">
+                    <td align="right"><label for="cvsname">CVS Project
+                            Team<label style="color:#fd0606">*</label>:</label></td>
+                    <td><label for="cvs-dropdown"></label> <select id="cvs-dropdown" class="cvsIdList fixedwidth">
+                            <option value="" selected>Select Associate</option>
+                        </select></td>
 
 
-					</tr>
+                    <td><a href="#" id="add_more_cvs_fields" onclick="addMorecvsFields()"><i
+                                class="fas fa-plus fixedwidthf1"></i>+Add</a></td>
+                    <td><a href="#" id="remove_cvs_fields" onclick="removecvsFields()"><i
+                                class="fas fa-plus fixedwidthf1"></i>-Remove</a></td>
 
 
-					<tr>
-						<td align="right"><label for="sowName">SOW Document
-								Name<label style="color:#a10000">*</label>:</label></td>
-						<td><input type="text" name="sowName" id="sowName"
-							class="tb fixedwidth" value="SOW_.01-CC-v1-3-feb2011" required /></td>
-					</tr>
+                </tr>
 
-					<!--  <tr>
+
+                <tr>
+                    <td align="right"><label for="sowName">SOW Document
+                            Name<label style="color:#fd0606">*</label>:</label></td>
+                    <td><input type="text" name="sowName" id="sowName" class="tb fixedwidth"
+                            value="SOW_.01-CC-v1-3-feb2011" required /></td>
+                </tr>
+
+                <!--  <tr>
                         <td align="right"><label for="submitName">Submit Form Name :</label></td>
                         <td><input type="text" name="submitName" id="submitName" class="tb" required /></td>
                     </tr>
                     -->
-					<tr>
-						<td align="right">Select file to upload<label style="color:#a10000">*</label>:</td>
-						<td><input id="upload_file" accept=".xls,.xlsx,.csv,"
-							name="forecastFile" type="file" required /></td>
-					</tr>
+                <tr>
+                    <td align="right">Select file to upload<label style="color:#fd0606">*</label>:</td>
+                    <td><input id="upload_file" accept=".xls,.xlsx,.csv," name="forecastFile" type="file" required />
+                    </td>
+                </tr>
 
-					<tr>
-						<td align="right"><label for="empid">Submitted by
-								(EmpId)<label style="color:#a10000">*</label>:</label></td>
-						<td><input type="number" name="empid" id="empId"
-							class="tb fixedwidth" required /></td>
-					</tr>
-
-
-					<tr>
-						<td></td>
-						<td>
-							<button type="button" onclick="submitForm()" class="btn">Submit</button>
-
-						</td>
-					</tr>
+                <tr>
+                    <td align="right"><label for="empid">Submitted by
+                            (EmpId)<label style="color:#fd0606">*</label>:</label></td>
+                    <td><input type="number" name="empid" id="empId" class="tb fixedwidth" required /></td>
+                </tr>
 
 
+                <tr>
+                    <td></td>
+                    <td>
+                        <button type="button" onclick="submitForm()" class="btn">Submit</button>
 
-				</table>
-			</div>
-		</div>
-	</form>
+                    </td>
+                </tr>
+
+
+
+            </table>
+        </div>
+    </form>
 </body>
 
 </html>

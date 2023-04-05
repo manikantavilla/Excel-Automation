@@ -24,14 +24,19 @@ private String sheetName;
 	
 	private Date resourceDate;
 			
-	private String sowAmount;
+	private double sowAmount;
 	
 	private String additionResource;
 	
 	@JsonProperty("vendorTeam")
 	private List<String> vendorTeam;
 	
+	@JsonProperty("cvsTeam")
+	private List<String> cvsTeam;
+	
 	private String empId;
+	
+	private double ccCount;
 	
 	private boolean sow;
 	
