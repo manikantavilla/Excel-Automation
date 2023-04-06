@@ -906,6 +906,8 @@ public class ExcelService {
 		Workbook workbook = new XSSFWorkbook(file.getInputStream());
 		Sheet sheet = workbook.getSheet(user.getSheetName());
 		String columnName = "Cost Center";
+		String AmendmentFilterColumn = "SOW Signed";
+		int AmendmentFilterColumnIndex = -1;
 		int columnIndex = -1;
 		Row headerRow = sheet.getRow(10);
 		int rowCount = sheet.getLastRowNum() - sheet.getFirstRowNum();
@@ -915,6 +917,9 @@ public class ExcelService {
 				;
 				if (cell.getStringCellValue().equalsIgnoreCase(columnName)) {
 					columnIndex = cell.getColumnIndex();
+				}
+				if (cell.getStringCellValue().equalsIgnoreCase(AmendmentFilterColumn)) {
+					AmendmentFilterColumnIndex = cell.getColumnIndex();
 				}
 
 			} else if (cell.getCellType() == CellType.NUMERIC) {
@@ -942,6 +947,7 @@ public class ExcelService {
 		for (int i = 11; i < sheet.getPhysicalNumberOfRows(); i++) {
 			Row row = sheet.getRow(i);
 			Cell cell = row.getCell(columnIndex);
+			Cell SOWSignedCell = row.getCell(AmendmentFilterColumnIndex);
 			if (cell != null) {
 				Cell cell1 = row.getCell(columnIndex + 1);
 				Cell cell2 = row.getCell(columnIndex + 2);
@@ -956,8 +962,18 @@ public class ExcelService {
 					Date givenDate = user.getResourceDate(); // change the date as needed
 					String oDString = oFormat.format(eDate);
 					if (outputExcelDateString.equals(outputInputDateString)) {
-						if (cell.getStringCellValue().equalsIgnoreCase(user.getCostCenter())
-								&& (oDString.equals(oFormat.format(givenDate))) || eDate.after(givenDate)) {
+						
+//						Filter Based on Amendment Start Date
+						
+//						if (cell.getStringCellValue().equalsIgnoreCase(user.getCostCenter())
+//								&& (oDString.equals(oFormat.format(givenDate))) || eDate.after(givenDate)) {
+//							rows.add(row);
+//						}
+						
+//						Filter Based on SOW Signed column
+						
+						if (cell.getStringCellValue().equalsIgnoreCase(user.getCostCenter()) 
+								&& SOWSignedCell.getStringCellValue().equalsIgnoreCase("No")) {
 							rows.add(row);
 						}
 					}
