@@ -90,22 +90,35 @@ public class ExcelService {
 	public static String defaultName = new String();
 
 	public List<Map<String, Object>> ReadBasedOnCondition(MultipartFile file, User user) throws Exception {
-//		FileInputStream inputStream = (FileInputStream) file.getInputStream();;
-//		Workbook workbook = new XSSFWorkbook(inputStream);
+		
+		// Read the file as a Workbook
+		
 		Workbook workbook = new XSSFWorkbook(file.getInputStream());
-//		Sheet sheet = workbook.getSheetAt(1);
+		
+		// Get the sheet based on the provided sheet name in the User object
+		
 		Sheet sheet = workbook.getSheet(user.getSheetName());
+		
+		// Check if the sheet exists
+		
 		if (sheet != null) {
+		
+			// Define the column to be searched for
+			
 			String columnName = "Cost Center";
 			int columnIndex = -1;
+			
+			// Get the header row of the sheet
+			
 			Row headerRow = sheet.getRow(10);
+			
+			// Find the index of the column to be searched for
+			
 			for (Cell cell : headerRow) {
 				if (cell.getCellType() == CellType.STRING) {
-					;
 					if (cell.getStringCellValue().equalsIgnoreCase(columnName)) {
 						columnIndex = cell.getColumnIndex();
 					}
-
 				} else if (cell.getCellType() == CellType.NUMERIC) {
 					if (Double.toString(cell.getNumericCellValue()).equalsIgnoreCase(columnName)) {
 						columnIndex = cell.getColumnIndex();
@@ -113,17 +126,35 @@ public class ExcelService {
 				}
 			}
 
+			// Initialize an array to store matching rows
+			
 			List<Row> rows = new ArrayList<Row>();
 			int dt = 0;
-//		for(Row row : sheet) {
+			
+			// Loop through all the rows in the sheet
+			
 			for (int i = 11; i < sheet.getPhysicalNumberOfRows(); i++) {
+			
+				// Get the current row
+				
 				Row row = sheet.getRow(i);
+				
+				// Get the cell corresponding to the searched column
+				
 				Cell cell = row.getCell(columnIndex);
 				if (cell != null) {
+				
+					// Get the cells corresponding to the start date and end date columns
+					
 					Cell cell1 = row.getCell(columnIndex + 1);
 					Cell cell2 = row.getCell(columnIndex + 2);
-
+					
+					// Check if the start date is not null
+					
 					if (cell1.getDateCellValue() != null) {
+					
+						// Parse the start date and end date
+						
 						Date uDate = user.getStartDate();
 						Date eDate = cell1.getDateCellValue();
 						Date endDate = user.getEndDate();
@@ -132,21 +163,37 @@ public class ExcelService {
 						SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy");
 						String outputInputDateString = outputFormat.format(uDate);
 						String outputExcelDateString = outputFormat.format(eDate);
-//					String outputUserEndDateString = outputFormat.format(endDate);
-//					String outputExcelEndDateString = outputFormat.format(ExcelEndDate);
 						String PrintDate = printFormat.format(uDate);
 						String PrintEndDate = printFormat.format(eDate);
+						
+						// Check if the start date is before the end date
+						
 						if (uDate.before(endDate)) {
+						
+							// Check if the year of the start date matches the year of the current row
+							
 							if (outputExcelDateString.equals(outputInputDateString)) {
+							
+								// Check if the value in the searched column matches the provided cost center
+								
 								if (cell.getStringCellValue().equalsIgnoreCase(user.getCostCenter())) {
+								
+									// Add the matching row to the list of rows
+									
 									rows.add(row);
 								}
 							} else {
+								
+								// Set the dt variable to 1 to indicate that no matching date was found
+								
 								dt = 1;
 								log.info("No Date Found!!! Given Date is " + PrintDate);
 								break;
 							}
 						} else {
+							
+							// Set the dt variable to 1 to indicate that the start date is after the end date
+							
 							dt = 1;
 							log.info("Start Date is greater than End Date!!! Given Start Date is " + PrintDate
 									+ " Given End Date is " + PrintEndDate);
@@ -157,17 +204,41 @@ public class ExcelService {
 					break;
 				}
 			}
+			
+			//Checking if the rows are empty or dt is empty
+			
 			if (rows.size() <= 0 && dt < 1) {
 				log.info("No Data Found for this Cost Center!!! Given Cost Center is  " + user.getCostCenter());
 			}
 
+			// This method converts the data in the Excel sheet into a List of Maps.
+			// Each row in the sheet is represented by a Map, with the key being the column header and the value being the cell data.
+			// The List of Maps is returned at the end of the method.
+			
 			List<Map<String, Object>> rowsData = new ArrayList<Map<String, Object>>();
+			
+			// Iterate over each row in the Matched rows
+			
 			for (Row row : rows) {
+				
+				// Create a new Map to store the data for this row
+				
 				Map<String, Object> rowData = new HashMap<String, Object>();
+				
+				// Iterate over each cell in the row
+				
 				for (Cell cell : row) {
+					
+					// Get the index of the current cell's column
+					
 					int columnIndexx = cell.getColumnIndex();
-//		        String columnNamee = headerRow.getCell(columnIndexx).getStringCellValue();
+					
+					// Get the corresponding header cell for this column
+					
 					Cell headerCell = headerRow.getCell(columnIndexx);
+					
+					// Get the column name from the header cell
+					
 					String columnNamee = "";
 					switch (headerCell.getCellType()) {
 					case NUMERIC:
@@ -184,6 +255,9 @@ public class ExcelService {
 						columnNamee = String.valueOf(headerCell.getBooleanCellValue());
 						break;
 					}
+					
+					// Get the data for this cell and add it to the Map for this row
+					
 					switch (cell.getCellType()) {
 					case NUMERIC:
 						if (DateUtil.isCellDateFormatted(cell)) {
@@ -201,14 +275,18 @@ public class ExcelService {
 					case FORMULA:
 						FormulaEvaluator evaluator = workbook.getCreationHelper().createFormulaEvaluator();
 						CellValue cellValue = evaluator.evaluate(cell);
+						
+						// Check if the cell format is a currency format
+						
 						if (cell.getCellStyle().getDataFormat() == HSSFDataFormat
 								.getBuiltinFormat("_($* #,##0.00_);_($* (#,##0.00);_($* \"-\"??_);_(@_)")) {
 							rowData.put(columnNamee, "$" + cellValue.getNumberValue());
 						} else {
-//		                    switch (cellValue.getCellType()) {
+							
+							// Get the data for the formula cell and add it to the Map for this row
+							
 							switch (evaluator.evaluateFormulaCell(cell)) {
 							case NUMERIC:
-//		                            rowData.put(columnNamee, cellValue.getNumberValue());
 								rowData.put(columnNamee, cell.getNumericCellValue());
 								break;
 							case STRING:
@@ -222,18 +300,19 @@ public class ExcelService {
 						break;
 					}
 				}
+				
+				// Add the Map for this row to the List of Maps
+				
 				rowsData.add(rowData);
 			}
 
-//		InputStream input = getClass().getResourceAsStream("/static/sample_forecast.html");
-//		if (input == null) {
-//		    System.out.println("File not found.");
-//		} else {
-//		    System.out.println("File found.");
-//		}
-
+			// Return the List of Maps representing the data in the sheet
+			
 			return rowsData;
 		} else {
+			
+			// If the sheet was not found, return an empty List of Maps
+			
 			List<Map<String, Object>> rowsData = new ArrayList<Map<String, Object>>();
 			log.info("Sheet Not Found!!! Given Sheet Name is " + user.getSheetName());
 			return rowsData;
@@ -445,6 +524,10 @@ public class ExcelService {
 				Date SDate = user.getStartDate();
 				SimpleDateFormat SDateFormat = new SimpleDateFormat("MMMM");
 				String sDate = SDateFormat.format(SDate);
+				
+				SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
+				String yearDate = yearFormat.format(SDate);
+				int YearDate = Integer.parseInt(yearDate);
 
 				String eDate = "";
 				if (user.getEndDate() != null) {
@@ -463,7 +546,7 @@ public class ExcelService {
 						// XWPFTableCell cell1 = row.createCell();
 						XWPFTableRow row = DeliverableTable.getRow(j + 1);
 
-						LocalDate date = LocalDate.of(LocalDate.now().getYear(), i, 1);
+						LocalDate date = LocalDate.of(YearDate, i, 1);
 						XWPFTableCell cell1 = row.getCell(0);
 						cell1.setText("Services for the Month of " + months.get(i - 1) + " "
 								+ date.with(TemporalAdjusters.lastDayOfMonth()).getYear());
@@ -1165,9 +1248,7 @@ public class ExcelService {
 					}
 				}
 			}
-
 			
-	
 
 			List<String> months = Arrays.asList("January", "February", "March", "April", "May", "June", "July",
 					"August", "September", "October", "November", "December");
@@ -1186,6 +1267,7 @@ public class ExcelService {
 			List<String> RoleLocations = new ArrayList<String>();
 			List<String> RoleSkills = new ArrayList<String>();
 			List<Number> RoleRate = new ArrayList<Number>();
+			HashMap<String, Integer> resourceCount = new HashMap<String, Integer>();
 			List[][] RoleTotal = new List[100][100];
 			int monthStartIndex = months.indexOf(startDate);
 			int monthEndIndex = months.indexOf(endDate);
@@ -1204,6 +1286,20 @@ public class ExcelService {
 			Date year = user.getStartDate();
 			SimpleDateFormat opFormat = new SimpleDateFormat("yyyy");
 			String yearString = opFormat.format(year);
+			
+			for (Map<String, Object> RoleIterator : rowsData) {
+			    String role = (String) RoleIterator.get("CVS Role");
+			    String location = (String) RoleIterator.get("On/Off");
+			    Double rate = (Double) RoleIterator.get("Grandfathered /CVS Rate");
+			    String key = role + "," + location + "," + rate.toString();
+			    if (resourceCount.containsKey(key)) {
+			        int count = resourceCount.get(key);
+			        resourceCount.put(key, count + 1);
+			    } else {
+			        resourceCount.put(key, 1);
+			    }
+			}
+
 
 			for (int i = 0; i < RoleMonths.size(); i++) {
 				for (int j = 0; j < AllRoles.size(); j++) {
@@ -1218,6 +1314,31 @@ public class ExcelService {
 					}
 				}
 			}
+			
+			int dupRoleCount=0;
+			
+			Set<String> uniqueInputRows = new TreeSet<String>();
+			
+			for (int i = 0; i < RoleMonths.size(); i++) {
+				for (int j = 0; j < AllRoles.size(); j++) {
+					 String[] values = {AllRoles.get(j), RoleLocations.get(j), RoleRate.get(j).toString()};
+			         String resourceKey = String.join(",", values);
+			         
+			         if (RoleTotal[i][j].get(j) != null 
+			        		 && resourceCount.get(resourceKey) != null) {
+			        	 String key = RoleMonths.get(i) + "," + AllRoles.get(j) + "," + 
+						         RoleLocations.get(j) + "," + RoleRate.get(j).toString();
+			             dupRoleCount+=1;   
+				
+			         if (!uniqueInputRows.contains(key) )  {
+			        	 uniqueInputRows.add(key);
+				            
+			         	}
+			         }
+				}
+			}
+			
+			
 			ExcelService.budgetAmount = 0.0;
 			int width = 9000;
 			for (int i = 0; i < RoleMonths.size(); i++) {
@@ -1230,7 +1351,7 @@ public class ExcelService {
 			}
 
 			// Months and Roll Table Creation
-			XWPFTable Trail = doc.createTable((RoleMonths.size() * AllRoles.size()) + 1, 6);
+			XWPFTable Trail = doc.createTable(uniqueInputRows.size() +1, 7);
 
 			// Set the width of each column to be equal
 			Trail.getCTTbl().addNewTblPr().addNewTblW().setW(BigInteger.valueOf(width));
@@ -1243,9 +1364,10 @@ public class ExcelService {
 			hRow.getCell(3).setColor("CCE1FD");
 			hRow.getCell(4).setColor("CCE1FD");
 			hRow.getCell(5).setColor("CCE1FD");
-
-			XWPFParagraph ParaFoeMonths = hRow.getCell(0).getParagraphs().get(0);
-			XWPFRun hRun = ParaFoeMonths.createRun();
+			hRow.getCell(6).setColor("CCE1FD");
+			
+			XWPFParagraph paraForMonths = hRow.getCell(0).getParagraphs().get(0);
+			XWPFRun hRun = paraForMonths.createRun();
 			hRun.setBold(true);
 			hRun.setText("Months");
 			hRun.setFontFamily("Arial");
@@ -1279,50 +1401,78 @@ public class ExcelService {
 			hRowRun4.setFontFamily("Arial");
 			hRowRun4.setFontSize(10);
 
-			XWPFParagraph paraForTotal = hRow.getCell(5).getParagraphs().get(0);
-			XWPFRun hRowRun5 = paraForTotal.createRun();
-			hRowRun5.setText("Total");
+			XWPFParagraph paraForCount = hRow.getCell(5).getParagraphs().get(0);
+			XWPFRun hRowRun5 = paraForCount.createRun();
+			hRowRun5.setText("Resource count");
 			hRowRun5.setBold(true);
 			hRowRun5.setFontFamily("Arial");
 			hRowRun5.setFontSize(10);
+			CTTblWidth width1 = hRow.getCell(4).getCTTc().addNewTcPr().addNewTcW();
+			width1.setType(STTblWidth.DXA);
+			width1.setW(BigInteger.valueOf(500));
 
-			int x = 1;
+			XWPFParagraph paraForTotal = hRow.getCell(6).getParagraphs().get(0);
+			XWPFRun hRowRun7 = paraForTotal.createRun();
+			hRowRun7.setText("Total");
+			hRowRun7.setBold(true);
+			hRowRun7.setFontFamily("Arial");
+			hRowRun7.setFontSize(10);
+			
+			 int x = 1;
 			String prevMonth = "";
+			Set<String> uniqueRows = new TreeSet<String>();
+			
 			for (int i = 0; i < RoleMonths.size(); i++) {
-				for (int j = 0; j < AllRoles.size(); j++) {
-					XWPFTableRow nRow = Trail.getRow(x);
-					x += 1;
-					if (RoleMonths.get(i).equals(prevMonth)) {
-						// Skip setting the value for this cell and merge it with the previous cell
-						XWPFTableCell cell = nRow.getCell(0);
-						CTTcPr tcPr = cell.getCTTc().addNewTcPr();
-						tcPr.addNewVMerge().setVal(STMerge.CONTINUE);
-					} else {
-						// Check the number of cells to merge based on the length of AllRoles
-						int numCellsToMerge = AllRoles.size();
-						if (numCellsToMerge > 1) {
-							// Merge the cells
-							CTVMerge vMerge = CTVMerge.Factory.newInstance();
-							vMerge.setVal(STMerge.RESTART);
-							XWPFTableCell cell = nRow.getCell(0);
-							CTTcPr tcPr = cell.getCTTc().addNewTcPr();
-							tcPr.setVMerge(vMerge);
-							for (int k = 1; k < numCellsToMerge; k++) {
-								Trail.getRow(x + k - 1).getCell(0).getCTTc().addNewTcPr().addNewVMerge()
-										.setVal(STMerge.CONTINUE);
-							}
-						}
-						nRow.getCell(0).setText(RoleMonths.get(i));
-					}
+			    for (int j = 0; j < AllRoles.size(); j++) {
+			    	 String[] values = {AllRoles.get(j), RoleLocations.get(j), RoleRate.get(j).toString()};
+			         String resourceKey = String.join(",", values);
+			         if (RoleTotal[i][j].get(j) != null &&RoleTotal[i][j].get(j) !=" $- " && resourceCount.get(resourceKey) != null) {
+			             String key = RoleMonths.get(i) + "," + AllRoles.get(j) + "," + RoleLocations.get(j) + "," + RoleRate.get(j).toString();
+			             
+			             if (!uniqueRows.contains(key) )  {
+			            uniqueRows.add(key);
+			            // create a new row and add it to the table
+			            XWPFTableRow nRow = Trail.getRow(x);
+			            x += 1;
+			            
+			            if (RoleMonths.get(i).equals(prevMonth)) {
+			                // Skip setting the value for this cell and merge it with the previous cell
+			                XWPFTableCell cell = nRow.getCell(0);
+			                CTTcPr tcPr = cell.getCTTc().addNewTcPr();
+			                tcPr.addNewVMerge().setVal(STMerge.CONTINUE);
+			            } else {
+		                    // Check the number of cells to merge based on the length of AllRoles
+		                    int numCellsToMerge = values.length;
+		                    if (numCellsToMerge > 1) {
+		                        // Merge the cells
+		                        CTVMerge vMerge = CTVMerge.Factory.newInstance();
+		                        vMerge.setVal(STMerge.RESTART);
+		                        XWPFTableCell cell = nRow.getCell(0);
+		                        CTTcPr tcPr = cell.getCTTc().addNewTcPr();
+		                        tcPr.setVMerge(vMerge);
+		                        for (int k = 1; k < numCellsToMerge; k++) {
+		                            XWPFTableRow row = Trail.getRow(x + k - 1);
+		                            if (row != null && row.getCell(0) != null) {
+		                                row.getCell(0).getCTTc().addNewTcPr().addNewVMerge().setVal(STMerge.CONTINUE);
+		                            }
+		                        }
+		                    }
+		                    nRow.getCell(0).setText(RoleMonths.get(i));
+		                }
 					prevMonth = RoleMonths.get(i);
 					nRow.getCell(1).setText(AllRoles.get(j));
 					nRow.getCell(2).setText(RoleSkills.get(j));
 					nRow.getCell(3).setText(RoleLocations.get(j));
 					nRow.getCell(4).setText("$ " + String.valueOf(RoleRate.get(j)));
-					nRow.getCell(5).setText(RoleTotal[i][j].get(j) == null ? "--"
-							: "$ " + String.format("%.2f", RoleTotal[i][j].get(j)));
-				}
-			}
+					 nRow.getCell(5).setText(resourceCount.get(resourceKey) == null ?
+		                		"0" : String.valueOf(resourceCount.get(resourceKey)));
+					 nRow.getCell(6).setText(RoleTotal[i][j].get(j) == null ? " $- "
+		                        : "$ " + String.format("%.2f", ((Double)RoleTotal[i][j].get(j)) * (resourceCount.get(resourceKey))));
+		                
+			             }
+			         }
+			    }
+			}       
 			CTVerticalJc vAlign = CTVerticalJc.Factory.newInstance();
 			vAlign.setVal(STVerticalJc.CENTER);
 			for (int i = 1; i < Trail.getRows().size(); i++) {
@@ -1427,6 +1577,8 @@ public class ExcelService {
 
 	}
 
+	
+	
 	public ResponseEntity<byte[]> insertDataIntoAmendmentExcel(Amendment user) throws Exception {
 		FileInputStream excel_file = new FileInputStream(new File(submiTPath.getSubmitPath()));
 		XSSFWorkbook workbook = new XSSFWorkbook(excel_file);
