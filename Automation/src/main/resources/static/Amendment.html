@@ -535,7 +535,7 @@ input[type="range"] {
                 return;
             }
 
-
+            document.getElementById("submitBtn").disabled = true;
 
 			console.log(additionResource);
             const filters = {
@@ -602,6 +602,7 @@ input[type="range"] {
                             
 							/* document.getElementById("myForm").reset(); */ 
                             alert("Downloaded Successfully");
+                            document.getElementById("submitBtn").disabled = false;
                           }
                         };
 
@@ -787,7 +788,7 @@ input[type="range"] {
 				<tr>
 					<td></td>
 					<td>
-						<button type="button" onclick="submitForm()" class="btn">Submit</button>
+						<button type="button" id="submitBtn" onclick="submitForm()" class="btn">Submit</button>
 
 					</td>
 				</tr>

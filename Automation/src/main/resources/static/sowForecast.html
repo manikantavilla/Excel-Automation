@@ -499,6 +499,7 @@
                 return;
             }
            
+            document.getElementById("submitBtn").disabled = true;
 
             const filters = {
                 sheetName,
@@ -561,7 +562,7 @@
                             link1.click();
                             document.getElementById("myForm").reset();
                             alert("Downloaded Successfully");
-                            
+                            document.getElementById("submitBtn").disabled = false;
                           }
                         };
 
@@ -585,6 +586,7 @@
             xhr.send(formData);
 
         }
+        document.getElementById("submitBtn").disabled = false;
        
 
     </script>
@@ -703,7 +705,7 @@
                 <tr>
                     <td></td>
                     <td>
-                        <button type="button" onclick="submitForm()" class="btn">Submit</button>
+                        <button type="button" id="submitBtn" onclick="submitForm()" class="btn">Submit</button>
 
                     </td>
                 </tr>

@@ -4,6 +4,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.math.BigInteger;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
@@ -595,8 +597,12 @@ public class ExcelService {
 				}
 			}
 
+			double number =  ExcelService.budgetAmount;
+			NumberFormat numberFormat = new DecimalFormat("#,##0.00");
+			String formattedNumber = numberFormat.format(number);
+			
 			// Months and Roll Table Creation
-			XWPFTable Trail = doc.createTable(uniqueInputRows.size() +1, 6);
+			XWPFTable Trail = doc.createTable(uniqueInputRows.size() +2, 6);
 
 			// Set the width of each column to be equal
 			Trail.getCTTbl().addNewTblPr().addNewTblW().setW(BigInteger.valueOf(width));
@@ -701,13 +707,41 @@ public class ExcelService {
 			                nRow.getCell(2).setText(RoleLocations.get(j));
 			                nRow.getCell(3).setText("$ " + String.valueOf(RoleRate.get(j)));
 			                nRow.getCell(4).setText(resourceCount.get(resourceKey) == null ? "0" : String.valueOf(resourceCount.get(resourceKey)));
+			                
+			                double num = ((Double)RoleTotal[i][j].get(j)) * (resourceCount.get(resourceKey));
+			                String fNumber = numberFormat.format(num);
 			                nRow.getCell(5).setText(RoleTotal[i][j].get(j) == null ? " $- "
-			                        : "$ " + String.format("%.2f", ((Double)RoleTotal[i][j].get(j)) * (resourceCount.get(resourceKey))));
+			                        : "$ " +  fNumber);
+			                
+//			                nRow.getCell(5).setText(RoleTotal[i][j].get(j) == null ? " $- "
+//			                        : "$ " + String.format("%.2f", ((Double)RoleTotal[i][j].get(j)) * (resourceCount.get(resourceKey))));
+			                
 			                prevMonth = RoleMonths.get(i);
 			            }
 			        }
 			    }
 			}
+				XWPFTableRow nRow = Trail.getRow(uniqueInputRows.size() +1);
+				nRow.getCell(0).setColor("CCE1FD");
+				nRow.getCell(1).setColor("CCE1FD");
+				nRow.getCell(2).setColor("CCE1FD");
+				nRow.getCell(3).setColor("CCE1FD");
+				nRow.getCell(4).setColor("CCE1FD");
+				nRow.getCell(5).setColor("CCE1FD");
+				
+				XWPFParagraph paraForTotalInLastTableRow = hRow.getCell(4).getParagraphs().get(0);
+				XWPFRun nRowRun = paraForTotalInLastTableRow.createRun();
+				nRowRun.setText("Total");
+				nRowRun.setBold(true);
+				nRowRun.setFontFamily("Arial");
+				hRowRun6.setFontSize(12);
+				
+
+				nRow.getCell(4).setText("Total");
+				nRow.getCell(5).setText("$ " + formattedNumber);
+	
+//				nRow.getCell(5).setText("$ " + String.format("%.2f", ExcelService.budgetAmount));
+				
 				CTVerticalJc vAlign = CTVerticalJc.Factory.newInstance();
 				vAlign.setVal(STVerticalJc.CENTER);
 				for (int i = 1; i < Trail.getRows().size(); i++) {
@@ -789,7 +823,7 @@ public class ExcelService {
 						}
 						if (text != null && text.contains("budget_amount")) {
 							text = text.replace("budget_amount",
-									"$" + String.format("%.2f", ExcelService.budgetAmount));
+									"$" + formattedNumber);
 							run.setText(text, 0);
 						}
 						break;
@@ -805,7 +839,7 @@ public class ExcelService {
 							String text = r.getText(0);
 							if (text.contains("Budget_amount")) {
 								text = text.replaceAll("Budget_amount",
-										String.format("\\$ %.2f", ExcelService.budgetAmount));
+										formattedNumber);
 								r.setText(text, 0);
 							}
 
@@ -1349,9 +1383,13 @@ public class ExcelService {
 					}
 				}
 			}
+			
+			double number =  ExcelService.budgetAmount;
+			NumberFormat numberFormat = new DecimalFormat("#,##0.00");
+			String formattedNumber = numberFormat.format(number);
 
 			// Months and Roll Table Creation
-			XWPFTable Trail = doc.createTable(uniqueInputRows.size() +1, 7);
+			XWPFTable Trail = doc.createTable(uniqueInputRows.size() +2, 7);
 
 			// Set the width of each column to be equal
 			Trail.getCTTbl().addNewTblPr().addNewTblW().setW(BigInteger.valueOf(width));
@@ -1466,13 +1504,40 @@ public class ExcelService {
 					nRow.getCell(4).setText("$ " + String.valueOf(RoleRate.get(j)));
 					 nRow.getCell(5).setText(resourceCount.get(resourceKey) == null ?
 		                		"0" : String.valueOf(resourceCount.get(resourceKey)));
-					 nRow.getCell(6).setText(RoleTotal[i][j].get(j) == null ? " $- "
-		                        : "$ " + String.format("%.2f", ((Double)RoleTotal[i][j].get(j)) * (resourceCount.get(resourceKey))));
+					 
+					 double num = ((Double)RoleTotal[i][j].get(j)) * (resourceCount.get(resourceKey));
+		                String fNumber = numberFormat.format(num);
+		                nRow.getCell(6).setText(RoleTotal[i][j].get(j) == null ? " $- "
+		                        : "$ " +  fNumber);
+					 
+//					 nRow.getCell(6).setText(RoleTotal[i][j].get(j) == null ? " $- "
+//		                        : "$ " + String.format("%.2f", ((Double)RoleTotal[i][j].get(j)) * (resourceCount.get(resourceKey))));
 		                
 			             }
 			         }
 			    }
-			}       
+			}     
+			
+			XWPFTableRow nRow = Trail.getRow(uniqueInputRows.size() +1);
+			nRow.getCell(0).setColor("CCE1FD");
+			nRow.getCell(1).setColor("CCE1FD");
+			nRow.getCell(2).setColor("CCE1FD");
+			nRow.getCell(3).setColor("CCE1FD");
+			nRow.getCell(4).setColor("CCE1FD");
+			nRow.getCell(5).setColor("CCE1FD");
+			nRow.getCell(6).setColor("CCE1FD");
+			
+			XWPFParagraph paraForTotalInLastTableRow = hRow.getCell(5).getParagraphs().get(0);
+			XWPFRun nRowRun = paraForTotalInLastTableRow.createRun();
+			nRowRun.setText("Total");
+			nRowRun.setBold(true);
+			nRowRun.setFontFamily("Arial");
+			hRowRun6.setFontSize(12);
+			
+
+			nRow.getCell(5).setText("Total");
+			nRow.getCell(6).setText("$ " + formattedNumber);
+			
 			CTVerticalJc vAlign = CTVerticalJc.Factory.newInstance();
 			vAlign.setVal(STVerticalJc.CENTER);
 			for (int i = 1; i < Trail.getRows().size(); i++) {
@@ -1536,17 +1601,19 @@ public class ExcelService {
 							
 							if (text != null && text.contains("sowAmount")) {
 							    double sowAmount = user.getSowAmount();
-							    text = text.replace("sowAmount", "$ "+String.format("%.2f", sowAmount));
+							    String fNumber = numberFormat.format(sowAmount);
+							    text = text.replace("sowAmount", "$ "+fNumber);
 							    r.setText(text, 0);
 							}
 
 							if (text != null && text.contains("amendmentAmount")) {
-							    text = text.replace("amendmentAmount", "$ "+String.format("%.2f", ExcelService.budgetAmount));
+							    text = text.replace("amendmentAmount", "$ "+formattedNumber);
 							    r.setText(text, 0);
 							}
 							double amount = user.getSowAmount() + ExcelService.budgetAmount;
+							String fNumber = numberFormat.format(amount);
 							if (text != null && text.contains("totalBudgetAmount")) {
-							    text = text.replace("totalBudgetAmount", "$ "+String.format("%.2f", amount));
+							    text = text.replace("totalBudgetAmount", "$ "+fNumber);
 							    r.setText(text, 0);
 							}
 
