@@ -34,4 +34,6 @@ public class User {
 	
 	private String sowName;
 	
+	private double amount;
+	
 }
