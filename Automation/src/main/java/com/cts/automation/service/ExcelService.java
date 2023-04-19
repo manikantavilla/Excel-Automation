@@ -604,7 +604,8 @@ public class ExcelService {
 					String[] values = { AllRoles.get(j), RoleLocations.get(j), RoleRate.get(j).toString() };
 					String resourceKey = String.join(",", values);
 
-					if (RoleTotal[i][j].get(j) != null && resourceCount.get(resourceKey) != null) {
+					if (RoleTotal[i][j].get(j) != null &&  !RoleTotal[i][j].get(j).equals("$0") 
+							&& resourceCount.get(resourceKey) != null) {
 						String key = RoleMonths.get(i) + "," + AllRoles.get(j) + "," + RoleLocations.get(j) + ","
 								+ RoleRate.get(j).toString();
 						dupRoleCount += 1;
@@ -750,7 +751,7 @@ public class ExcelService {
 			}
 
 			// setting the width of the table and storing the value in budget amount 
-			int width = 8000;
+			int width = 9000;
 			for (int i = 0; i < RoleMonths.size(); i++) {
 				for (int j = 0; j < AllRoles.size(); j++) {
 					Object value = RoleTotal[i][j].get(j);
@@ -787,6 +788,10 @@ public class ExcelService {
 			hRun.setText("Months");
 			hRun.setFontFamily("Arial");
 			hRun.setFontSize(10);
+			
+			CTTblWidth width11 = hRow.getCell(0).getCTTc().addNewTcPr().addNewTcW();
+			width11.setType(STTblWidth.DXA);
+			width11.setW(BigInteger.valueOf(1000));
 
 			XWPFParagraph paraForRoles = hRow.getCell(1).getParagraphs().get(0);
 			XWPFRun hRowRun2 = paraForRoles.createRun();
@@ -794,6 +799,10 @@ public class ExcelService {
 			hRowRun2.setBold(true);
 			hRowRun2.setFontFamily("Arial");
 			hRowRun2.setFontSize(10);
+			
+			CTTblWidth width12 = hRow.getCell(1).getCTTc().addNewTcPr().addNewTcW();
+			width12.setType(STTblWidth.DXA);
+			width12.setW(BigInteger.valueOf(1500));
 
 			XWPFParagraph paraForLocation = hRow.getCell(2).getParagraphs().get(0);
 			XWPFRun hRowRun3 = paraForLocation.createRun();
@@ -801,6 +810,10 @@ public class ExcelService {
 			hRowRun3.setBold(true);
 			hRowRun3.setFontFamily("Arial");
 			hRowRun3.setFontSize(10);
+			
+			CTTblWidth width13 = hRow.getCell(2).getCTTc().addNewTcPr().addNewTcW();
+			width13.setType(STTblWidth.DXA);
+			width13.setW(BigInteger.valueOf(1500));
 
 			XWPFParagraph paraForRate = hRow.getCell(3).getParagraphs().get(0);
 			XWPFRun hRowRun4 = paraForRate.createRun();
@@ -808,6 +821,10 @@ public class ExcelService {
 			hRowRun4.setBold(true);
 			hRowRun4.setFontFamily("Arial");
 			hRowRun4.setFontSize(10);
+			
+			CTTblWidth width14 = hRow.getCell(3).getCTTc().addNewTcPr().addNewTcW();
+			width14.setType(STTblWidth.DXA);
+			width14.setW(BigInteger.valueOf(1500));
 
 			XWPFParagraph paraForCount = hRow.getCell(4).getParagraphs().get(0);
 			XWPFRun hRowRun5 = paraForCount.createRun();
@@ -815,9 +832,9 @@ public class ExcelService {
 			hRowRun5.setBold(true);
 			hRowRun5.setFontFamily("Arial");
 			hRowRun5.setFontSize(10);
-			CTTblWidth width1 = hRow.getCell(4).getCTTc().addNewTcPr().addNewTcW();
-			width1.setType(STTblWidth.DXA);
-			width1.setW(BigInteger.valueOf(500));
+			CTTblWidth width15 = hRow.getCell(4).getCTTc().addNewTcPr().addNewTcW();
+			width15.setType(STTblWidth.DXA);
+			width15.setW(BigInteger.valueOf(500));
 
 			XWPFParagraph paraForTotal = hRow.getCell(5).getParagraphs().get(0);
 			XWPFRun hRowRun6 = paraForTotal.createRun();
@@ -825,6 +842,16 @@ public class ExcelService {
 			hRowRun6.setBold(true);
 			hRowRun6.setFontFamily("Arial");
 			hRowRun6.setFontSize(10);
+			CTTblWidth width16 = hRow.getCell(5).getCTTc().addNewTcPr().addNewTcW();
+			width16.setType(STTblWidth.DXA);
+			width16.setW(BigInteger.valueOf(2000));
+			
+			paraForMonths.setAlignment(ParagraphAlignment.CENTER);
+			paraForRoles.setAlignment(ParagraphAlignment.CENTER);
+			paraForLocation.setAlignment(ParagraphAlignment.CENTER);
+			paraForRate.setAlignment(ParagraphAlignment.CENTER);
+			paraForCount.setAlignment(ParagraphAlignment.CENTER);
+			paraForTotal.setAlignment(ParagraphAlignment.CENTER);
 
 			//creating the tree set for getting the unique rows
 			int x = 1;
@@ -842,9 +869,9 @@ public class ExcelService {
 					String resourceKey = String.join(",", values);
 					
 					//it will checks whether the total,resource count are not null
-					if (RoleTotal[i][j].get(j) != null && RoleTotal[i][j].get(j) != " $- "
+					if (RoleTotal[i][j].get(j) != null && !RoleTotal[i][j].get(j).equals("$0")
 							&& resourceCount.get(resourceKey) != null) {
-						
+
 						//it is storing as a key by group month name,role,location,rate
 						String key = RoleMonths.get(i) + "," + AllRoles.get(j) + "," + RoleLocations.get(j) + ","
 								+ RoleRate.get(j).toString();
@@ -898,9 +925,18 @@ public class ExcelService {
 							nRow.getCell(4).setText(resourceCount.get(resourceKey) == null ? "0"
 									: String.valueOf(resourceCount.get(resourceKey)));
 
-							double num = ((Double) RoleTotal[i][j].get(j)) * (resourceCount.get(resourceKey));
-							String fNumber = numberFormat.format(num);
-							nRow.getCell(5).setText(RoleTotal[i][j].get(j) == null ? " $- " : "$ " + fNumber);
+							if (RoleTotal[i][j] != null) {
+							    Object value = RoleTotal[i][j].get(j);
+							    if (value instanceof Double) {
+							        double num = ((Double) value) * (resourceCount.get(resourceKey));
+							        String fNumber = numberFormat.format(num);
+							        nRow.getCell(5).setText("$ " + fNumber);
+							    } else {
+							        nRow.getCell(5).setText("$0");
+							    }
+							} else {
+							    nRow.getCell(5).setText("$0");
+							}
 
 //			                nRow.getCell(5).setText(RoleTotal[i][j].get(j) == null ? " $- "
 //			                        : "$ " + String.format("%.2f", ((Double)RoleTotal[i][j].get(j)) * (resourceCount.get(resourceKey))));
@@ -1772,7 +1808,7 @@ public class ExcelService {
 			hRowRun5.setFontSize(10);
 			CTTblWidth width1 = hRow.getCell(4).getCTTc().addNewTcPr().addNewTcW();
 			width1.setType(STTblWidth.DXA);
-			width1.setW(BigInteger.valueOf(500));
+			width1.setW(BigInteger.valueOf(300));
 
 			XWPFParagraph paraForTotal = hRow.getCell(6).getParagraphs().get(0);
 			XWPFRun hRowRun7 = paraForTotal.createRun();
@@ -1780,6 +1816,10 @@ public class ExcelService {
 			hRowRun7.setBold(true);
 			hRowRun7.setFontFamily("Arial");
 			hRowRun7.setFontSize(10);
+			CTTblWidth width2 = hRow.getCell(6).getCTTc().addNewTcPr().addNewTcW();
+			width2.setType(STTblWidth.DXA);
+			width2.setW(BigInteger.valueOf(2000));
+			
 			
 			 int x = 1;
 			String prevMonth = "";
